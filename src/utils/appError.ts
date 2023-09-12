@@ -32,12 +32,16 @@ export namespace AppError {
 
     /** createDocumentNotFoundError
      *
-     * @param msg
+     * @param label
      * @returns ${msg} could not be found
      */
-    export const createDocumentNotFoundError = (msg: string) =>
-        new AppError(`${msg} could not be found`, 404, "DocumentNotFoundError");
+    export const createDocumentNotFoundError = (label: string) =>
+        new AppError(
+            `Requested ${label} could not be found`,
+            404,
+            "DocumentNotFoundError"
+        );
     export const DocumentNotFoundError = createDocumentNotFoundError(
-        "Document could not be found"
+        "Requsted document could not be found"
     );
 }

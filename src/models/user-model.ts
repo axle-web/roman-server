@@ -1,7 +1,7 @@
 import { AppError } from "@utils";
 import bcrypt from "bcrypt";
 import { hashSync } from "bcrypt";
-import { Model, Schema, model } from "mongoose";
+import { Model, ObjectId, Schema, model } from "mongoose";
 export const userRoles = {
     admin: 4,
     moderator: 3,
@@ -14,15 +14,12 @@ export type UserRoleNames = keyof typeof userRoles; // "admin" | "moderator" | "
 export type UserRoleLevels = (typeof userRoles)[UserRoleNames]; // 4 | 3 | 2 | 1
 
 export type UserType<T extends boolean = true> = {
+    _id: ObjectId;
     username: string;
     email: string;
     avatar: string;
     role: keyof typeof userRoles;
-} & (T extends true
-    ? { password: string; passwordChangedAt: Date }
-    : {
-          _id: string;
-      });
+} & (T extends true ? { password: string; passwordChangedAt: Date } : {});
 
 type UserTypeMethods = {
     verifyPassword: (password: string) => boolean;

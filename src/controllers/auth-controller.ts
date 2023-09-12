@@ -5,7 +5,7 @@ import { AppError } from "@utils";
 
 const Controller = new ControllerFactory(User);
 
-export const logOut = Controller.getOne({
+export const logout = Controller.getOne({
     operation(req, res, next, Model) {
         const { session } = req;
         const { user } = session;
@@ -13,7 +13,7 @@ export const logOut = Controller.getOne({
             throw AppError.createError(
                 400,
                 "No login information",
-                "FailedLogoutAttemptError"
+                "LogoutAttemptError"
             );
         delete session.user;
     },
@@ -29,26 +29,21 @@ export const login = Controller.postOne({
         },
     },
     async operation(req, res, next, Model) {
-        const { query, body } = req;
-        if (Model) {
-            const user = await Model.findOne({
-                username: body?.username,
-            }).select("+password +role");
-            if (!user)
-                throw AppError.createAuthenticationError(
-                    "This username or password is incorrect"
-                );
-            const verified = user.verifyPassword(body?.password as string);
-            if (!verified)
-                throw AppError.createAuthenticationError(
-                    "This username or password is incorrect"
-                );
-            return user.shear("password");
-        }
-    },
-
-    post(req, res, next, payload) {
-        req.session.user = payload as any;
+        const { body } = req;
+        let user = await Model.findOne({
+            username: body?.username,
+        }).select("+password +role");
+        if (!user)
+            throw AppError.createAuthenticationError(
+                "This username or password is incorrect"
+            );
+        const verified = user.verifyPassword(body?.password as string);
+        if (!verified)
+            throw AppError.createAuthenticationError(
+                "This username or password is incorrect"
+            );
+        req.session.user = user.shear("password");
+        return req.session.user;
     },
 });
 
@@ -64,7 +59,7 @@ export const register = Controller.postOne({
             schema: JoiSchema.email,
         },
     },
-    post(req, res, next, payload) {
+    postprocess(req, res, next, payload) {
         req.session.user = payload as any;
     },
 });

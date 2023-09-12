@@ -21,6 +21,15 @@ namespace JoiSchema {
         .label("email")
         .max(100)
         .email();
+
+    export const _id = Joi.string()
+        .required()
+        .label("id")
+        .pattern(/^[a-f\d]{24}$/i)
+        .message("This is not a valid id");
+
+    export const name = Joi.string().required().min(1).max(128).label("name");
+
 }
 
 export default JoiSchema;
