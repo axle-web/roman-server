@@ -1,15 +1,9 @@
 import { AppError } from "@utils/appError";
 import { catchAsync } from "@utils/catchAsync";
-import Joi, { Schema } from "joi";
 import { InferSchemaType, Model } from "mongoose";
-import {
-    GetMethodProps,
-    MethodProperties,
-    MethodPropertyOptions,
-    PostMethodProps,
-    QueryPayload,
-} from "./controller-factory";
+import { GetMethodProps, PostMethodProps } from "./types";
 import { log } from "@utils/logger";
+import Validate from "@factory/validation";
 
 export class ControllerFactory<
     DocumentType extends object = {},
@@ -19,42 +13,6 @@ export class ControllerFactory<
     Model: Model<DocumentType, ModelStatics, ModelMethods>;
     constructor(Model: Model<DocumentType, ModelStatics, ModelMethods>) {
         this.Model = Model;
-    }
-
-    private async _validate(payload: QueryPayload, props?: MethodProperties) {
-        if (!props) return;
-        const parsedProps = Object.entries(props).reduce(
-            (
-                acc: {
-                    schema: { [key: string]: Schema };
-                    validate: {
-                        [key: string]: MethodPropertyOptions["validate"];
-                    };
-                },
-                [key]
-            ) => {
-                acc.schema[key] = props[key].schema;
-                if (props[key].validate) {
-                    acc.validate[key] = props[key].validate;
-                }
-                return acc;
-            },
-            { schema: {}, validate: {} }
-        );
-        const propsToValidate = Joi.object(parsedProps["schema"]).unknown(
-            false
-        );
-        const res = propsToValidate.validate(payload);
-        if (res.error)
-            throw AppError.createError(
-                400,
-                res.error?.message,
-                "JoiValidationError"
-            );
-        for (let key in parsedProps["validate"]) {
-            const valid = await props[key].validate!(payload[key]);
-            if (valid instanceof Error) throw valid;
-        }
     }
 
     getOne({
@@ -68,10 +26,10 @@ export class ControllerFactory<
         typeof this.Model,
         InferSchemaType<typeof this.Model.schema>
     >) {
-        return catchAsync(async (req, res, next) => {
+        const validation = Validate.query(query);
+        const exec = catchAsync(async (req, res, next) => {
             let item: any = "OK";
             let queryPayload = req.query;
-            await this._validate(queryPayload, query);
             if (operation) {
                 item = await operation(req, res, next, this.Model);
             } else {
@@ -89,6 +47,7 @@ export class ControllerFactory<
             }
             res.status(200).send(item);
         });
+        return [validation, exec];
     }
 
     postOne({
@@ -101,12 +60,11 @@ export class ControllerFactory<
         typeof this.Model,
         InferSchemaType<typeof this.Model.schema>
     >) {
-        return catchAsync(async (req, res, next) => {
+        const validation = Validate.queryAndBody({ query, body });
+        const exec = catchAsync(async (req, res, next) => {
             let responsePayload: any = "OK";
             const queryPayload = req.query;
             let bodyPayload = req.body;
-            await this._validate(queryPayload, query);
-            await this._validate(bodyPayload, body);
             // TODO ADD common validation methods
             if (operation) {
                 let result = await operation(req, res, next, this.Model);
@@ -127,5 +85,6 @@ export class ControllerFactory<
             }
             res.status(200).send(responsePayload);
         });
+        return [...validation, exec];
     }
 }

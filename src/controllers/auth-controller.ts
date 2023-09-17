@@ -1,5 +1,5 @@
 import User from "@models/user-model";
-import { ControllerFactory } from "@factories/controller-factory";
+import { ControllerFactory } from "@factory/controller-factory";
 import JoiSchema from "@misc/joi-schemas";
 import { AppError } from "@utils";
 

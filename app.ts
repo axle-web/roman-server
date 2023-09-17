@@ -10,8 +10,15 @@ import cors from "cors";
 import express from "express";
 import bodyParser from "body-parser";
 import { globalErrorHandler, sessionMiddleware } from "@middlewares";
-import { authRouter, nodeRouter, userRouter } from "@routers";
+import {
+    authRouter,
+    branchRouter,
+    nodeRouter,
+    testRouter,
+    userRouter,
+} from "@routers";
 import rateLimit from "express-rate-limit";
+import multer from "multer";
 const app = express();
 const limiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 hour
@@ -22,9 +29,12 @@ const limiter = rateLimit({
 app.use("/api", limiter);
 app.use(cors());
 app.use(sessionMiddleware);
-app.use(bodyParser.json({ limit: "10mb" }));
-app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
+// app.use(multer().any());
 
+// for parsing application/json
+app.use(bodyParser.json({ limit: "10mb" }));
+// for parsing application/xwww-form-urlencoded
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 //* Prometheus setup
 // const { responseTime, totalRequestCount } = require("./middleware/metrics");
 // app.use(responseTime);w
@@ -39,6 +49,8 @@ app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/node", nodeRouter);
+app.use("/api/v1/branch", branchRouter);
+app.use("/api/v1/test", testRouter);
 
 app.use(globalErrorHandler);
 

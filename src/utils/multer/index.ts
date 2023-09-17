@@ -1,0 +1,31 @@
+import { catchAsync } from "@utils/catchAsync";
+import { AppError } from "@utils/appError";
+import multer from "./multer-config";
+import { MethodPropertyOptionsFile } from "@factory/controller-factory/types";
+namespace Multer {
+    type uploadProps = { name: string } & MethodPropertyOptionsFile;
+
+    export const uploadOne = ({
+        name,
+        mimetypes,
+        required,
+        parse,
+        upload,
+    }: uploadProps) =>
+        catchAsync(async (req, res, next) => {
+            multer(mimetypes).single(name)(req, res, async (err) => {
+                if (err) return next(err);
+                if (required && !req.file)
+                    throw AppError.createMulterError("No file attached");
+                if (req.file) {
+                    if (upload) {
+                        let res = await upload(req.file);
+                        req["body"][name] = res;
+                    }
+                }
+                next();
+            });
+        });
+}
+
+export default Multer;

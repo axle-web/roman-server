@@ -30,11 +30,6 @@ export namespace AppError {
         '"Failed to authenticate"'
     );
 
-    /** createDocumentNotFoundError
-     *
-     * @param label
-     * @returns ${msg} could not be found
-     */
     export const createDocumentNotFoundError = (label: string) =>
         new AppError(
             `Requested ${label} could not be found`,
@@ -44,4 +39,8 @@ export namespace AppError {
     export const DocumentNotFoundError = createDocumentNotFoundError(
         "Requsted document could not be found"
     );
+
+    export const createMulterError = (msg: string) =>
+        new AppError(msg, 400, "MulterError");
+
 }

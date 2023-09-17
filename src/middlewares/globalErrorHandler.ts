@@ -3,6 +3,7 @@ import { log } from "@utils/logger";
 import { NextFunction, Request, Response } from "express";
 import { MongoServerError } from "mongodb";
 import { CastError, Error } from "mongoose";
+import { MulterError } from "multer";
 
 const handleDocumentNotFoundError = (err: Error.DocumentNotFoundError) => {
     return new AppError(`${err.query} could not be found`, 404, err.name);
@@ -24,6 +25,10 @@ const handleValidationErrorDB = (err: Error.ValidationError) => {
     return new AppError(message, 400, err.name);
 };
 
+const handleUnexpectedFieldMulter = (err: MulterError) => {
+    return AppError.createMulterError("Unauthorized file upload");
+};
+
 const handleError = (err: AppError | Error) => {
     let error = err as MongoServerError;
     if (error.code) {
@@ -43,6 +48,8 @@ const handleError = (err: AppError | Error) => {
             return handleDocumentNotFoundError(
                 err as Error.DocumentNotFoundError
             );
+        case MulterError:
+            return handleUnexpectedFieldMulter(err as MulterError);
         case AppError:
             return err;
         default:

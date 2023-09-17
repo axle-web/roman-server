@@ -1,5 +1,6 @@
+import { FileMimesTypes, FileTypes, UniqueArray } from "@types";
+import { File } from "buffer";
 import { NextFunction, Request, Response } from "express";
-
 type PreProcessFunction<DocumentType extends any> = (
     req: Request,
     res: Response,
@@ -48,15 +49,32 @@ type MethodBehaviour<
 
 type QueryPayload = Request["query"];
 
-interface MethodPropertyOptions {
-    schema: Joi.Schema;
-    validate?: (
-        val: any
-    ) => boolean | void | Error | Promise<boolean | void | Error>;
-}
+type MethodPropertyOptionsFile = {
+    /**Cannot use schema when defining a file */
+    schema?: never;
+    /**Cannot use validate when defining a file */
+    validate?: never;
+    mimetypes: Array<FileMimesTypes>;
+    count?: number;
+    required?: boolean;
+    parse?: (file: Express.Multer.File) => object | number | string;
+    upload?: (
+        file: Express.Multer.File
+    ) => Promise<object | number | string> | object | number | string;
+};
 
-interface MethodProperties {
-    [name: string]: MethodPropertyOptions;
+type MethodPropertyOptionsValue = {
+    schema: Joi.Schema;
+    validate?: (val: any) => Error | void | Promise<void | Error>;
+};
+
+type MethodPropertyOptions<MethodType extends "body" | "query"> =
+    MethodType extends "query"
+        ? MethodPropertyOptionsValue
+        : MethodPropertyOptionsValue | MethodPropertyOptionsFile;
+
+interface MethodProperties<MethodType extends "body" | "query" = "query"> {
+    [name: string]: MethodPropertyOptions<MethodType>;
 }
 
 type GenericMethodOptions<
@@ -90,5 +108,5 @@ type GetMethodProps<MongooseModel extends any, DocumentType extends any> = {
 
 type PostMethodProps<MongooseModel extends any, DocumentType extends any> = {
     query?: MethodProperties;
-    body?: MethodProperties;
+    body?: MethodProperties<"body">;
 } & GenericMethodOptions<MongooseModel, DocumentType>;
