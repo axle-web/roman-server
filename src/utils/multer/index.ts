@@ -16,11 +16,15 @@ namespace Multer {
             multer(mimetypes).single(name)(req, res, async (err) => {
                 if (err) return next(err);
                 if (required && !req.file)
-                    throw AppError.createMulterError("No file attached");
+                    return next(AppError.createMulterError("No file attached"));
                 if (req.file) {
                     if (upload) {
-                        let res = await upload(req.file);
-                        req["body"][name] = res;
+                        let result = await upload(req.file);
+                        req["body"][name] = result;
+                    }
+                    if (parse) {
+                        let result = parse(req.file);
+                        req["body"][name] = result;
                     }
                 }
                 next();

@@ -1,15 +1,28 @@
 import { ControllerFactory } from "@factory/controller-factory";
 import JoiSchema from "@misc/joi-schemas";
-import Node from "@models/node-model";
+import NodeModel, { INode, INodeModel } from "@models/node-model";
 import { Router } from "express";
+import Joi from "joi";
+import { Model } from "mongoose";
+type CustomNode = INode<false, { 1: 2 }>;
 
-const Controller = new ControllerFactory(Node);
+const Controller = new ControllerFactory(
+    NodeModel as unknown as Model<CustomNode, INodeModel>
+);
 const router = Router();
-
 const postOne = Controller.postOne({
     body: {
         name: {
             schema: JoiSchema.name,
+        },
+        height: {
+            schema: Joi.number(),
+        },
+        width: {
+            schema: Joi.number(),
+        },
+        depth: {
+            schema: Joi.number(),
         },
         file: {
             mimetypes: ["IMAGE"],
@@ -21,7 +34,7 @@ const postOne = Controller.postOne({
             async upload(file) {
                 return { path: file.path };
             },
-            required: true,
+            // required: true,
         },
     },
 });

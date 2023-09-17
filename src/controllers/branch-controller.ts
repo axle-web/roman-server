@@ -1,8 +1,6 @@
 import { ControllerFactory } from "@factory/controller-factory";
 import JoiSchema from "@misc/joi-schemas";
 import Branch from "@models/branch-model";
-import User from "@models/user-model";
-import { AppError } from "@utils";
 import Joi from "joi";
 
 const Controller = new ControllerFactory(Branch);
@@ -16,11 +14,14 @@ export const getOneBranch = Controller.getOne({
     },
 });
 
+export const getAllBranches = Controller.getAll({});
+
 export const postOneBranch = Controller.postOne({
     body: {
         name: {
             schema: JoiSchema.name,
         },
+        details: { schema: Joi.object() },
         // createdBy: {
         //     schema: JoiSchema._id.label("user id"),
         //     async validate(val) {

@@ -15,6 +15,8 @@ export const getOneNode = Controller.getOne({
     },
 });
 
+export const getAllNode = Controller.getAll({ query: {} });
+
 export const postOneNode = Controller.postOne({
     body: {
         name: {

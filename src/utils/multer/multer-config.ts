@@ -49,8 +49,7 @@ const fileFilter =
             .map((t) => FileMimes[t])
             .join(" ")
             .split(" ");
-        console.log(acceptTypes);
-        if (file.mimetype in acceptTypes) {
+        if (acceptTypes.includes(file.mimetype)) {
             callback(null, true);
         } else {
             callback(AppError.createMulterError("Incorrect file type"));

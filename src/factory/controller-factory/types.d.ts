@@ -1,12 +1,14 @@
 import { FileMimesTypes, FileTypes, UniqueArray } from "@types";
 import { File } from "buffer";
 import { NextFunction, Request, Response } from "express";
+
 type PreProcessFunction<DocumentType extends any> = (
     req: Request,
     res: Response,
     next: NextFunction,
     payload: DocumentType
 ) => any | Promise<DocumentType>;
+
 type PostProcessFunction<DocumentType extends any> = (
     req: Request,
     res: Response,
@@ -46,8 +48,6 @@ type MethodBehaviour<
 > =
     | DefaultMethodBehaviorProps<DocumentType, GetMethod>
     | OverrideMethodBehaviourProps<MoongoseModel, GetMethod>;
-
-type QueryPayload = Request["query"];
 
 type MethodPropertyOptionsFile = {
     /**Cannot use schema when defining a file */
@@ -93,20 +93,20 @@ type GenericMethodOptions<
      *
      * @returns {any} - result is sent with status 200
      */
-    // post?: (
-    //     req: Request,
-    //     res: Response,
-    //     next: NextFunction,
-    //     payload: DocumentType
-    // ) => any | Promise<any>;
 } & MethodBehaviour<MongooseModel, DocumentType, GetMethod>;
 
-type GetMethodProps<MongooseModel extends any, DocumentType extends any> = {
+type GetOneMethodProps<MongooseModel extends any, DocumentType extends any> = {
     query?: MethodProperties;
     notFoundError?: string;
 } & GenericMethodOptions<MongooseModel, DocumentType, true>;
+
+type GetAllMethodProps<MongooseModel extends any, DocumentType extends any> = {
+    query?: MethodProperties;
+} & GenericMethodOptions<MongooseModel, DocumentType>;
 
 type PostMethodProps<MongooseModel extends any, DocumentType extends any> = {
     query?: MethodProperties;
     body?: MethodProperties<"body">;
 } & GenericMethodOptions<MongooseModel, DocumentType>;
+
+

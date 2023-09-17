@@ -1,11 +1,15 @@
 import { Model, ObjectId, Schema, Types, model } from "mongoose";
 export type BranchPublic = Branch<true>;
-export type Branch<isPublic extends boolean = false> = {
+export type Branch<
+    isPublic extends boolean = false,
+    Details extends {} = {}
+> = {
     _id: Types.ObjectId;
     name: string;
     branches: Types.ObjectId[];
     nodes: Types.ObjectId[];
     createdBy: ObjectId;
+    details: Details;
 } & (isPublic extends true
     ? {
           createdAt: Date;
@@ -30,6 +34,7 @@ const branchSchema = new Schema<Branch, BranchModel, BranchModelMethods>(
             type: Types.ObjectId,
             ref: "User",
         },
+        details: { type: Object },
     },
     { timestamps: true }
 );

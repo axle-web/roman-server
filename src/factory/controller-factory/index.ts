@@ -1,7 +1,7 @@
 import { AppError } from "@utils/appError";
 import { catchAsync } from "@utils/catchAsync";
 import { InferSchemaType, Model } from "mongoose";
-import { GetMethodProps, PostMethodProps } from "./types";
+import { GetAllMethodProps, GetOneMethodProps, PostMethodProps } from "./types";
 import { log } from "@utils/logger";
 import Validate from "@factory/validation";
 
@@ -22,7 +22,7 @@ export class ControllerFactory<
         preprocess = (req, res, next, payload) => payload,
         notFoundError,
         key,
-    }: GetMethodProps<
+    }: GetOneMethodProps<
         typeof this.Model,
         InferSchemaType<typeof this.Model.schema>
     >) {
@@ -46,6 +46,37 @@ export class ControllerFactory<
                 item = (await postprocess(req, res, next, item)) ?? item;
             }
             res.status(200).send(item);
+        });
+        return [validation, exec];
+    }
+
+    getAll({
+        query,
+        operation,
+        postprocess = (req, res, next, payload) => payload,
+        preprocess = (req, res, next, payload) => payload,
+    }: GetAllMethodProps<
+        typeof this.Model,
+        InferSchemaType<typeof this.Model.schema>
+    >) {
+        const validation = Validate.query(query);
+        const exec = catchAsync(async (req, res, next) => {
+            let items: any = [];
+            let queryPayload = req.query;
+            if (operation) {
+                items = await operation(req, res, next, this.Model);
+            } else {
+                queryPayload =
+                    (await preprocess(req, res, next, queryPayload)) ??
+                    queryPayload;
+                items = await this.Model.find({});
+                if (!items)
+                    throw AppError.createDocumentNotFoundError(
+                        `${this.Model.modelName.toUpperCase()}`
+                    );
+                items = (await postprocess(req, res, next, items)) ?? items;
+            }
+            res.status(200).send(items);
         });
         return [validation, exec];
     }

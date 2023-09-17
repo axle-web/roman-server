@@ -1,11 +1,15 @@
 import { Model, ObjectId, Schema, Types, model } from "mongoose";
 
-export type NodePublic = Node<true>;
-export type Node<isPublic extends boolean = false> = {
+export type NodePublic = INode<true>;
+export type INode<
+    isPublic extends boolean = false,
+    Details extends object = {}
+> = {
     _id: Types.ObjectId;
     name: string;
     branch: ObjectId;
     createdBy: ObjectId;
+    details: Details;
 } & (isPublic extends true
     ? {
           createdAt: Date;
@@ -14,9 +18,9 @@ export type Node<isPublic extends boolean = false> = {
     : {});
 
 type NodeModelMethods = {};
-export type NodeModel = Model<Node, {}, NodeModelMethods>;
+export type INodeModel = Model<INode, {}, NodeModelMethods>;
 
-const nodeSchema = new Schema<Node, NodeModel, NodeModelMethods>(
+const nodeSchema = new Schema<INode, INodeModel, NodeModelMethods>(
     {
         name: {
             type: String,
@@ -35,12 +39,16 @@ const nodeSchema = new Schema<Node, NodeModel, NodeModelMethods>(
             ref: "User",
             required: true,
         },
+        details: {
+            type: Schema.Types.Mixed,
+            default: {},
+        },
     },
     {
         timestamps: true,
     }
 );
 
-const Node = model<Node, NodeModel>("Node", nodeSchema);
+const Node = model<INode, INodeModel>("Node", nodeSchema);
 
 export default Node;
