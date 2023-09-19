@@ -18,7 +18,6 @@ import {
     userRouter,
 } from "@routers";
 import rateLimit from "express-rate-limit";
-import multer from "multer";
 const app = express();
 const limiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 hour
@@ -35,6 +34,7 @@ app.use(sessionMiddleware);
 app.use(bodyParser.json({ limit: "10mb" }));
 // for parsing application/xwww-form-urlencoded
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
+
 //* Prometheus setup
 // const { responseTime, totalRequestCount } = require("./middleware/metrics");
 // app.use(responseTime);w

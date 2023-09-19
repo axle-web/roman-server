@@ -1,4 +1,4 @@
-import { catchAsync } from "@utils/catchAsync";
+import { catchAsync } from "@utils";
 import { AppError } from "@utils/appError";
 import multer from "./multer-config";
 import { MethodPropertyOptionsFile } from "@factory/controller-factory/types";

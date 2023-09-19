@@ -1,7 +1,8 @@
 import { AppError } from "@utils";
 import bcrypt from "bcrypt";
 import { hashSync } from "bcrypt";
-import { Model, ObjectId, Schema, model } from "mongoose";
+import { Types } from "mongoose";
+import { Model, Schema, model } from "mongoose";
 export const userRoles = {
     admin: 4,
     moderator: 3,
@@ -9,12 +10,12 @@ export const userRoles = {
     user: 1,
 } as const;
 
-export type PublicUserType = UserType<false>;
+export type IUserPublic = IUser<false>;
 export type UserRoleNames = keyof typeof userRoles; // "admin" | "moderator" | "editor" | "user"
 export type UserRoleLevels = (typeof userRoles)[UserRoleNames]; // 4 | 3 | 2 | 1
 
-export type UserType<T extends boolean = true> = {
-    _id: ObjectId;
+export type IUser<T extends boolean = true> = {
+    _id: Types.ObjectId;
     username: string;
     email: string;
     avatar: string;
@@ -23,12 +24,12 @@ export type UserType<T extends boolean = true> = {
 
 type UserTypeMethods = {
     verifyPassword: (password: string) => boolean;
-    shear: (args: string) => UserType;
+    shear: (args: string) => IUser;
 };
 
-export type UserModel = Model<UserType, {}, UserTypeMethods>;
+export type IUserModel = Model<IUser, {}, UserTypeMethods>;
 
-const userSchema = new Schema<UserType, UserModel, UserTypeMethods>(
+const userSchema = new Schema<IUser, IUserModel, UserTypeMethods>(
     {
         username: {
             type: String,
@@ -71,7 +72,7 @@ userSchema.method("verifyPassword", function (password: string) {
     return bcrypt.compareSync(password, this.password);
 });
 
-userSchema.method("shear", function (args: string): UserType {
+userSchema.method("shear", function (args: string): IUser {
     if (!this)
         throw AppError.createError(
             500,
@@ -93,5 +94,5 @@ userSchema.pre("save", async function (next) {
     next();
 });
 
-const User = model<UserType, UserModel>("User", userSchema);
+const User = model<IUser, IUserModel>("User", userSchema);
 export default User;

@@ -68,10 +68,11 @@ type MethodPropertyOptionsValue = {
     validate?: (val: any) => Error | void | Promise<void | Error>;
 };
 
-type MethodPropertyOptions<MethodType extends "body" | "query"> =
-    MethodType extends "query"
-        ? MethodPropertyOptionsValue
-        : MethodPropertyOptionsValue | MethodPropertyOptionsFile;
+type MethodPropertyOptions<MethodType extends "body" | "query"> = {
+    setAs?: string;
+} & (MethodType extends "query"
+    ? MethodPropertyOptionsValue
+    : MethodPropertyOptionsValue | MethodPropertyOptionsFile);
 
 interface MethodProperties<MethodType extends "body" | "query" = "query"> {
     [name: string]: MethodPropertyOptions<MethodType>;

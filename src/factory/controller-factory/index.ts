@@ -1,9 +1,10 @@
 import { AppError } from "@utils/appError";
-import { catchAsync } from "@utils/catchAsync";
+import { catchAsync } from "@utils";
 import { InferSchemaType, Model } from "mongoose";
 import { GetAllMethodProps, GetOneMethodProps, PostMethodProps } from "./types";
 import { log } from "@utils/logger";
 import Validate from "@factory/validation";
+import { applySetAsToPayload } from "./utils";
 
 export class ControllerFactory<
     DocumentType extends object = {},
@@ -104,6 +105,8 @@ export class ControllerFactory<
                 bodyPayload =
                     (await preprocess(req, res, next, bodyPayload)) ??
                     bodyPayload;
+                bodyPayload = applySetAsToPayload(body, bodyPayload);
+                console.log(bodyPayload);
                 const itemCreated = new this.Model(bodyPayload);
                 responsePayload = await itemCreated.save();
                 responsePayload =

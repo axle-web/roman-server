@@ -4,10 +4,9 @@ import {
     MethodPropertyOptionsFile,
 } from "@factory/controller-factory/types";
 import { AppError } from "@utils";
-import { catchAsync } from "@utils/catchAsync";
+import { catchAsync } from "@utils";
 import Multer from "@utils/multer";
-import { File } from "buffer";
-import { NextFunction, Request, Response } from "express";
+import { Request } from "express";
 import Joi from "joi";
 
 namespace Validate {

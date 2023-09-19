@@ -43,4 +43,14 @@ export namespace AppError {
     export const createMulterError = (msg: string) =>
         new AppError(msg, 400, "MulterError");
 
+    export const createUploadError = (msg: string = "No file attached") =>
+        new AppError(msg, 400, "UploadMethodError");
+
+    export const createMissingEnviromentVar = (label: string) =>
+        new AppError(
+            `${label} is missing from your .env file. Please make sure it's setup correctly.`,
+            400,
+            "MissingEnviromentVariableError"
+        );
+
 }

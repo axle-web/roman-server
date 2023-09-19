@@ -1,6 +1,6 @@
 import User, { UserRoleNames, userRoles } from "@models/user-model";
 import { AppError } from "@utils";
-import { catchAsync } from "@utils/catchAsync";
+import { catchAsync } from "@utils";
 import { log } from "@utils/logger";
 
 const protect = (role: UserRoleNames = "user") =>

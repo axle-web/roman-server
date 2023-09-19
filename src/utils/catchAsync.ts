@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import fs from "fs";
 
-export const catchAsync = (
+const catchAsync = (
     fn: (req: Request, res: Response, next: NextFunction) => any
 ) => {
     return (req: Request, res: Response, next: NextFunction) => {
@@ -13,3 +12,4 @@ export const catchAsync = (
         });
     };
 };
+export default catchAsync;

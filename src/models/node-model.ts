@@ -8,7 +8,7 @@ export type INode<
     _id: Types.ObjectId;
     name: string;
     branch: ObjectId;
-    createdBy: ObjectId;
+    createdBy: Types.ObjectId;
     details: Details;
 } & (isPublic extends true
     ? {
@@ -30,12 +30,12 @@ const nodeSchema = new Schema<INode, INodeModel, NodeModelMethods>(
             maxlength: 128,
         },
         branch: {
-            type: Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "Branch",
             required: true,
         },
         createdBy: {
-            type: Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "User",
             required: true,
         },
