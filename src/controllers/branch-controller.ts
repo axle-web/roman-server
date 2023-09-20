@@ -12,6 +12,7 @@ export const getOneBranch = Controller.getOne({
             schema: JoiSchema._id,
         },
     },
+    populate: ["createdBy", "nodes"],
 });
 
 export const getAllBranches = Controller.getAll({});
@@ -22,13 +23,6 @@ export const postOneBranch = Controller.postOne({
             schema: JoiSchema.name,
         },
         details: { schema: Joi.object() },
-        // createdBy: {
-        //     schema: JoiSchema._id.label("user id"),
-        //     async validate(val) {
-        //         const user = await User.findById(val);
-        //         if (!user) return AppError.createDocumentNotFoundError("user");
-        //     },
-        // },
     },
     preprocess: (req, res, next, payload) => {
         return { ...payload, createdBy: req.session.user!._id };

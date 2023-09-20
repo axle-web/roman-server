@@ -13,9 +13,12 @@ export const getOneNode = Controller.getOne({
             schema: JoiSchema._id,
         },
     },
+    populate: ["branch"],
 });
 
-export const getAllNode = Controller.getAll({ query: {} });
+export const getAllNode = Controller.getAll({
+    populate: [{ path: "branch", select: "_id name" }],
+});
 
 export const postOneNode = Controller.postOne({
     body: {

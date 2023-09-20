@@ -1,10 +1,10 @@
 import { AppError } from "@utils/appError";
 import { catchAsync } from "@utils";
-import { InferSchemaType, Model } from "mongoose";
+import { InferSchemaType, Model, PopulateOptions } from "mongoose";
 import { GetAllMethodProps, GetOneMethodProps, PostMethodProps } from "./types";
 import { log } from "@utils/logger";
 import Validate from "@factory/validation";
-import { applySetAsToPayload } from "./utils";
+import { applySetAsToPayload, parsePopulateFromQuery } from "./utils";
 
 export class ControllerFactory<
     DocumentType extends object = {},
@@ -16,30 +16,34 @@ export class ControllerFactory<
         this.Model = Model;
     }
 
-    getOne({
+    getOne<PopulateOptions extends object = {}>({
         query,
         operation,
         postprocess = (req, res, next, payload) => payload,
         preprocess = (req, res, next, payload) => payload,
         notFoundError,
         key,
+        populate,
     }: GetOneMethodProps<
         typeof this.Model,
         InferSchemaType<typeof this.Model.schema>
     >) {
-        const validation = Validate.query(query);
+        const validation = Validate.query(query, populate);
         const exec = catchAsync(async (req, res, next) => {
             let item: any = "OK";
-            let queryPayload = req.query;
+            let payload = req.query;
+            const populateParsed = parsePopulateFromQuery(
+                req.query.populate as any,
+                req.populate!
+            );
             if (operation) {
                 item = await operation(req, res, next, this.Model);
             } else {
-                queryPayload =
-                    (await preprocess(req, res, next, queryPayload)) ??
-                    queryPayload;
+                payload =
+                    (await preprocess(req, res, next, payload)) ?? payload;
                 item = await this.Model.findOne({
-                    [key as any]: queryPayload[key as string],
-                });
+                    [key as any]: payload[key as string],
+                }).populate<PopulateOptions>(populateParsed as any);
                 if (!item)
                     throw AppError.createDocumentNotFoundError(
                         `${notFoundError || this.Model.modelName.toUpperCase()}`
@@ -56,21 +60,29 @@ export class ControllerFactory<
         operation,
         postprocess = (req, res, next, payload) => payload,
         preprocess = (req, res, next, payload) => payload,
+        populate,
     }: GetAllMethodProps<
         typeof this.Model,
         InferSchemaType<typeof this.Model.schema>
     >) {
-        const validation = Validate.query(query);
+        const validation = Validate.query(query, populate);
         const exec = catchAsync(async (req, res, next) => {
             let items: any = [];
             let queryPayload = req.query;
+            const populateParsed = parsePopulateFromQuery(
+                req.query.populate as any,
+                req.populate!
+            );
+
             if (operation) {
                 items = await operation(req, res, next, this.Model);
             } else {
                 queryPayload =
                     (await preprocess(req, res, next, queryPayload)) ??
                     queryPayload;
-                items = await this.Model.find({});
+                items = await this.Model.find({}).populate(
+                    populateParsed as any
+                );
                 if (!items)
                     throw AppError.createDocumentNotFoundError(
                         `${this.Model.modelName.toUpperCase()}`
