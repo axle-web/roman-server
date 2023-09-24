@@ -49,6 +49,7 @@ const fileFilter =
             .map((t) => FileMimes[t])
             .join(" ")
             .split(" ");
+        console.log(file);
         if (acceptTypes.includes(file.mimetype)) {
             callback(null, true);
         } else {

@@ -6,6 +6,7 @@ config({
             ? path.join(process.cwd(), ".env.local")
             : path.join(process.cwd(), ".env.production"),
 });
+
 import { connect } from "@database/index";
 import http from "http";
 import app from "./app";

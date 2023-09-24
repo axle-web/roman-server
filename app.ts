@@ -13,6 +13,8 @@ import { globalErrorHandler, sessionMiddleware } from "@middlewares";
 import {
     authRouter,
     branchRouter,
+    folderRouter,
+    imageRouter,
     nodeRouter,
     testRouter,
     userRouter,
@@ -31,9 +33,9 @@ app.use(sessionMiddleware);
 // app.use(multer().any());
 
 // for parsing application/json
-app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.json({ limit: "15mb" }));
 // for parsing application/xwww-form-urlencoded
-app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
+app.use(bodyParser.urlencoded({ limit: "15mb", extended: true }));
 
 //* Prometheus setup
 // const { responseTime, totalRequestCount } = require("./middleware/metrics");
@@ -50,7 +52,9 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/node", nodeRouter);
 app.use("/api/v1/branch", branchRouter);
-app.use("/api/v1/test", testRouter);
+// app.use("/api/v1/test", testRouter);
+app.use("/api/v1/image", imageRouter);
+app.use("/api/v1/folder", folderRouter);
 
 app.use(globalErrorHandler);
 

@@ -10,6 +10,7 @@ export type INode<
     branch: ObjectId;
     createdBy: Types.ObjectId;
     details: Details;
+    type: string;
 } & (isPublic extends true
     ? {
           createdAt: Date;
@@ -42,6 +43,11 @@ const nodeSchema = new Schema<INode, INodeModel, NodeModelMethods>(
         details: {
             type: Schema.Types.Mixed,
             default: {},
+        },
+        type: {
+            type: String,
+            minlength: 1,
+            maxlength: 128,
         },
     },
     {

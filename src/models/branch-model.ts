@@ -1,6 +1,6 @@
 import { Model, Schema, Types, model } from "mongoose";
-export type BranchPublic = Branch<true>;
-export type Branch<
+export type BranchPublic = IBranch<true>;
+export type IBranch<
     isPublic extends boolean = false,
     Details extends {} = {}
 > = {
@@ -10,6 +10,7 @@ export type Branch<
     nodes: Types.ObjectId[];
     createdBy: Types.ObjectId;
     details: Details;
+    type: string;
 } & (isPublic extends true
     ? {
           createdAt: Date;
@@ -17,9 +18,9 @@ export type Branch<
       }
     : {});
 type BranchModelMethods = {};
-export type BranchModel = Model<Branch, {}, BranchModelMethods>;
+export type BranchModel = Model<IBranch, {}, BranchModelMethods>;
 
-const branchSchema = new Schema<Branch, BranchModel, BranchModelMethods>(
+const branchSchema = new Schema<IBranch, BranchModel, BranchModelMethods>(
     {
         name: {
             type: String,
@@ -35,10 +36,15 @@ const branchSchema = new Schema<Branch, BranchModel, BranchModelMethods>(
             ref: "User",
         },
         details: { type: Object },
+        type: {
+            type: String,
+            minlength: 1,
+            maxlength: 128,
+        },
     },
     { timestamps: true }
 );
 
-const Branch = model<Branch, BranchModel>("Branch", branchSchema);
+const Branch = model<IBranch, BranchModel>("Branch", branchSchema);
 
 export default Branch;

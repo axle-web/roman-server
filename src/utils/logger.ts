@@ -2,9 +2,9 @@ import path from "path";
 import { config } from "dotenv";
 config({
     path:
-        process.env.NODE_ENV !== "production"
-            ? path.join(process.cwd(), ".env.local")
-            : path.join(process.cwd(), ".env.production"),
+        process.env.NODE_ENV === "production"
+            ? path.join(process.cwd(), ".env.production")
+            : path.join(process.cwd(), ".env.local"),
 });
 import winston from "winston";
 import WinstonLoki from "winston-loki";
@@ -15,7 +15,6 @@ const lokiTransport = new WinstonLoki({
 });
 
 type logLevels = "info" | "success" | "warning" | "error";
-
 const customLevels = {
     levels: {
         info: 0,
@@ -87,6 +86,6 @@ export const log = {
         _log("error", message, labels),
 };
 
-if (process.env.NODE_ENV !== "production") {
+// if (process.env.NODE_ENV !== "production") {
     logger.add(new winston.transports.Console());
-}
+// }
