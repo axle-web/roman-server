@@ -134,6 +134,7 @@ namespace Validate {
     };
 
     const joiValidate = (schemaObj: Joi.PartialSchemaMap, payload: any) => {
+        console.log(payload);
         let joiRes = Joi.object(schemaObj).unknown(false).validate(payload);
         if (joiRes.error)
             throw AppError.createError(

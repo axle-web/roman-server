@@ -7,15 +7,16 @@ import { AppError, log } from "@utils";
 import { readFileSync } from "fs";
 import Joi from "joi";
 import { Model, Types } from "mongoose";
+import { FolderDocument, FolderModel } from "./folder-controller";
 
 export type ImageDocument = INode<
     true,
     { cover: string; height?: string; width?: string; depth?: string }
 >;
 
-const Controller = new ControllerFactory(
-    Node as unknown as Model<ImageDocument, INodeModel>
-);
+export const ImageModel = Node as unknown as Model<ImageDocument, INodeModel>;
+
+const Controller = new ControllerFactory(ImageModel);
 
 export const getOneImage = Controller.getOne({
     key: "name",
@@ -56,7 +57,7 @@ export const postOneImage = Controller.postOne({
         },
         length: {
             schema: Joi.number(),
-            setAs: "details.height",
+            setAs: "details.length",
         },
         height: {
             schema: Joi.number(),
@@ -84,25 +85,36 @@ export const postOneImage = Controller.postOne({
         createdBy: req.session.user!._id,
     }),
     postprocess: (req, res, next, payload) => {
-        Branch.findOneAndUpdate(
-            {
-                _id: payload.branch,
-                $or: [
-                    { details: { $exists: false } },
-                    { "details.cover": { $exists: false } },
-                ],
-            },
-            {
-                "details.cover": payload.details.cover,
-            },
-            { new: true }
-        ).then((document) => {
-            log.info(
-                `${payload.name} appened to branch "${
-                    document?.name || payload.branch
-                }"`
-            );
+        FolderModel.findById(payload.branch).then(async (doc) => {
+            doc?.nodes.push(payload._id);
+            if (doc?.details) {
+                if (!doc?.details?.cover) {
+                    doc.details.cover = payload.details.cover;
+                }
+            } else {
+                doc!.details = { cover: payload.details.cover };
+            }
+            doc?.save().then((document) => {
+                log.info(
+                    `${payload.name} appened to branch "${
+                        document?.name || payload.branch
+                    }"`
+                );
+            });
         });
+        // Branch.findOneAndUpdate(
+        //     {
+        //         _id: payload.branch,
+        //         $or: [
+        //             { details: { $exists: false } },
+        //             { "details.cover": { $exists: false } },
+        //         ],
+        //     },
+        //     {
+        //         "details.cover": payload.details.cover,
+        //     },
+        //     { new: true }
+        // );
         // Branch.findById(payload.branch).then((branch)=>{
         //     branch?.nodes.push(payload._id);
         // if (!branch?.details || ) {
