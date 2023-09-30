@@ -5,6 +5,7 @@ import { GetAllMethodProps, GetOneMethodProps, PostMethodProps } from "./types";
 import { log } from "@utils/logger";
 import Validate from "@factory/validation";
 import { applySetAsToPayload, parsePopulateFromQuery } from "./utils";
+import Parse from "@factory/parse";
 
 export class ControllerFactory<
     DocumentType extends object = {},
@@ -29,13 +30,11 @@ export class ControllerFactory<
         InferSchemaType<typeof this.Model.schema>
     >) {
         const validation = Validate.query(query, populate);
+        const queryModifiers = Parse.queryModifiers();
+
         const exec = catchAsync(async (req, res, next) => {
             let item: any = "OK";
             let payload = req.query;
-            const populateParsed = parsePopulateFromQuery(
-                req.query.populate as any,
-                req.populate!
-            );
             if (operation) {
                 item = await operation(req, res, next, this.Model);
             } else {
@@ -43,7 +42,9 @@ export class ControllerFactory<
                     (await preprocess(req, res, next, payload)) ?? payload;
                 item = await this.Model.findOne({
                     [key as any]: payload[key as string],
-                }).populate<PopulateOptions>(populateParsed as any);
+                })
+                    .populate<PopulateOptions>(req["populate"] as any)
+                    .sort(req["sort"]);
                 if (!item)
                     throw AppError.createDocumentNotFoundError(
                         `${notFoundError || this.Model.modelName.toUpperCase()}`
@@ -52,37 +53,41 @@ export class ControllerFactory<
             }
             res.status(200).send(item);
         });
-        return [validation, exec];
+        return [validation, queryModifiers, exec];
     }
 
-    getAll({
+    getAll<PopulateOptions extends object = {}>({
         query,
         operation,
         postprocess = (req, res, next, payload) => payload,
         preprocess = (req, res, next, payload) => payload,
         populate,
+        sort,
+        pagination,
     }: GetAllMethodProps<
         typeof this.Model,
         InferSchemaType<typeof this.Model.schema>
     >) {
-        const validation = Validate.query(query, populate);
+        const validation = Validate.query(query, populate, sort, pagination);
+        const queryModifiers = Parse.queryModifiers();
+
         const exec = catchAsync(async (req, res, next) => {
             let items: any = [];
             let queryPayload = req.query;
-            const populateParsed = parsePopulateFromQuery(
-                req.query.populate as any,
-                req.populate!
-            );
-
             if (operation) {
                 items = await operation(req, res, next, this.Model);
             } else {
                 queryPayload =
                     (await preprocess(req, res, next, queryPayload)) ??
                     queryPayload;
-                items = await this.Model.find({}).populate(
-                    populateParsed as any
-                );
+                items = await this.Model.find({}, {})
+                    .populate<PopulateOptions>(req["populate"] as any)
+                    .sort(req["sort"])
+                    .limit(req["pagination"].limit)
+                    .skip(
+                        (req["pagination"].page - 1) * req["pagination"].limit
+                    );
+
                 if (!items)
                     throw AppError.createDocumentNotFoundError(
                         `${this.Model.modelName.toUpperCase()}`
@@ -91,7 +96,7 @@ export class ControllerFactory<
             }
             res.status(200).send(items);
         });
-        return [validation, exec];
+        return [validation, queryModifiers, exec];
     }
 
     postOne({
@@ -118,7 +123,6 @@ export class ControllerFactory<
                     (await preprocess(req, res, next, bodyPayload)) ??
                     bodyPayload;
                 bodyPayload = applySetAsToPayload(body, bodyPayload);
-                console.log(bodyPayload);
                 const itemCreated = new this.Model(bodyPayload);
                 responsePayload = await itemCreated.save();
                 responsePayload =

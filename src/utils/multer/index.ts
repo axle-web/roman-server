@@ -1,9 +1,9 @@
 import { catchAsync } from "@utils";
 import { AppError } from "@utils/appError";
 import multer from "./multer-config";
-import { MethodPropertyOptionsFile } from "@factory/controller-factory/types";
+import { MethodPropertyFileOptions } from "@factory/controller-factory/types";
 namespace Multer {
-    type uploadProps = { name: string } & MethodPropertyOptionsFile;
+    type uploadProps = { name: string } & MethodPropertyFileOptions;
 
     export const uploadOne = ({
         name,

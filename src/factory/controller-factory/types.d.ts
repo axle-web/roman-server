@@ -1,13 +1,24 @@
 import { FileMimesTypes } from "@types";
 import { NextFunction, Request, Response } from "express";
 import Joi from "joi";
-import { Model, PopulateOption, PopulateOptions } from "mongoose";
+import { Model, PopulateOption, PopulateOptions, QueryOptions } from "mongoose";
 
 /**
  * Represents the available HTTP method types.
  */
 type MethodTypes = "getOne" | "postOne" | "getAll";
 
+export type SortField = string | string[];
+export type PaginationField =
+    | boolean
+    | {
+          /**Max page number to request */
+          page?: number;
+          /**Limit the number of documents requested. This is also used to determine the number of documents per page.
+           * Defaults to 20
+           */
+          limit?: number;
+      };
 /**
  * Represents a field for population in Mongoose queries.
  */
@@ -20,9 +31,9 @@ export type PopulateField =
  * Represents a single element of a population field.
  */
 export type PopulateFieldElement = string | PopulateOptions;
-export interface IPopoulateMap {
-    [key: string]: PopulateFieldElement;
-}
+export type IPopoulateMap = Record<string, PopulateFieldElement>;
+
+export type SortField = string | string[];
 
 /**
  * Middleware function type for processing HTTP requests and responses.
@@ -190,6 +201,7 @@ type GetOneMethodProps<MongooseModel extends any, DocumentType extends any> = {
      * Field(s) to populate in the query result.
      */
     populate?: PopulateField;
+    // sort?: SortField;
 } & GenericMethodOptions<MongooseModel, DocumentType, true>;
 
 /**
@@ -206,6 +218,8 @@ type GetAllMethodProps<MongooseModel extends any, DocumentType extends any> = {
      * Field(s) to populate in the query result.
      */
     populate?: PopulateField;
+    sort?: SortField;
+    pagination?: PaginationField;
 } & GenericMethodOptions<MongooseModel, DocumentType>;
 
 /**
