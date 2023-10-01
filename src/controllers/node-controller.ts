@@ -17,7 +17,9 @@ export const getOneNode = Controller.getOne({
 });
 
 export const getAllNode = Controller.getAll({
+    sort: ["createdAt", "name"],
     populate: [{ path: "branch", select: "_id name" }],
+    pagination: true,
 });
 
 export const postOneNode = Controller.postOne({
@@ -32,11 +34,6 @@ export const postOneNode = Controller.postOne({
                 if (!branch)
                     return AppError.createDocumentNotFoundError("branch");
             },
-        },
-        cover: {
-            mimetypes: ["IMAGE"],
-            count: 1,
-            required: true,
         },
     },
     preprocess: (req, res, next, payload) => {

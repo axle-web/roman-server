@@ -7,10 +7,16 @@ import { Model, Types } from "mongoose";
 
 type CustomNode = INode<false, { cover: string }>;
 
-const Controller = new ControllerFactory(
-    NodeModel as unknown as Model<CustomNode, INodeModel>
-);
+const CustomModel = NodeModel as unknown as Model<CustomNode, INodeModel>;
+const Controller = new ControllerFactory(CustomModel);
+
 const router = Router();
+
+const getOne = Controller.getOne({
+    key: "_id",
+    query: {},
+});
+
 const postOne = Controller.postOne({
     body: {
         name: {
