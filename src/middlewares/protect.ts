@@ -18,7 +18,7 @@ const protect = (role: UserRoleNames = "user") =>
         if (userRoles[user.role] < userRoles[role]) {
             throw AppError.AuthenticationError;
         }
-        log.success(`Registered: ${user.username}`, {
+        log.success(`Registered: ${user.email}`, {
             task: "protect_middleware",
             document: user,
         });

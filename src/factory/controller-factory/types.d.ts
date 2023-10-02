@@ -56,13 +56,13 @@ type OperationCallback<MongooseModel extends any> = (
  * Represents the default behavior for an HTTP method.
  */
 export type MethodDefaultBehavior<
-    DocumentType extends any,
-    GetOneMethod extends boolean = false
+  DocumentType extends any,
+  GetOneMethod extends boolean = false
 > = {
-    operation?: never;
-    /**Runs before payload is passed to databaase setter */
-    preprocess?: ProcessMiddleware<DocumentType>;
-    postprocess?: ProcessMiddleware<DocumentType>;
+  operation?: never;
+  /**Runs before payload is passed to databaase setter */
+  preprocess?: ProcessMiddleware<Request["query"]>;
+  postprocess?: ProcessMiddleware<DocumentType>;
 } & (GetOneMethod extends true ? { key: keyof DocumentType } : {});
 
 /**

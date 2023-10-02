@@ -4,9 +4,9 @@ import JoiSchema from "@misc/joi-schemas";
 const Controller = new ControllerFactory(User);
 
 export const getOneUser = Controller.getOne({
-    key: "username",
+    key: "name",
     query: {
-        username: {
+        name: {
             schema: JoiSchema.username,
         },
     },
@@ -14,7 +14,7 @@ export const getOneUser = Controller.getOne({
 
 export const createOneUser = Controller.postOne({
     body: {
-        username: {
+        name: {
             schema: JoiSchema.username,
         },
         email: {
