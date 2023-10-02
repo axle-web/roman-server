@@ -64,6 +64,11 @@ const handleError = (err: AppError | Error) => {
     }
 };
 
+export interface IProdAppError {
+    error: AppError["type"];
+    message: string;
+}
+
 const sendErrorResponse = (err: AppError, res: Response) => {
     process.env.NODE_ENV === "production"
         ? res.status(err.status || 500).json({

@@ -1,10 +1,6 @@
 import Joi from "joi";
 namespace JoiSchema {
-    export const username = Joi.string()
-        .required()
-        .label("username")
-        .min(3)
-        .max(24);
+    export const username = Joi.string().required().label("name").min(3).max(24);
     export const password = Joi.string()
         .required()
         .label("password")

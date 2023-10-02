@@ -1,72 +1,88 @@
 import { AppError } from "@utils";
 import bcrypt from "bcrypt";
 import { hashSync } from "bcrypt";
-import { Types } from "mongoose";
+import { Document, Types } from "mongoose";
 import { Model, Schema, model } from "mongoose";
 export const userRoles = {
-    admin: 4,
-    moderator: 3,
-    editor: 2,
-    user: 1,
+  admin: 4,
+  moderator: 3,
+  editor: 2,
+  user: 1,
 } as const;
 
 export type IUserPublic = IUser<false>;
 export type UserRoleNames = keyof typeof userRoles; // "admin" | "moderator" | "editor" | "user"
 export type UserRoleLevels = (typeof userRoles)[UserRoleNames]; // 4 | 3 | 2 | 1
+interface IUserInstanceCreation
+  extends Document<unknown, IUser<true>, keyof UserTypeMethods>,
+    UserTypeMethods {}
 
 export type IUser<T extends boolean = true> = {
-    _id: Types.ObjectId;
-    username: string;
-    email: string;
-    avatar: string;
-    role: keyof typeof userRoles;
-} & (T extends true ? { password: string; passwordChangedAt: Date } : {});
+  _id: Types.ObjectId;
+  name: string;
+  email: string;
+  avatar?: string;
+  role: keyof typeof userRoles;
+} & (T extends true
+  ? {
+      password: string;
+      passwordChangedAt?: Date;
+      notifications: Types.ObjectId[];
+    }
+  : {});
 
 type UserTypeMethods = {
-    verifyPassword: (password: string) => boolean;
-    shear: (args: string) => IUser;
+  verifyPassword: (password: string) => boolean;
+  shear: (args: string) => IUser;
 };
 
 export type IUserModel = Model<IUser, {}, UserTypeMethods>;
 
 const userSchema = new Schema<IUser, IUserModel, UserTypeMethods>(
-    {
-        username: {
-            type: String,
-            unique: true,
-            required: true,
-            maxlength: 24,
-        },
-        email: {
-            type: String,
-            unique: true,
-            required: true,
-            maxlength: 100,
-        },
-        avatar: {
-            type: String,
-            // unique: true,
-            // required: true,
-        },
-        password: {
-            type: String,
-            required: true,
-            minlength: 8,
-            maxlength: 128,
-            select: false,
-        },
-        passwordChangedAt: {
-            type: Date,
-            select: false,
-        },
-        role: {
-            type: String,
-            default: "user",
-            enum: Object.keys(userRoles),
-            select: false,
-        },
+  {
+    name: {
+      type: String,
+      unique: true,
+      required: true,
+      maxlength: 24,
     },
-    { timestamps: true }
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+      maxlength: 100,
+    },
+    avatar: {
+      type: String,
+      // unique: true,
+      // required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: 8,
+      maxlength: 128,
+      select: false,
+    },
+    passwordChangedAt: {
+      type: Date,
+      select: false,
+    },
+    role: {
+      type: String,
+      default: "user",
+      enum: Object.keys(userRoles),
+      select: false,
+    },
+    notifications: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Notification",
+        select: false,
+      },
+    ],
+  },
+  { timestamps: true }
 );
 userSchema.method("verifyPassword", function (password: string) {
     return bcrypt.compareSync(password, this.password);

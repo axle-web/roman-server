@@ -52,5 +52,4 @@ export namespace AppError {
             400,
             "MissingEnviromentVariableError"
         );
-
 }
