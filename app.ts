@@ -36,6 +36,10 @@ app.use(sessionMiddleware);
 app.use(bodyParser.json({ limit: "15mb" }));
 // for parsing application/xwww-form-urlencoded
 app.use(bodyParser.urlencoded({ limit: "15mb", extended: true }));
+app.use("/api/v1", (req, res, next) => {
+  console.log(req.session);
+  next();
+});
 
 //* Prometheus setup
 // const { responseTime, totalRequestCount } = require("./middleware/metrics");
