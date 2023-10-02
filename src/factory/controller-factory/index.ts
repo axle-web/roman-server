@@ -13,8 +13,9 @@ export class ControllerFactory<
   ModelMethods extends object = {}
 > {
   Model: Model<DocumentType, ModelStatics, ModelMethods>;
-  documentInstance: Document<unknown, DocumentType, keyof ModelMethods> &
-    ModelMethods;
+  documentInstance: Document<unknown, keyof ModelMethods, DocumentType> &
+    ModelMethods &
+    DocumentType;
   constructor(Model: Model<DocumentType, ModelStatics, ModelMethods>) {
     this.Model = Model;
   }

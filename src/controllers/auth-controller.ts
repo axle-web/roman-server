@@ -62,6 +62,7 @@ export const register = Controller.postOne({
   },
   postprocess(req, res, next, payload) {
     req.session.user = payload.shear("password passwordChangedAt");
+    payload.name;
     return req.session.user;
   },
 });

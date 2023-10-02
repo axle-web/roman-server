@@ -13,10 +13,9 @@ export const userRoles = {
 export type IUserPublic = IUser<false>;
 export type UserRoleNames = keyof typeof userRoles; // "admin" | "moderator" | "editor" | "user"
 export type UserRoleLevels = (typeof userRoles)[UserRoleNames]; // 4 | 3 | 2 | 1
-interface IUserInstanceCreation
-  extends Document<unknown, IUser<true>, keyof UserTypeMethods>,
-    UserTypeMethods {}
-
+// interface IUserInstanceCreation
+//   extends Document<unknown, IUser<true>, keyof UserTypeMethods>,
+//     UserTypeMethods {}
 export type IUser<T extends boolean = true> = {
   _id: Types.ObjectId;
   name: string;
