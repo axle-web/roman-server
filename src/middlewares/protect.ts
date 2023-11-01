@@ -5,7 +5,7 @@ import { log } from "@utils/logger";
 
 const protect = (role: UserRoleNames = "user") =>
     catchAsync(async (req, res, next) => {
-        log.info(`Requesting authentication ${req.path}`);
+        log.info(`Requesting authentication ${req.originalUrl}`);
         const session = req.session;
         if (!session?.user?._id) {
             throw AppError.AuthenticationError;

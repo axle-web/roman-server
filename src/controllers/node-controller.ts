@@ -1,5 +1,5 @@
 import { ControllerFactory } from "@factory/controller-factory";
-import JoiSchema from "@misc/joi-schemas";
+import JoiSchema from "@utils/joi-schemas";
 import Branch from "@models/branch-model";
 import Node from "@models/node-model";
 import { AppError } from "@utils";

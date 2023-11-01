@@ -1,6 +1,6 @@
 import { ControllerFactory } from "@factory/controller-factory";
 import User from "@models/user-model";
-import JoiSchema from "@misc/joi-schemas";
+import JoiSchema from "@utils/joi-schemas";
 const Controller = new ControllerFactory(User);
 
 export const getOneUser = Controller.getOne({

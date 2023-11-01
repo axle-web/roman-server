@@ -65,22 +65,24 @@ const handleError = (err: AppError | Error) => {
 };
 
 export interface IProdAppError {
-    error: AppError["type"];
-    message: string;
+  error: AppError["type"];
+  message: string;
+  status: number;
 }
 
 const sendErrorResponse = (err: AppError, res: Response) => {
-    process.env.NODE_ENV === "production"
-        ? res.status(err.status || 500).json({
-              error: err.type,
-              message: err.message,
-          })
-        : res.status(err.status || 500).json({
-              status: err.status,
-              type: err.type,
-              stack: err.stack,
-              message: err.message,
-          });
+  process.env.NODE_ENV === "production"
+    ? res.status(err.status || 500).json({
+        status: err.status,
+        error: err.type,
+        message: err.message,
+      })
+    : res.status(err.status || 500).json({
+        status: err.status,
+        type: err.type,
+        stack: err.stack,
+        message: err.message,
+      });
 };
 
 export const globalErrorHandler = (

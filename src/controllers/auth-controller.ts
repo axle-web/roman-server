@@ -1,6 +1,6 @@
 import User from "@models/user-model";
 import { ControllerFactory } from "@factory/controller-factory";
-import JoiSchema from "@misc/joi-schemas";
+import JoiSchema from "@utils/joi-schemas";
 import { AppError } from "@utils";
 
 const Controller = new ControllerFactory(User);
@@ -51,7 +51,7 @@ export const login = Controller.postOne({
 export const register = Controller.postOne({
   body: {
     name: {
-      schema: JoiSchema.username,
+      schema: JoiSchema.username.label("name"),
     },
     password: {
       schema: JoiSchema.password,

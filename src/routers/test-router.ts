@@ -1,5 +1,5 @@
 import { ControllerFactory } from "@factory/controller-factory";
-import JoiSchema from "@misc/joi-schemas";
+import JoiSchema from "@utils/joi-schemas";
 import NodeModel, { INode, INodeModel } from "@models/node-model";
 import { uploadtoSpaces } from "@services";
 import { Router } from "express";

@@ -1,5 +1,5 @@
 import { ControllerFactory } from "@factory/controller-factory";
-import JoiSchema from "@misc/joi-schemas";
+import JoiSchema from "@utils/joi-schemas";
 import Notification from "@models/notification-model";
 
 const Controller = new ControllerFactory(Notification);

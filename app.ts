@@ -11,24 +11,31 @@ import express from "express";
 import bodyParser from "body-parser";
 import { globalErrorHandler, sessionMiddleware } from "@middlewares";
 import {
-    authRouter,
-    branchRouter,
-    folderRouter,
-    imageRouter,
-    nodeRouter,
-    testRouter,
-    userRouter,
+  authRouter,
+  branchRouter,
+  dashboardRouter,
+  folderRouter,
+  imageRouter,
+  nodeRouter,
+  testRouter,
+  userRouter,
 } from "@routers";
 import rateLimit from "express-rate-limit";
 const app = express();
 const limiter = rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 hour
-    max: 100, // Limit each IP to 100 requests per `window` (here, per 1 minutes),
-    standardHeaders: "draft-7", // draft-6: RateLimit-* headers; draft-7: combined RateLimit header
-    legacyHeaders: false, // X-RateLimit-* headers
+  windowMs: 1 * 60 * 1000, // 1 hour
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 1 minutes),
+  standardHeaders: "draft-7", // draft-6: RateLimit-* headers; draft-7: combined RateLimit header
+  legacyHeaders: false, // X-RateLimit-* headers
 });
 app.use("/api", limiter);
-app.use(cors());
+if (!process.env.APP_URL) throw new Error("No 'APP_URL' in .env file");
+app.use(
+  cors({
+    origin: process.env.APP_URL.split(","),
+    credentials: true, // Include credentials (cookies) in the request
+  })
+);
 app.use(sessionMiddleware);
 // app.use(multer().any());
 
@@ -42,11 +49,6 @@ app.use(bodyParser.urlencoded({ limit: "15mb", extended: true }));
 // app.use(responseTime);w
 // app.use(totalRequestCount);
 
-// app.use((req, res, next) => {
-//     req.io = io;
-//     next();
-// });
-
 //* Routes setup
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/auth", authRouter);
@@ -55,6 +57,7 @@ app.use("/api/v1/branch", branchRouter);
 // app.use("/api/v1/test", testRouter);
 app.use("/api/v1/image", imageRouter);
 app.use("/api/v1/folder", folderRouter);
+app.use("/api/v1/admin/dashboard", dashboardRouter);
 
 app.use(globalErrorHandler);
 

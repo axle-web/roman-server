@@ -27,6 +27,16 @@ namespace Validate {
         ) {
             const [name, { mimetypes, required, parse, upload, count }] =
                 fileProps[0];
+            if (count && count > 1) {
+              return Multer.uploadMany({
+                name,
+                mimetypes,
+                required,
+                parse,
+                upload,
+                count,
+              });
+            }
             return Multer.uploadOne({
                 name,
                 mimetypes,
