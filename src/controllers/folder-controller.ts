@@ -67,7 +67,7 @@ export const postOneFolder = Controller.postOne({
       },
     },
     branch: {
-      schema: JoiSchema._id.optional().label("Folder id"),
+      schema: JoiSchema._id.label("Folder id").optional(),
       async validate(val) {
         if (!val) return;
         const branch = await Branch.findById(val);

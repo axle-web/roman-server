@@ -69,13 +69,14 @@ export class ControllerFactory<
 
     const exec = catchAsync(async (req, res, next) => {
       let items: any = [];
-      let queryPayload = req.query;
+      let queryPayload = req.query || {};
       if (operation) {
         items = await operation(req, res, next, this.Model);
       } else {
         queryPayload =
           (await preprocess(req, res, next, queryPayload)) ?? queryPayload;
-        items = await this.Model.find({}, {})
+        console.log(queryPayload);
+        items = await this.Model.find(queryPayload as any, {})
           .populate<PopulateOptions>(req["populate"] as any)
           .sort(req["sort"])
           .limit(req["pagination"]!.limit)

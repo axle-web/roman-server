@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
 import { sessionMiddleware } from "@middlewares";
 import { log } from "@utils";
-
+import socketFindHandlers from "src/socket-controllers";
 const wrap = (middleware: any) => (socket: any, next: () => any) =>
   middleware(socket.request, {}, next);
 
@@ -28,6 +28,8 @@ const IO = (server: any) => {
         labels: { task: "event" },
       });
     });
+
+    socketFindHandlers(socket);
 
     socket.on("disconnect", async (reason) => {
       try {

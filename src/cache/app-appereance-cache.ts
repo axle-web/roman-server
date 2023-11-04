@@ -79,13 +79,12 @@ export const initAppData = () => {
             branch: appData._id,
             createdBy: admin!._id,
           });
-
+          if (item.model === Branch) {
+            appData.branches.push(doc._id);
+          } else {
+            appData.nodes.push(doc._id);
+          }
           log.info(`${doc.name} successfully created`);
-        }
-        if (item.model === Branch) {
-          appData.branches.push(doc._id);
-        } else {
-          appData.nodes.push(doc._id);
         }
         appearanceCache[item.name] = doc;
       }
