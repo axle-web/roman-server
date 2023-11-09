@@ -1,10 +1,10 @@
 import path from "path";
 import dotenv from "dotenv";
 dotenv.config({
-    path:
-        process.env.NODE_ENV !== "production"
-            ? path.join(process.cwd(), ".env.local")
-            : path.join(process.cwd(), ".env.production"),
+  path:
+    process.env.NODE_ENV !== "production"
+      ? path.join(process.cwd(), ".env.local")
+      : path.join(process.cwd(), ".env.production"),
 });
 import cors from "cors";
 import express from "express";
@@ -19,6 +19,7 @@ import {
   nodeRouter,
   testRouter,
   userRouter,
+  appearanceRouter,
 } from "@routers";
 import rateLimit from "express-rate-limit";
 const app = express();
@@ -58,6 +59,7 @@ app.use("/api/v1/branch", branchRouter);
 app.use("/api/v1/image", imageRouter);
 app.use("/api/v1/folder", folderRouter);
 app.use("/api/v1/admin/dashboard", dashboardRouter);
+app.use("/api/v1/appearance", appearanceRouter);
 
 app.use(globalErrorHandler);
 

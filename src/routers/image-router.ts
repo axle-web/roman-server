@@ -3,6 +3,7 @@ import {
   getAllImage,
   getOneImage,
   postOneImage,
+  sampleImages,
   updateOneImage,
 } from "@controllers/image-controller";
 import { protect } from "@middlewares";
@@ -10,9 +11,11 @@ import { Router } from "express";
 
 const router = Router();
 router.get("/", getOneImage);
-router.post("/", protect("editor"), postOneImage);
 router.get("/all", protect("editor"), getAllImage);
-router.delete("/", protect("editor"), deleteOneImage);
+router.get("/sample", sampleImages);
+
+router.post("/", protect("editor"), postOneImage);
 router.put("/", protect("editor"), updateOneImage);
 
+router.delete("/", protect("editor"), deleteOneImage);
 export default router;

@@ -1,7 +1,10 @@
 import Branch from "@models/branch-model";
 import Node from "@models/node-model";
 import { Socket } from "socket.io";
-const includeSystemToPayload = (payload: {}, includeSystem: boolean) => {
+const includeSystemToPayload = (
+  payload: {},
+  includeSystem: boolean = false
+) => {
   const notSystem = /system/i; // Case-insensitive regex to match "system"
   if (includeSystem) return payload;
   return { ...payload, type: { $not: notSystem } };

@@ -1,7 +1,7 @@
 import { ControllerFactory } from "@factory/controller-factory";
 import JoiSchema from "@utils/joi-schemas";
 import Branch, { IBranch } from "@models/branch-model";
-import { AppError, log } from "@utils";
+import { AppError, catchAsync, log } from "@utils";
 import { readFileSync } from "fs";
 import Joi from "joi";
 import { Model } from "mongoose";
@@ -106,7 +106,6 @@ export const deleteOneFolder = Controller.getOne({
     const folder = await FolderModel.findOneAndDelete({
       name: req.query["name"],
     });
-    console.log(folder);
     return folder;
   },
 });
@@ -133,7 +132,6 @@ export const updateOneFolder = Controller.postOne({
     },
   },
   operation: async (req, res, next, Model) => {
-    console.log(req["query"]);
     if (!req["query"].id || req["query"].id == undefined)
       throw AppError.createError(
         400,
@@ -146,4 +144,33 @@ export const updateOneFolder = Controller.postOne({
     );
     return folder;
   },
+});
+
+export const sampleFolders = catchAsync(async (req, res, next) => {
+  const { size } = req.query;
+
+  if (!size) {
+    throw AppError.createError(400, "Size parameter is missing", "AppError");
+  }
+  if (Array.isArray(size))
+    throw AppError.createError(400, "Invalid size parameter", "AppError");
+  const numberOfDocuments = parseInt(size as string);
+  if (isNaN(numberOfDocuments) || numberOfDocuments <= 0) {
+    throw AppError.createError(400, "Invalid size parameter", "AppError");
+  }
+  let data = await FolderModel.aggregate([
+    {
+      $match: {
+        type: {
+          $not: notSystem,
+        },
+      },
+    },
+    {
+      $sample: { size: numberOfDocuments },
+    },
+  ]);
+  // data = await FolderModel.populate(data, "branch");
+
+  res.status(200).send(data);
 });

@@ -3,7 +3,7 @@ import JoiSchema from "@utils/joi-schemas";
 import Branch from "@models/branch-model";
 import Node, { INode, INodeModel } from "@models/node-model";
 import { uploadtoSpaces } from "@services";
-import { AppError, log } from "@utils";
+import { AppError, catchAsync, log } from "@utils";
 import { readFileSync } from "fs";
 import Joi from "joi";
 import { Model, Types } from "mongoose";
@@ -13,10 +13,10 @@ export type ImageDocument = INode<
   true,
   { cover: string; height?: string; width?: string; depth?: string }
 >;
-
 export const ImageModel = Node as unknown as Model<ImageDocument, INodeModel>;
-
 const Controller = new ControllerFactory(ImageModel);
+
+const notSystem = /system/i; // Case-insensitive regex to match "system"
 
 export const getOneImage = Controller.getOne({
   key: "name",
@@ -31,6 +31,9 @@ export const getOneImage = Controller.getOne({
 export const getAllImage = Controller.getAll({
   pagination: true,
   populate: [{ path: "branch", select: "_id name" }],
+  preprocess: (req, res, next, payload) => {
+    if (!payload["type"]) return { ...payload, type: { $not: notSystem } };
+  },
 });
 
 export const postOneImage = Controller.postOne({
@@ -105,72 +108,6 @@ export const postOneImage = Controller.postOne({
         );
       });
     });
-    // Branch.findOneAndUpdate(
-    //     {
-    //         _id: payload.branch,
-    //         $or: [
-    //             { details: { $exists: false } },
-    //             { "details.cover": { $exists: false } },
-    //         ],
-    //     },
-    //     {
-    //         "details.cover": payload.details.cover,
-    //     },
-    //     { new: true }
-    // );
-    // Branch.findById(payload.branch).then((branch)=>{
-    //     branch?.nodes.push(payload._id);
-    // if (!branch?.details || ) {
-    //     branch?.details = { cover: payload.details.cover };
-    // } else {
-    //     if (!branch.details?.cover)
-    //         branch.details.cover = payload.details.cover;
-    // }
-    // log.info(
-    //     `${payload.name} appened to branch "${
-    //         document?.name || payload.branch
-    //     }"`
-    // );
-    // })
-
-    // Branch.findByIdAndUpdate(
-    //     payload.branch,
-    //     [
-    //         {
-    //             $addFields: {
-    //                 nodes: { $concatArrays: ["$nodes", [payload._id]] },
-    //                 details: {
-    //                     $cond: {
-    //                         if: { $ifNull: "$details" },
-    //                         then: { cover: payload.details.cover },
-    //                         else: {
-    //                             $cond: {
-    //                                 if: { $not: "$details.cover" },
-    //                                 then: {
-    //                                     $mergeObjects: [
-    //                                         "$details",
-    //                                         {
-    //                                             cover: payload.details
-    //                                                 .cover,
-    //                                         },
-    //                                     ],
-    //                                 },
-    //                                 else: "$$REMOVE",
-    //                             },
-    //                         },
-    //                     },
-    //                 },
-    //             },
-    //         },
-    //     ],
-    //     { returnDocument: "after" }
-    // ).then((document) => {
-    //     log.info(
-    //         `${payload.name} appened to branch "${
-    //             document?.name || payload.branch
-    //         }"`
-    //     );
-    // });
   },
 });
 
@@ -230,7 +167,6 @@ export const updateOneImage = Controller.postOne({
     },
   },
   operation: async (req, res, next, Model) => {
-    console.log(req["query"]);
     if (!req["query"].id || req["query"].id == undefined)
       throw AppError.createError(
         400,
@@ -243,4 +179,32 @@ export const updateOneImage = Controller.postOne({
     );
     return image;
   },
+});
+
+export const sampleImages = catchAsync(async (req, res, next) => {
+  const { size } = req.query;
+
+  if (!size) {
+    throw AppError.createError(400, "Size parameter is missing", "AppError");
+  }
+  if (Array.isArray(size))
+    throw AppError.createError(400, "Invalid size parameter", "AppError");
+  const numberOfDocuments = parseInt(size as string);
+  if (isNaN(numberOfDocuments) || numberOfDocuments <= 0) {
+    throw AppError.createError(400, "Invalid size parameter", "AppError");
+  }
+  let data = await ImageModel.aggregate([
+    {
+      $match: {
+        type: {
+          $not: notSystem,
+        },
+      },
+    },
+    {
+      $sample: { size: numberOfDocuments },
+    },
+  ]);
+  data = await ImageModel.populate(data, "branch");
+  res.status(200).send(data);
 });

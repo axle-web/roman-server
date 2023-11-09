@@ -7,5 +7,5 @@ export { default as testRouter } from "./test-router";
 export { default as imageRouter } from "./image-router";
 export { default as folderRouter } from "./folder-router";
 
-
 export { default as dashboardRouter } from "./dashboard-router";
+export { default as appearanceRouter } from "./appearance-router";
