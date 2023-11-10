@@ -22,6 +22,7 @@ import {
   appearanceRouter,
 } from "@routers";
 import rateLimit from "express-rate-limit";
+import { log } from "@utils";
 const app = express();
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 hour

@@ -8,6 +8,7 @@ import { readFileSync } from "fs";
 import JoiSchema from "@utils/joi-schemas";
 import Joi from "joi";
 import caches from "src/cache";
+import { uploadtoSpaces } from "@services";
 export type GenericNodeType = INode<true, Record<string, any>>;
 export const GenericNodeModel = Node as unknown as Model<
   GenericNodeType,
@@ -59,10 +60,9 @@ export const postOneSlide = NodeController.postOne({
     cover: {
       mimetypes: ["IMAGE"],
       count: 1,
-      upload(file) {
-        return `data:image/png;base64,${readFileSync(file.path, {
-          encoding: "base64",
-        })}`;
+      async upload(file) {
+        const { path } = await uploadtoSpaces(file);
+        return path;
       },
       setAs: "details.cover",
     },
@@ -118,10 +118,9 @@ export const updateBanner = NodeController.updateOne({
     cover: {
       mimetypes: ["IMAGE"],
       count: 1,
-      upload(file) {
-        return `data:image/png;base64,${readFileSync(file.path, {
-          encoding: "base64",
-        })}`;
+      async upload(file) {
+        const { path } = await uploadtoSpaces(file);
+        return path;
       },
       setAs: "details.cover",
     },

@@ -5,6 +5,7 @@ import { AppError, catchAsync, log } from "@utils";
 import { readFileSync } from "fs";
 import Joi from "joi";
 import { Model } from "mongoose";
+import { uploadtoSpaces } from "@services";
 
 export type FolderDocument = IBranch<true, { cover?: string }>;
 export const FolderModel = Branch as unknown as Model<FolderDocument, IBranch>;
@@ -58,11 +59,10 @@ export const postOneFolder = Controller.postOne({
       mimetypes: ["IMAGE"],
       count: 1,
       setAs: "details.cover",
-      upload: (file) => {
+      upload: async (file) => {
+        const { path } = await uploadtoSpaces(file);
+        return path;
         // read binary data
-        return `data:image/png;base64,${readFileSync(file.path, {
-          encoding: "base64",
-        })}`;
         // convert binary data to base64 encoded string
       },
     },
@@ -119,11 +119,10 @@ export const updateOneFolder = Controller.postOne({
       mimetypes: ["IMAGE"],
       count: 1,
       setAs: "details.cover",
-      upload: (file) => {
+      upload: async (file) => {
         // read binary data
-        return `data:image/png;base64,${readFileSync(file.path, {
-          encoding: "base64",
-        })}`;
+        const { path } = await uploadtoSpaces(file);
+        return path;
         // convert binary data to base64 encoded string
       },
     },

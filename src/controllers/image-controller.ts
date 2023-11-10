@@ -54,11 +54,8 @@ export const postOneImage = Controller.postOne({
       required: true,
       setAs: "details.cover",
       async upload(file) {
-        // const { path } = await uploadtoSpaces(file);
-        // return path;
-        return `data:image/png;base64,${readFileSync(file.path, {
-          encoding: "base64",
-        })}`;
+        const { path } = await uploadtoSpaces(file);
+        return path;
       },
     },
     length: {
@@ -134,11 +131,8 @@ export const updateOneImage = Controller.postOne({
       count: 1,
       setAs: "details.cover",
       async upload(file) {
-        // const { path } = await uploadtoSpaces(file);
-        // return path;
-        return `data:image/png;base64,${readFileSync(file.path, {
-          encoding: "base64",
-        })}`;
+        const { path } = await uploadtoSpaces(file);
+        return path;
       },
     },
     length: {
