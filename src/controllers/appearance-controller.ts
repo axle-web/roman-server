@@ -76,11 +76,11 @@ export const postOneSlide = NodeController.postOne({
     },
   },
   preprocess: (req, res, next, payload) => ({
-    name: `swiper-slide-${req.query?.["title"] || ""}-${
-      Math.floor(Math.random() * 10000) + 1
-    }`,
+    name: `swiper-slide-${req.query?.["title"] || ""}-${Math.floor(Math.random() * 10000) + 1
+      }`,
     branch: new Types.ObjectId(appearanceCache["swiper"]._id),
     createdBy: req.session.user!._id,
+    type: "swiper-slide-system",
     ...payload,
   }),
   postprocess: (req, res, next, payload) => {
