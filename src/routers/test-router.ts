@@ -2,8 +2,10 @@ import { ControllerFactory } from "@factory/controller-factory";
 import JoiSchema from "@utils/joi-schemas";
 import NodeModel, { INode, INodeModel } from "@models/node-model";
 import { uploadtoSpaces } from "@services";
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { Model, Types } from "mongoose";
+import { catchAsync } from "@utils";
+import multer from "@utils/multer/multer-config";
 
 type CustomNode = INode<false, { cover: string }>;
 
@@ -42,6 +44,16 @@ const postOne = Controller.postOne({
     }),
 });
 
+const addToDigitalOcean = [multer(['IMAGE']).any(), ((req: Request, res: Response, next: NextFunction) => {
+    for (const file of req.files) {
+        uploadtoSpaces(file).then(({ path }) => {
+            console.log(path)
+        })
+    }
+    res.status(200).send({})
+})]
+
 router.post("/", postOne);
+router.post("/do", addToDigitalOcean)
 
 export default router;

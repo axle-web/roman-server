@@ -79,9 +79,11 @@ namespace Parse {
 
             // pagination
             req["pagination"] = {
-                limit: (queryPayload?.limit as unknown as number) || 20,
-                page: (queryPayload?.page as unknown as number) || 1,
+                limit: queryPayload?.limit ? +queryPayload.limit : 20,
+                page: queryPayload?.page ? +queryPayload.page : 1
             };
+            delete req.query.limit
+            delete req.query.page
             return next();
         });
 
@@ -130,7 +132,7 @@ namespace Parse {
                     schemas: { [key: string]: Joi.Schema };
                     validations: {
                         [
-                            key: string
+                        key: string
                         ]: MethodPropertyOptions<"body">["validate"];
                     };
                     files: { [key: string]: MethodPropertyFileOptions };
@@ -193,17 +195,17 @@ namespace Parse {
                     limit: {
                         schema: pagination.limit
                             ? Joi.number()
-                                  .min(1)
-                                  .max(pagination.limit)
-                                  .label("limit")
+                                .min(1)
+                                .max(pagination.limit)
+                                .label("limit")
                             : Joi.number().min(1).label("limit"),
                     },
                     page: {
                         schema: pagination.page
                             ? Joi.number()
-                                  .min(1)
-                                  .max(pagination.page)
-                                  .label("page")
+                                .min(1)
+                                .max(pagination.page)
+                                .label("page")
                             : Joi.number().min(1).label("page"),
                     },
                 };
@@ -215,7 +217,7 @@ namespace Parse {
                     schemas: { [key: string]: Joi.Schema };
                     validations: {
                         [
-                            key: string
+                        key: string
                         ]: MethodPropertyOptions<"body">["validate"];
                     };
                     populateMap?: IPopoulateMap;

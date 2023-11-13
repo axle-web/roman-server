@@ -2,15 +2,15 @@ import session, { Session as Session_, SessionData } from "express-session";
 import MongoStore from "connect-mongo";
 import { IUserPublic } from "@models/user-model";
 declare module "express-session" {
-    interface SessionData {
-        user?: IUserPublic;
-    }
+  interface SessionData {
+    user?: IUserPublic;
+  }
 }
 
 declare module "http" {
-    interface IncomingMessage {
-        session: SessionData & Session_;
-    }
+  interface IncomingMessage {
+    session: SessionData & Session_;
+  }
 }
 
 export const sessionMiddleware = session({

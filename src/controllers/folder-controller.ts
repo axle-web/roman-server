@@ -75,7 +75,7 @@ export const postOneFolder = Controller.postOne({
       },
     },
     type: {
-      schema: Joi.string().valid("group", "collection", "album"),
+      schema: Joi.string().valid("category", "collection", "album"),
     },
   },
   preprocess: (req, res, next, payload) => {
@@ -88,8 +88,7 @@ export const postOneFolder = Controller.postOne({
       },
     }).then((doc) => {
       log.info(
-        `branch ${payload.name} appened to branch "${
-          doc?.name || payload.branch
+        `branch ${payload.name} appened to branch "${doc?.name || payload.branch
         }"`
       );
     });
