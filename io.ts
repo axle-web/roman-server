@@ -11,7 +11,9 @@ const IO = (server: any) => {
     ServerToClientEvents,
     InterServerEvents,
     SocketData
-  >(server, { cors: { credentials: true } });
+  >(server, {
+    cors: { origin: process.env.APP_URL!.split(","), credentials: true },
+  });
   io.use(wrap(sessionMiddleware));
   io.on("connection", async (socket) => {
     log.info(`${socket.id} has connected`);
