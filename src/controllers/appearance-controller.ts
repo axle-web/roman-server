@@ -41,7 +41,7 @@ export const getAppData = catchAsync(async (req, res, next) => {
         },
         {
           path: "branches",
-          select: { id: 1, name: 1, details: 1 },
+          select: { id: 1, name: 1, details: 1, nodes: 1, branches: 1 },
         },
         {
           path: "branch",

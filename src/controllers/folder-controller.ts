@@ -172,6 +172,5 @@ export const sampleFolders = catchAsync(async (req, res, next) => {
     },
   ]);
   // data = await FolderModel.populate(data, "branch");
-
   res.status(200).send(data);
 });
