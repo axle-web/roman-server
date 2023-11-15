@@ -1,4 +1,4 @@
-interface ServerToClientEvents {}
+interface ServerToClientEvents { }
 
 interface ClientToServerEvents {
   find_folder: (
@@ -17,13 +17,14 @@ interface ClientToServerEvents {
     name: string,
     includeSystem?: boolean,
     callback: (
-      docs: Array<
-        ImageDocument | INode<true, Record<string, any>> | FolderDocument
-      >
+      docs: {
+        files: ImageDocument | INode<true, Record<string, any>>[],
+        folders: FolderDocument[]
+      }
     ) => any
   ) => void;
 }
 
-interface InterServerEvents {}
+interface InterServerEvents { }
 
-interface SocketData {}
+interface SocketData { }

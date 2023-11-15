@@ -23,7 +23,7 @@ const socketFindHandlers = (
       { name: { $regex: name, $options: "i" } },
       includeSystem
     );
-    const files = await Node.find(payload);
+    const files = await Node.find(payload).limit(20);
     callback(files);
   });
   socket.on("find_folder", async (name, includeSystem = false, callback) => {
@@ -31,13 +31,25 @@ const socketFindHandlers = (
       { name: { $regex: name, $options: "i" } },
       includeSystem
     );
-    const folders = await Branch.find(payload);
+    const folders = await Branch.find(payload).limit(20);
     callback(folders);
   });
-  //   socket.on("find_any", async (name, callback) => {
-  //     const files = await Node.find({ name: { $regex: name, $options: 'i' } });
-  //     callback(files);
-  //   });
+  socket.on("find_any", async (name, includeSystem = false, callback) => {
+    const payload = includeSystemToPayload(
+      { name: { $regex: name, $options: "i" } },
+      includeSystem
+    );
+    const findFiles = Node.find(payload).populate({ path: 'branch', select: "_id name" }).limit(20);
+    const findFolders = Branch.find(payload).limit(20);
+    Promise.all([findFiles, findFolders])
+      .then(([files, folders]) => {
+        callback({ files, folders });
+      })
+      .catch(error => {
+        // Handle errors here
+        console.error(error);
+      });
+  });
 };
 
 export default socketFindHandlers;
