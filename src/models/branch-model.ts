@@ -38,10 +38,7 @@ const branchSchema = new Schema<IBranch, BranchModel, BranchModelMethods>(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    details: {
-      type: Schema.Types.Mixed,
-      default: {},
-    },
+    details: { type: Object },
     type: {
       type: String,
       minlength: 1,
