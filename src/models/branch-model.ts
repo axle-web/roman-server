@@ -15,9 +15,9 @@ export type IBranch<
   type: string;
 } & (isPublic extends true
   ? {
-      createdAt: Date;
-      updatedAt: Date;
-    }
+    createdAt: Date;
+    updatedAt: Date;
+  }
   : {});
 type BranchModelMethods = {};
 export type BranchModel = Model<IBranch, {}, BranchModelMethods>;
@@ -38,7 +38,10 @@ const branchSchema = new Schema<IBranch, BranchModel, BranchModelMethods>(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    details: { type: Object },
+    details: {
+      type: Schema.Types.Mixed,
+      default: {},
+    },
     type: {
       type: String,
       minlength: 1,

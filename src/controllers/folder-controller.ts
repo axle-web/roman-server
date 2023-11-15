@@ -136,9 +136,12 @@ export const updateOneFolder = Controller.postOne({
         "Folder id missing from request",
         "ValidationError"
       );
+    if (req['body']?.cover) {
+      req['body'].details = { cover: req['body'].cover }
+    }
     const folder = await FolderModel.findByIdAndUpdate(
       req["query"].id,
-      req["body"]
+      req["body"], { new: true }
     );
     return folder;
   },
