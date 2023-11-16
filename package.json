@@ -1,6 +1,6 @@
 {
   "name": "express-server-boilerplate",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Boilerplate for an ExpressJS with TypeScript",
   "scripts": {
     "start": "NODE_ENV=production ts-node server.ts",

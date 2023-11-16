@@ -30,6 +30,45 @@ namespace Multer {
                 next();
             });
         });
+        export const uploadMany = ({
+            name,
+            mimetypes,
+            required,
+            parse,
+            upload,
+            maxSize, // Add maxSize property for size restrictions
+          }: uploadProps & { maxSize?: number }) =>
+            catchAsync(async (req, res, next) => {
+              multer(mimetypes).array(name)(req, res, async (err) => {
+                if (err) return next(err);
+                if (required && !req.files)
+                  return next(AppError.createMulterError("No files attached"));
+                if (req.files) {
+                  const files = Array.isArray(req.files)
+                    ? req.files
+                    : Object.values(req.files).reduceRight((files) => files);
+                  if (
+                    maxSize &&
+                    files.some((file: Express.Multer.File) => file.size > maxSize)
+                  ) {
+                    return next(
+                      AppError.createMulterError("File size exceeds the limit")
+                    );
+                  }
+                  if (upload) {
+                    const results = await Promise.all(
+                      files.map(async (file: Express.Multer.File) => upload(file))
+                    );
+                    req["body"][name] = results;
+                  }
+                  if (parse) {
+                    const results = files.map(parse);
+                    req["body"][name] = results;
+                  }
+                }
+                next();
+              });
+            });
 }
 
 export default Multer;

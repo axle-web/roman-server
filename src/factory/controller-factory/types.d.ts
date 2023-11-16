@@ -6,19 +6,17 @@ import { Model, PopulateOption, PopulateOptions, QueryOptions } from "mongoose";
 /**
  * Represents the available HTTP method types.
  */
-type MethodTypes = "getOne" | "postOne" | "getAll";
-
 export type SortField = string | string[];
 export type PaginationField =
     | boolean
     | {
-          /**Max page number to request */
-          page?: number;
-          /**Limit the number of documents requested. This is also used to determine the number of documents per page.
-           * Defaults to 20
-           */
-          limit?: number;
-      };
+        /**Max page number to request */
+        page?: number;
+        /**Limit the number of documents requested. This is also used to determine the number of documents per page.
+         * Defaults to 20
+         */
+        limit?: number;
+    };
 /**
  * Represents a field for population in Mongoose queries.
  */
@@ -56,13 +54,13 @@ type OperationCallback<MongooseModel extends any> = (
  * Represents the default behavior for an HTTP method.
  */
 export type MethodDefaultBehavior<
-  DocumentType extends any,
-  GetOneMethod extends boolean = false
+    DocumentType extends any,
+    GetOneMethod extends boolean = false
 > = {
-  operation?: never;
-  /**Runs before payload is passed to databaase setter */
-  preprocess?: ProcessMiddleware<Request["query"]>;
-  postprocess?: ProcessMiddleware<DocumentType>;
+    operation?: never;
+    /**Runs before payload is passed to databaase setter */
+    preprocess?: ProcessMiddleware<Request["query"]>;
+    postprocess?: ProcessMiddleware<DocumentType>;
 } & (GetOneMethod extends true ? { key: keyof DocumentType } : {});
 
 /**
@@ -237,3 +235,9 @@ type PostMethodProps<MongooseModel extends any, DocumentType extends any> = {
      */
     body?: MethodProperties<"body">;
 } & GenericMethodOptions<MongooseModel, DocumentType>;
+
+
+type UpdateMethodProps<MongooseModel extends any, DocumentType extends any> = {
+    query: MethodProperties;
+    body: MethodProperties<"body">;
+} & GenericMethodOptions<MongooseModel, DocumentType, true>;

@@ -1,7 +1,7 @@
 import { AppError } from "@utils/appError";
 import { catchAsync } from "@utils";
-import { Document, InferSchemaType, Model, PopulateOptions } from "mongoose";
-import { GetAllMethodProps, GetOneMethodProps, PostMethodProps } from "./types";
+import { Document, FilterQuery, InferSchemaType, Model, PopulateOptions } from "mongoose";
+import { GetAllMethodProps, GetOneMethodProps, PostMethodProps, UpdateMethodProps } from "./types";
 import { log } from "@utils/logger";
 import Validate from "@factory/validation";
 import { applySetAsToPayload, parsePopulateFromQuery } from "./utils";
@@ -114,6 +114,46 @@ export class ControllerFactory<
         bodyPayload = applySetAsToPayload(body, bodyPayload);
         const itemCreated = new this.Model(bodyPayload);
         responsePayload = await itemCreated.save();
+        responsePayload =
+          (await postprocess(req, res, next, responsePayload)) ??
+          responsePayload;
+        log.success(
+          `New ${this.Model.modelName} created: ${responsePayload._id}`,
+          { task: "post_one" }
+        );
+      }
+      res.status(200).send(responsePayload);
+    });
+    return [...validation, exec];
+  }
+
+  updateOne({
+    query,
+    body,
+    operation,
+    postprocess = async (req, res, next, payload) => payload,
+    preprocess = async (req, res, next, payload) => payload,
+  }: UpdateMethodProps<typeof this.Model, typeof this.documentInstance>) {
+    const validation = Validate.queryAndBody({ query, body });
+    const exec = catchAsync(async (req, res, next) => {
+      let responsePayload: any = "OK";
+      const queryPayload = req.query as FilterQuery<DocumentType>;
+      let bodyPayload = req.body;
+      // TODO ADD common validation methods
+      if (operation) {
+        let result = await operation(req, res, next, this.Model);
+        responsePayload = result;
+      } else {
+        bodyPayload =
+          (await preprocess(req, res, next, bodyPayload)) ?? bodyPayload;
+        bodyPayload = applySetAsToPayload(body, bodyPayload);
+        responsePayload = await this.Model.findOneAndUpdate(
+          queryPayload,
+          bodyPayload,
+          { new: true }
+        );
+        // throw error if document doesn't exist
+        if (!responsePayload) throw AppError.DocumentNotFoundError;
         responsePayload =
           (await postprocess(req, res, next, responsePayload)) ??
           responsePayload;
