@@ -1,10 +1,10 @@
 import { AppError } from "@utils/appError";
 import { catchAsync } from "@utils";
-import { Document, FilterQuery, InferSchemaType, Model, PopulateOptions } from "mongoose";
+import { Document, FilterQuery, Model, } from "mongoose";
 import { GetAllMethodProps, GetOneMethodProps, PostMethodProps, UpdateMethodProps } from "./types";
 import { log } from "@utils/logger";
 import Validate from "@factory/validation";
-import { applySetAsToPayload, parsePopulateFromQuery } from "./utils";
+import { applySetAsToPayload, } from "./utils";
 import Parse from "@factory/parse";
 
 export class ControllerFactory<

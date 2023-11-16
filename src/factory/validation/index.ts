@@ -81,6 +81,7 @@ namespace Validate {
     pagination?: PaginationField
   ) =>
     catchAsync(async (req, res, next) => {
+      console.log('verifying!!!!!!!!!!!!!!!!!!!!!!')
       if ((!props || Object.keys(props).length === 0) && !populate)
         return next();
       const { schemas, validations, populateMap } = Parse.queryMethodProps(
