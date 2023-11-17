@@ -25,7 +25,7 @@ const limiter = rateLimit({
     standardHeaders: "draft-7", // draft-6: RateLimit-* headers; draft-7: combined RateLimit header
     legacyHeaders: false, // X-RateLimit-* headers
 });
-app.use("/api", limiter);
+// app.use("/api", limiter);
 app.use(
     cors({
         origin: process.env.APP_URL ? process.env.APP_URL.split(",") : "*",
