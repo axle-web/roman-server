@@ -1,6 +1,5 @@
 node_modules
-
 .env.local
 .env.*.local
-/temp/*
+/src/temp/*
 dist

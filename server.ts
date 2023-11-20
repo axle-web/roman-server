@@ -15,17 +15,20 @@ const server = http.createServer(app);
 import IO from "./io";
 const io = IO(server);
 import { log } from "@utils/logger";
+import { initAdminAccount } from "src/cache";
 
 //* init preferences
 // const initPreferences = require("./misc/init-preferences");
 
 connect(async () => {
-    // await initPreferences();
+    await initAdminAccount();
+    await Promise.all([]);
     server.listen(PORT, () => {
-        // startmMetricsServer();
+        // startMetricsServer();
         log.info(`Server is up on port ${PORT}`, { task: "server" });
     });
 });
+
 
 process.on("unhandledRejection", (err: Error) => {
     log.error(err.stack as string, { task: "server" });
