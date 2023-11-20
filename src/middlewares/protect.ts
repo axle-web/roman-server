@@ -5,7 +5,7 @@ import { log } from "@utils/logger";
 
 const protect = (role: UserRoleNames = "user") =>
     catchAsync(async (req, res, next) => {
-        log.info(`Requesting authentication ${req.path}`);
+        // log.info(`Requesting authentication ${req.path}`);
         const session = req.session;
         if (!session?.user?._id) {
             throw AppError.AuthenticationError;
@@ -18,10 +18,10 @@ const protect = (role: UserRoleNames = "user") =>
         if (userRoles[user.role] < userRoles[role]) {
             throw AppError.AuthenticationError;
         }
-        log.success(`Registered: ${user.email}`, {
-            task: "protect_middleware",
-            document: user,
-        });
+        // log.success(`Registered: ${user.email}`, {
+        //     task: "protect_middleware",
+        //     document: user,
+        // });
         next();
     });
 

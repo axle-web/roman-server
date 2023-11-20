@@ -1,0 +1,19 @@
+version: "3"
+services:
+  server-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+    command: npm start
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"

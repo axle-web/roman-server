@@ -1,0 +1,6 @@
+FROM node:lts
+WORKDIR /usr/app
+copy package*.json ./
+RUN yarn 
+COPY . .
+# RUN yarn build

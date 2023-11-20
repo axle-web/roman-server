@@ -3,10 +3,10 @@ import { catchAsync } from "@utils";
 import { Document, FilterQuery, Model, } from "mongoose";
 import { GetAllMethodProps, GetOneMethodProps, PostMethodProps, UpdateMethodProps } from "./types";
 import { log } from "@utils/logger";
-import Validate from "@factory/validation";
 import { applySetAsToPayload, } from "./utils";
 import Parse from "@factory/parse";
 import { randomUUID } from "crypto";
+import Validate from "@factory/validation";
 
 export class ControllerFactory<
   DocumentType extends object = {},
