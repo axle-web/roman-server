@@ -16,17 +16,18 @@ import IO from "./io";
 const io = IO(server);
 import { log } from "@utils/logger";
 import { initAdminAccount } from "src/cache";
+import startmMetricsServer from "@middlewares/metrics";
 
 //* init preferences
 // const initPreferences = require("./misc/init-preferences");
 
 connect(async () => {
-    await initAdminAccount();
-    await Promise.all([]);
+    // await initPreferences();
+    await initAdminAccount()
+    await Promise.all([startmMetricsServer(app)])
     server.listen(PORT, () => {
-        // startMetricsServer();
         log.info(`Server is up on port ${PORT}`, { task: "server" });
-    });
+    })
 });
 
 

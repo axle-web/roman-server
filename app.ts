@@ -21,9 +21,11 @@ import rateLimit from "express-rate-limit";
 const app = express();
 const limiter = rateLimit({
     max: 100, // Limit each IP to 100 requests per `window` (here, per 1 minutes),
+    max: 100, // Limit each IP to 100 requests per `window` (here, per 1 minutes),
     standardHeaders: "draft-7", // draft-6: RateLimit-* headers; draft-7: combined RateLimit header
     legacyHeaders: false, // X-RateLimit-* headers
 });
+app.use("/api", limiter);
 app.use("/api", limiter);
 app.use(
     cors({
@@ -43,11 +45,13 @@ app.use(bodyParser.urlencoded({ limit: "15mb", extended: true }));
 // app.use(responseTime);w
 // app.use(totalRequestCount);
 
+
 //* Routes setup
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/node", nodeRouter);
 app.use("/api/v1/branch", branchRouter);
+
 app.use("/api/v1/test", testRouter);
 
 app.use(globalErrorHandler);

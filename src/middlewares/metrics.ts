@@ -1,5 +1,5 @@
 import client from 'prom-client'
-import express, { Express } from 'express'
+import { Express } from 'express'
 import { log } from '@utils';
 
 export const httpRequestCount = new client.Counter({
@@ -30,9 +30,6 @@ const startmMetricsServer = (app: Express) => {
         res.set("Content-Type", client.register.contentType);
         return res.send(await client.register.metrics());
     });
-    // app.listen(9110, () => {
-    //     log.info('Metrics server up on port 9110')
-    // });
 };
 
 export default startmMetricsServer

@@ -17,3 +17,36 @@ services:
     container_name: mongodb
     ports:
       - "27017:27017"
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./configs/prometheus/prometheus-dev.yml:/etc/prometheus/prometheus.yml
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+    depends_on:
+      - grafana
+      - loki
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./configs/grafana/grafana-dev.ini:/etc/grafana/grafana.ini # Mount custom grafana.ini
+    networks:
+      - monitoring
+
+  loki:
+    image: grafana/loki
+    volumes:
+      - ./configs/loki/loki-dev.yaml:/etc/loki/local-config.yaml
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
