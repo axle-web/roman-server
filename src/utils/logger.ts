@@ -13,7 +13,16 @@ const lokiTransport = new WinstonLoki({
     host: process.env.LOKI_HOST!,
     labels: { app: process.env.LOKI_APP_NAME },
 });
-
+/**
+ *  level	    Color	    Supported expressions
+    critical    purple	    emerg, fatal, alert, crit, critical
+    error	    red	err,    eror, error
+    warning	    yellow	    warn, warning
+    info	    green	    info, information, informational, notice
+    debug	    blue	    dbug, debug
+    trace	    light       blue trace
+    unknown	    grey	    *   
+ */
 type logLevels = "info" | "success" | "warning" | "error";
 
 const customLevels = {
@@ -41,17 +50,11 @@ const logger = winston.createLogger({
     transports: [lokiTransport],
     levels: customLevels.levels,
     format: winston.format.combine(
-        winston.format.colorize(),
         winston.format.timestamp(),
         winston.format.prettyPrint(),
         winston.format.simple()
     ),
 }) as CustomLogger;
-
-logger.info("This is an informational message.");
-logger.success("This is a successful message.");
-logger.warning("This is a warning message.");
-logger.error("This is an error message.");
 /* 
     tasks:
         create
@@ -72,7 +75,6 @@ const _log = (
         labels: {
             ...labels,
             task: labels?.task || "NULL",
-            createdAt: Date.now(),
         },
     });
 
@@ -88,5 +90,9 @@ export const log = {
 };
 
 if (process.env.NODE_ENV !== "production") {
-    logger.add(new winston.transports.Console());
+    logger.add(new winston.transports.Console({
+        format: winston.format.combine(winston.format.colorize(),
+            winston.format.prettyPrint(),
+            winston.format.simple())
+    }));
 }
