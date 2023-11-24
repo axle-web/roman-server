@@ -6,7 +6,7 @@ config({
             ? path.join(process.cwd(), ".env.local")
             : path.join(process.cwd(), ".env.production"),
 });
-import { connect } from "@database/index";
+import { connect } from "@database";
 import http from "http";
 import app from "./app";
 // import { startmMetricsServer } from "./server-metrics"
@@ -26,21 +26,21 @@ connect(async () => {
     await initAdminAccount()
     await Promise.all([startmMetricsServer(app)])
     server.listen(PORT, () => {
-        log.info(`Server is up on port ${PORT}`, { task: "server" });
+        log.debug(`Server is up on port ${PORT}`, "server");
     })
 });
 
 
 process.on("unhandledRejection", (err: Error) => {
-    log.error(err.stack as string, { task: "server" });
+    log.error(err.stack as string, "server");
 });
 
 process.on("uncaughtException", (err) => {
-    log.error(err.stack as string, { task: "server" });
+    log.error(err.stack as string, "server");
 });
 
 process.on("warning", (err) => {
-    log.warning(err.stack as string, { task: "server" });
+    log.warning(err.stack as string, "server");
 });
 
 module.exports = { app, io };

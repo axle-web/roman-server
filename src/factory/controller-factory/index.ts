@@ -122,7 +122,7 @@ export class ControllerFactory<
         responsePayload =
           (await postprocess(req, res, next, responsePayload)) ??
           responsePayload;
-        log.success(
+        log.info(
           `New ${this.Model.modelName} created: ${responsePayload._id}`,
           { task: "post_one" }
         );
@@ -163,7 +163,7 @@ export class ControllerFactory<
         responsePayload =
           (await postprocess(req, res, next, responsePayload)) ??
           responsePayload;
-        log.success(
+        log.info(
           `New ${this.Model.modelName} created: ${responsePayload._id}`,
           { task: "post_one" }
         );

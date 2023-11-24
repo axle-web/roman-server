@@ -31,7 +31,7 @@ const uploadtoSpaces = (
 ) => {
     const filename =
         typeof file === "string" ? file.match(/[^/\\]*$/) : file.filename;
-    log.info(`Uploading ${filename} to "${bucket} bucket"`);
+    log.debug(`Uploading ${filename} to "${bucket} bucket"`);
     if (!file) throw AppError.createUploadError();
     const fileContent = fs.readFileSync(
         typeof file === "string" ? file : file.path
@@ -41,11 +41,10 @@ const uploadtoSpaces = (
      * processAffix --> SPACES_PATH_DEFAULT_PROCESS_AFFIX
      * filename
      */
-    let keyPath = `${process.env.NODE_ENV || "development"}/${
-        pathAffix || process.env.SPACES_PATH_DEFAULT_PROCESS_AFFIX
+    let keyPath = `${process.env.NODE_ENV || "development"}/${pathAffix || process.env.SPACES_PATH_DEFAULT_PROCESS_AFFIX
             ? `${pathAffix || process.env.SPACES_PATH_DEFAULT_PROCESS_AFFIX}--`
             : ""
-    }${filename}`;
+        }${filename}`;
 
     const params: PutObjectCommandInput = {
         Bucket: bucket, // Update with your Space's bucket name
@@ -60,10 +59,9 @@ const uploadtoSpaces = (
                 .send(new PutObjectCommand(args))
                 .then((result) => {
                     cb({
-                        path: `${
-                            process.env.SPACES_CDN ||
+                        path: `${process.env.SPACES_CDN ||
                             process.env.SPACES_ENDPOINT
-                        }/${keyPath}`,
+                            }/${keyPath}`,
                     }); // Resolve the Promise with the result
                 })
                 .catch((error) => {

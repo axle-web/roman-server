@@ -11,7 +11,7 @@ import { log } from "@utils/logger";
 
 export function connect(callback: () => any) {
     mongoose.connect(process.env.MONGODB_URL!).then(() => {
-        log.info("DB connected!", { task: "db" });
+        log.debug("DB connected!");
         callback();
     });
 }

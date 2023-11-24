@@ -24,10 +24,10 @@ export type IUser<T extends boolean = true> = {
   role: keyof typeof userRoles;
 } & (T extends true
   ? {
-      password: string;
-      passwordChangedAt?: Date;
-      notifications: Types.ObjectId[];
-    }
+    password: string;
+    passwordChangedAt?: Date;
+    notifications: Types.ObjectId[];
+  }
   : {});
 
 type UserTypeMethods = {
@@ -84,29 +84,29 @@ const userSchema = new Schema<IUser, IUserModel, UserTypeMethods>(
   { timestamps: true }
 );
 userSchema.method("verifyPassword", function (password: string) {
-    return bcrypt.compareSync(password, this.password);
+  return bcrypt.compareSync(password, this.password);
 });
 
 userSchema.method("shear", function (args: string): IUser {
-    if (!this)
-        throw AppError.createError(
-            500,
-            "DATABASE ERROR: Something went very wrong",
-            "DocuemntMethodDelete"
-        );
-    let user = this.toJSON();
-    let params = args.split(" ");
-    params.forEach((arg) => delete user[arg]);
-    return user;
+  if (!this)
+    throw AppError.createError(
+      500,
+      "DATABASE ERROR: Something went very wrong",
+      "DocuemntMethodDelete"
+    );
+  let user = this.toJSON();
+  let params = args.split(" ");
+  params.forEach((arg) => delete user[arg as keyof IUser]);
+  return user;
 });
 
 userSchema.pre("save", async function (next) {
-    //Only run this function if password was actually modified
-    if (!this.isModified("password")) return next();
-    this.password = hashSync(this.password, 12);
-    this.passwordChangedAt = new Date();
+  //Only run this function if password was actually modified
+  if (!this.isModified("password")) return next();
+  this.password = hashSync(this.password, 12);
+  this.passwordChangedAt = new Date();
 
-    next();
+  next();
 });
 
 const User = model<IUser, IUserModel>("User", userSchema);

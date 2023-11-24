@@ -16,37 +16,43 @@ const lokiTransport = new WinstonLoki({
 /**
  *  level	    Color	    Supported expressions
     critical    purple	    emerg, fatal, alert, crit, critical
-    error	    red	err,    eror, error
+    error	    red	        err, eror, error
     warning	    yellow	    warn, warning
     info	    green	    info, information, informational, notice
     debug	    blue	    dbug, debug
     trace	    light       blue trace
     unknown	    grey	    *   
  */
-type logLevels = "info" | "success" | "warning" | "error";
-
+const logLevels = ["debug", "info", "warning", "error", "critical", "trace",] as const;
+type LogLevel = typeof logLevels[number]
 const customLevels = {
-    levels: {
-        info: 0,
-        success: 1,
-        warning: 2,
-        error: 3,
-    },
-    colors: {
-        info: "blue",
-        success: "green",
-        warning: "yellow",
-        error: "red",
-    },
-};
+    levels: logLevels.reduce((acc, level, index) => {
+        acc[level] = index
+        return acc
+    }, {} as any)
+}
+// const customLevels = {
+//     levels: {
+//         info: 0,
+//         success: 1,
+//         warning: 2,
+//         error: 3,
+//     },
+//     colors: {
+//         info: "blue",
+//         success: "green",
+//         warning: "yellow",
+//         error: "red",
+//     },
+// };
 
-winston.addColors(customLevels.colors);
+// winston.addColors(customLevels.colors);
 interface CustomLogger extends winston.Logger {
     success: winston.LeveledLogMethod;
 }
 
 const logger = winston.createLogger({
-    level: "error",
+    level: "critical",
     transports: [lokiTransport],
     levels: customLevels.levels,
     format: winston.format.combine(
@@ -64,30 +70,24 @@ const logger = winston.createLogger({
         other
 
 */
-
-const _log = (
-    type: logLevels,
+const _log = (type: LogLevel,
     message: string,
-    labels?: { [key: string]: any }
-) =>
+    task?: string,
+    labels?: { [key: string]: any }) => {
     logger.log(type, {
         message,
         labels: {
             ...labels,
-            task: labels?.task || "NULL",
+            task: task || labels?.task || "NULL",
         },
     });
+}
 
-export const log = {
-    info: (message: string, labels?: { [key: string]: any }) =>
-        _log("info", message, labels),
-    success: (message: string, labels?: { [key: string]: any }) =>
-        _log("success", message, labels),
-    warning: (message: string, labels?: { [key: string]: any }) =>
-        _log("warning", message, labels),
-    error: (message: string, labels?: { [key: string]: any }) =>
-        _log("error", message, labels),
-};
+export const log = logLevels.reduce((acc, level) => {
+    acc[level] = (message: string, task?: string, labels?: { [key: string]: any }) =>
+        _log(level, message, task, labels)
+    return acc
+}, {} as Record<LogLevel, (message: string, task?: string, labels?: { [key: string]: any }) => any>)
 
 if (process.env.NODE_ENV !== "production") {
     logger.add(new winston.transports.Console({

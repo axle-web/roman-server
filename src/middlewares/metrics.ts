@@ -25,7 +25,7 @@ export const databaseResponseTimeHistogram = new client.Histogram({
 const startmMetricsServer = (app: Express) => {
     const collectDefaultMetrics = client.collectDefaultMetrics;
     collectDefaultMetrics();
-    log.info('Metrics server up')
+    log.debug('Metrics server up')
     app.get("/metrics", async (req, res) => {
         res.set("Content-Type", client.register.contentType);
         return res.send(await client.register.metrics());
