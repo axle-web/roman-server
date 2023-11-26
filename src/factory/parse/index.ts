@@ -139,8 +139,12 @@ namespace Parse {
                 },
                 [key]
             ) => {
-                if (props[key].schema) {
-                    acc.schemas[key] = props[key].schema!;
+                const prop = props[key] as any
+                if (Joi.isSchema(props[key])) {
+                    acc.schemas[key] = prop;
+                }
+                else if (prop.schema) {
+                    acc.schemas[key] = prop.schema;
                     if (props[key].validate) {
                         acc.validations[key] = props[key].validate;
                     }
@@ -224,8 +228,12 @@ namespace Parse {
                 },
                 [key]
             ) => {
-                if (props[key].schema) {
-                    acc.schemas[key] = props[key].schema;
+                const prop = props[key] as any
+                if (Joi.isSchema(props[key])) {
+                    acc.schemas[key] = prop;
+                }
+                else if (prop.schema) {
+                    acc.schemas[key] = prop.schema;
                     if (props[key].validate) {
                         acc.validations[key] = props[key].validate;
                     }

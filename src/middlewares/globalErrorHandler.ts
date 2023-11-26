@@ -72,15 +72,15 @@ export interface IProdAppError {
 const sendErrorResponse = (err: AppError, res: Response) => {
     process.env.NODE_ENV === "production"
         ? res.status(err.status || 500).json({
-              error: err.type,
-              message: err.message,
-          })
+            error: err.type,
+            message: err.message,
+        })
         : res.status(err.status || 500).json({
-              status: err.status,
-              type: err.type,
-              stack: err.stack,
-              message: err.message,
-          });
+            status: err.status,
+            type: err.type,
+            stack: err.stack,
+            message: err.message,
+        });
 };
 
 export const globalErrorHandler = (
@@ -89,7 +89,7 @@ export const globalErrorHandler = (
     res: Response,
     next: NextFunction
 ) => {
-    log.error(err.stack as string, { name: err.name });
+    log.error(err.stack as string, "Global Error Handler", { name: err.name });
     let error = handleError(err);
     sendErrorResponse(error as AppError, res);
 };

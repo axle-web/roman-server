@@ -124,7 +124,6 @@ export class ControllerFactory<
           responsePayload;
         log.info(
           `New ${this.Model.modelName} created: ${responsePayload._id}`,
-          { task: "post_one" }
         );
       }
       res.status(200).send(responsePayload);
@@ -165,7 +164,6 @@ export class ControllerFactory<
           responsePayload;
         log.info(
           `New ${this.Model.modelName} created: ${responsePayload._id}`,
-          { task: "post_one" }
         );
       }
       res.status(200).send(responsePayload);

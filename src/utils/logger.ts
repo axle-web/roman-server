@@ -6,7 +6,7 @@ config({
             ? path.join(process.cwd(), ".env.local")
             : path.join(process.cwd(), ".env.production"),
 });
-import winston from "winston";
+import winston, { level } from "winston";
 import WinstonLoki from "winston-loki";
 
 const lokiTransport = new WinstonLoki({
@@ -20,39 +20,38 @@ const lokiTransport = new WinstonLoki({
     warning	    yellow	    warn, warning
     info	    green	    info, information, informational, notice
     debug	    blue	    dbug, debug
-    trace	    light       blue trace
+    trace	    light blue  trace
     unknown	    grey	    *   
  */
-const logLevels = ["debug", "info", "warning", "error", "critical", "trace",] as const;
-type LogLevel = typeof logLevels[number]
-const customLevels = {
-    levels: logLevels.reduce((acc, level, index) => {
-        acc[level] = index
-        return acc
-    }, {} as any)
-}
-// const customLevels = {
-//     levels: {
-//         info: 0,
-//         success: 1,
-//         warning: 2,
-//         error: 3,
-//     },
-//     colors: {
-//         info: "blue",
-//         success: "green",
-//         warning: "yellow",
-//         error: "red",
-//     },
-// };
 
-// winston.addColors(customLevels.colors);
+const customLevels = {
+    levels: {
+        debug: 0,
+        info: 1,
+        warning: 2,
+        error: 3,
+        critical: 4,
+        trace: 5,
+    },
+    colors: {
+        debug: 'blue',
+        info: 'green',
+        warning: 'yellow',
+        error: 'red',
+        critical: 'purple',
+        trace: 'cyan',
+    },
+} as const
+type LogLevel = keyof typeof customLevels['colors']
+
+
+winston.addColors(customLevels.colors);
 interface CustomLogger extends winston.Logger {
     success: winston.LeveledLogMethod;
 }
 
 const logger = winston.createLogger({
-    level: "critical",
+    level: "trace",
     transports: [lokiTransport],
     levels: customLevels.levels,
     format: winston.format.combine(
@@ -83,9 +82,9 @@ const _log = (type: LogLevel,
     });
 }
 
-export const log = logLevels.reduce((acc, level) => {
-    acc[level] = (message: string, task?: string, labels?: { [key: string]: any }) =>
-        _log(level, message, task, labels)
+export const log = Object.keys(customLevels.levels).reduce((acc, level) => {
+    acc[level as LogLevel] = (message: string, task?: string, labels?: { [key: string]: any }) =>
+        _log(level as any, message, task, labels)
     return acc
 }, {} as Record<LogLevel, (message: string, task?: string, labels?: { [key: string]: any }) => any>)
 
@@ -96,3 +95,5 @@ if (process.env.NODE_ENV !== "production") {
             winston.format.simple())
     }));
 }
+
+log.trace('hi')
