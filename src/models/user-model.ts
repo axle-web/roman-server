@@ -96,7 +96,7 @@ userSchema.method("shear", function (args: string): IUser {
     );
   let user = this.toJSON();
   let params = args.split(" ");
-  params.forEach((arg) => delete user[arg]);
+  params.forEach((arg) => delete user[arg as keyof IUser]);
   return user;
 });
 

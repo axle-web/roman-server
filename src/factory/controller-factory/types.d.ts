@@ -132,7 +132,7 @@ type MethodPropertyFileOptions = {
 /**
  * Represents options for handling property values in an HTTP method.
  */
-type MethodPropertyValueOptions = {
+type MethodPropertyValueOptions = Joi.Schema | {
   /**
    * The schema for validating the property value.
    */
@@ -143,7 +143,7 @@ type MethodPropertyValueOptions = {
    * @returns An error or void (no error).
    */
   validate?: (val: any) => Error | void | Promise<void | Error>;
-};
+}
 
 /**
  * Represents options for handling property values in an HTTP method.
@@ -151,7 +151,7 @@ type MethodPropertyValueOptions = {
  */
 type MethodPropertyOptions<MethodType extends "body" | "query"> = {
   /**
-   * Alias name for the property.
+   * Set as "example" field in the database.
    */
   setAs?: string;
 } & (MethodType extends "query"
@@ -236,7 +236,8 @@ type PostMethodProps<MongooseModel extends any, DocumentType extends any> = {
   body?: MethodProperties<"body">;
 } & GenericMethodOptions<MongooseModel, DocumentType>;
 
-type updateMethodProps<MongooseModel extends any, DocumentType extends any> = {
+
+type UpdateMethodProps<MongooseModel extends any, DocumentType extends any> = {
   query: MethodProperties;
   body: MethodProperties<"body">;
 } & GenericMethodOptions<MongooseModel, DocumentType, true>;

@@ -68,7 +68,7 @@ export const postOneFolder = Controller.postOne({
     },
     branch: {
       schema: JoiSchema._id.label("Folder id").optional(),
-      async validate(val) {
+      async validate(val: string) {
         if (!val) return;
         const branch = await Branch.findById(val);
         if (!branch) return AppError.createDocumentNotFoundError("folder");

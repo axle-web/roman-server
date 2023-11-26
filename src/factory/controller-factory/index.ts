@@ -11,7 +11,7 @@ import {
   GetAllMethodProps,
   GetOneMethodProps,
   PostMethodProps,
-  updateMethodProps,
+  UpdateMethodProps,
 } from "./types";
 import { log } from "@utils/logger";
 import { applySetAsToPayload, } from "./utils";
@@ -83,13 +83,13 @@ export class ControllerFactory<
 
     const exec = catchAsync(async (req, res, next) => {
       let items: any = [];
-      let queryPayload = req.query || {};
+      let queryPayload = req.query;
       if (operation) {
         items = await operation(req, res, next, this.Model);
       } else {
         queryPayload =
           (await preprocess(req, res, next, queryPayload)) ?? queryPayload;
-        items = await this.Model.find(queryPayload as any, {})
+        items = await this.Model.find({}, {})
           .populate<PopulateOptions>(req["populate"] as any)
           .sort(req["sort"])
           .limit(req["pagination"]!.limit)
@@ -133,9 +133,8 @@ export class ControllerFactory<
         responsePayload =
           (await postprocess(req, res, next, responsePayload)) ??
           responsePayload;
-        log.success(
+        log.info(
           `New ${this.Model.modelName} created: ${responsePayload._id}`,
-          { task: "post_one" }
         );
       }
       res.status(200).send(responsePayload);
@@ -149,8 +148,9 @@ export class ControllerFactory<
     operation,
     postprocess = async (req, res, next, payload) => payload,
     preprocess = async (req, res, next, payload) => payload,
-  }: updateMethodProps<typeof this.Model, typeof this.documentInstance>) {
-    const validation = Validate.queryAndBody({ query, body });
+  }: UpdateMethodProps<typeof this.Model, typeof this.documentInstance>) {
+    const uuid = randomUUID()
+    const validation = Validate.queryAndBody({ uuid, query, body });
     const exec = catchAsync(async (req, res, next) => {
       let responsePayload: any = "OK";
       const queryPayload = req.query as FilterQuery<DocumentType>;
@@ -173,9 +173,8 @@ export class ControllerFactory<
         responsePayload =
           (await postprocess(req, res, next, responsePayload)) ??
           responsePayload;
-        log.success(
+        log.info(
           `New ${this.Model.modelName} created: ${responsePayload._id}`,
-          { task: "post_one" }
         );
       }
       res.status(200).send(responsePayload);

@@ -44,16 +44,16 @@ const postOne = Controller.postOne({
     }),
 });
 
-const addToDigitalOcean = [multer(['IMAGE']).any(), ((req: Request, res: Response, next: NextFunction) => {
-    for (const file of req.files) {
-        uploadtoSpaces(file).then(({ path }) => {
-            console.log(path)
-        })
-    }
-    res.status(200).send({})
-})]
+// const addToDigitalOcean = [multer(['IMAGE']).any(), ((req: Request, res: Response, next: NextFunction) => {
+//     for (const file of req.files) {
+//         uploadtoSpaces(file).then(({ path }) => {
+//             console.log(path)
+//         })
+//     }
+//     res.status(200).send({})
+// })]
 
 router.post("/", postOne);
-router.post("/do", addToDigitalOcean)
+// router.post("/do", addToDigitalOcean)
 
 export default router;

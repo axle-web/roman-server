@@ -3,15 +3,14 @@ import JoiSchema from "@utils/joi-schemas";
 import Branch from "@models/branch-model";
 import Node from "@models/node-model";
 import { AppError } from "@utils";
+import caches from "src/cache";
 
 const Controller = new ControllerFactory(Node);
 
 export const getOneNode = Controller.getOne({
     key: "_id",
     query: {
-        _id: {
-            schema: JoiSchema._id,
-        },
+        _id: JoiSchema._id
     },
     populate: ["branch"],
 });
@@ -29,7 +28,7 @@ export const postOneNode = Controller.postOne({
         },
         branch: {
             schema: JoiSchema._id.label("branch id"),
-            async validate(val) {
+            async validate(val: string) {
                 const branch = await Branch.findById(val);
                 if (!branch)
                     return AppError.createDocumentNotFoundError("branch");

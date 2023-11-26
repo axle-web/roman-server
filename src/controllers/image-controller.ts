@@ -43,7 +43,7 @@ export const postOneImage = Controller.postOne({
     },
     branch: {
       schema: JoiSchema._id.label("branch id"),
-      async validate(val) {
+      async validate(val: string) {
         const branch = await Branch.findById(val);
         if (!branch) return AppError.createDocumentNotFoundError("branch");
       },
@@ -99,8 +99,7 @@ export const postOneImage = Controller.postOne({
       }
       doc?.save().then((document) => {
         log.info(
-          `${payload.name} appened to branch "${
-            document?.name || payload.branch
+          `${payload.name} appened to branch "${document?.name || payload.branch
           }"`
         );
       });

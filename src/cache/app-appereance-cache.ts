@@ -74,8 +74,8 @@ export const initAppData = () => {
         let doc =
           item.model === Branch
             ? await appData?.branches.find(
-                (el: IBranch) => el.name === item.name
-              )
+              (el: IBranch) => el.name === item.name
+            )
             : await appData?.nodes.find((el: INode) => el.name === item.name);
 
         if (!doc) {
@@ -102,7 +102,7 @@ export const initAppData = () => {
         appearanceCache[item.name] = doc;
       }
       await appData.save();
-      log.success("app data cached...");
+      log.info("app data cached...");
       resolve(undefined);
     } catch (error) {
       log.error("error caching appearance data");

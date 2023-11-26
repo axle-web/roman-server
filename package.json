@@ -1,6 +1,6 @@
 {
   "name": "express-server-boilerplate",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Boilerplate for an ExpressJS with TypeScript",
   "scripts": {
     "start": "yarn build && node dist/server.js",
