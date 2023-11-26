@@ -15,7 +15,9 @@ export const getOneBranch = Controller.getOne({
     populate: ["createdBy", "nodes"],
 });
 
-export const getAllBranches = Controller.getAll({});
+export const getAllBranches = Controller.getAll({
+
+});
 
 export const postOneBranch = Controller.postOne({
     body: {

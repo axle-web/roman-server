@@ -24,10 +24,10 @@ export type IUser<T extends boolean = true> = {
   role: keyof typeof userRoles;
 } & (T extends true
   ? {
-      password: string;
-      passwordChangedAt?: Date;
-      notifications: Types.ObjectId[];
-    }
+    password: string;
+    passwordChangedAt?: Date;
+    notifications: Types.ObjectId[];
+  }
   : {});
 
 type UserTypeMethods = {

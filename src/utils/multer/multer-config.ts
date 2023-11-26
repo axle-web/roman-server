@@ -39,22 +39,22 @@ const fileStorage = multer_.diskStorage({
 
 const fileFilter =
   (type: FileMimesTypes[]) =>
-  (
-    request: Request,
-    file: Express.Multer.File,
-    callback: FileFilterCallback
-  ): void => {
-    if (type?.length === 0) return callback(null, true);
-    let acceptTypes = type
-      .map((t) => FileMimes[t])
-      .join(" ")
-      .split(" ");
-    if (acceptTypes.includes(file.mimetype)) {
-      callback(null, true);
-    } else {
-      callback(AppError.createMulterError("Incorrect file type"));
-    }
-  };
+    (
+      request: Request,
+      file: Express.Multer.File,
+      callback: FileFilterCallback
+    ): void => {
+      if (type?.length === 0) return callback(null, true);
+      let acceptTypes = type
+        .map((t) => FileMimes[t])
+        .join(" ")
+        .split(" ");
+      if (acceptTypes.includes(file.mimetype)) {
+        callback(null, true);
+      } else {
+        callback(AppError.createMulterError("Incorrect file type"));
+      }
+    };
 export const multer = (type: FileMimesTypes[], sizeLimit?: number) =>
   multer_({
     storage: fileStorage,

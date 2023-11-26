@@ -15,13 +15,14 @@ declare module "http" {
 
 export const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET!,
+  proxy: process.env.NODE_ENV === "production" ? true : false,
   resave: false,
   saveUninitialized: false,
-  proxy: process.env.NODE_ENV === "production" ? true : false,
   cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000,
     secure: process.env.NODE_ENV === "production" ? true : false,
   }, // one month
+
   store: MongoStore.create({
     ttl: 7 * 24 * 60 * 60, // one week
     mongoUrl: process.env.MONGODB_URL,

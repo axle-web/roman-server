@@ -25,25 +25,24 @@ import rateLimit from "express-rate-limit";
 import { log } from "@utils";
 const app = express();
 const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 hour
   max: 100, // Limit each IP to 100 requests per `window` (here, per 1 minutes),
   standardHeaders: "draft-7", // draft-6: RateLimit-* headers; draft-7: combined RateLimit header
   legacyHeaders: false, // X-RateLimit-* headers
 });
-app.use("/api", limiter);
-if (!process.env.APP_URL) throw new Error("No 'APP_URL' in .env file");
+// app.use("/api", limiter);
 app.use(
   cors({
-    origin: process.env.APP_URL.split(","),
+    origin: process.env.APP_URL ? process.env.APP_URL.split(",") : "*",
     credentials: true, // Include credentials (cookies) in the request
   })
 );
 app.use(sessionMiddleware);
-// app.use(multer().any());
 
 // for parsing application/json
 app.use(bodyParser.json({ limit: "15mb" }));
+app.use(bodyParser.json({ limit: "15mb" }));
 // for parsing application/xwww-form-urlencoded
+app.use(bodyParser.urlencoded({ limit: "15mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "15mb", extended: true }));
 
 //* Prometheus setup

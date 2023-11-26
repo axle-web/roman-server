@@ -22,15 +22,14 @@ const io = IO(server);
 
 connect(async () => {
   // await initPreferences();
-  initAdminAccount().then(() =>
-    Promise.all([initAppData()]).then(() =>
-      server.listen(PORT, () => {
-        // startmMetricsServer();
-        log.info(`Server is up on port ${PORT}`, { task: "server" });
-      })
-    )
-  );
+  await initAdminAccount()
+  await Promise.all([initAppData()])
+  server.listen(PORT, () => {
+    // startmMetricsServer();
+    log.info(`Server is up on port ${PORT}`, { task: "server" });
+  })
 });
+
 
 process.on("unhandledRejection", (err: Error) => {
   log.error(err.stack as string, { task: "server" });

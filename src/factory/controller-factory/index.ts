@@ -14,9 +14,10 @@ import {
   updateMethodProps,
 } from "./types";
 import { log } from "@utils/logger";
-import Validate from "@factory/validation";
-import { applySetAsToPayload, parsePopulateFromQuery } from "./utils";
+import { applySetAsToPayload, } from "./utils";
 import Parse from "@factory/parse";
+import { randomUUID } from "crypto";
+import Validate from "@factory/validation";
 
 export class ControllerFactory<
   DocumentType extends object = {},
@@ -40,7 +41,8 @@ export class ControllerFactory<
     key,
     populate,
   }: GetOneMethodProps<typeof this.Model, typeof this.documentInstance>) {
-    const validation = Validate.query(query, populate);
+    const uuid = randomUUID()
+    const validation = Validate.query(uuid, query, populate, uuid);
     const queryModifiers = Parse.queryModifiers();
 
     const exec = catchAsync(async (req, res, next) => {
@@ -75,7 +77,8 @@ export class ControllerFactory<
     sort,
     pagination,
   }: GetAllMethodProps<typeof this.Model, typeof this.documentInstance>) {
-    const validation = Validate.query(query, populate, sort, pagination);
+    const uuid = randomUUID()
+    const validation = Validate.query(uuid, query, populate, sort, pagination);
     const queryModifiers = Parse.queryModifiers();
 
     const exec = catchAsync(async (req, res, next) => {
@@ -110,7 +113,9 @@ export class ControllerFactory<
     postprocess = async (req, res, next, payload) => payload,
     preprocess = async (req, res, next, payload) => payload,
   }: PostMethodProps<typeof this.Model, typeof this.documentInstance>) {
-    const validation = Validate.queryAndBody({ query, body });
+    const uuid = randomUUID()
+
+    const validation = Validate.queryAndBody({ uuid, query, body });
     const exec = catchAsync(async (req, res, next) => {
       let responsePayload: any = "OK";
       const queryPayload = req.query;

@@ -14,7 +14,7 @@ export class AppError extends global.Error {
     this.name = name || "UNDEFINED";
     Error.captureStackTrace(this, this.constructor);
   }
-  AuthenticationError() {}
+  AuthenticationError() { }
 }
 
 export namespace AppError {

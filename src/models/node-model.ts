@@ -14,9 +14,9 @@ export type INode<
   type: string;
 } & (isPublic extends true
   ? {
-      createdAt: Date;
-      updatedAt: Date;
-    }
+    createdAt: Date;
+    updatedAt: Date;
+  }
   : {});
 
 type NodeModelMethods = {};
