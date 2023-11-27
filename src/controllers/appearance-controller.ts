@@ -9,6 +9,7 @@ import JoiSchema from "@utils/joi-schemas";
 import Joi from "joi";
 import caches from "src/cache";
 import { uploadtoSpaces } from "@services";
+import { Upload } from "@utils/upload";
 export type GenericNodeType = INode<true, Record<string, any>>;
 export const GenericNodeModel = Node as unknown as Model<
   GenericNodeType,
@@ -60,10 +61,7 @@ export const postOneSlide = NodeController.postOne({
     cover: {
       mimetypes: ["IMAGE"],
       count: 1,
-      async upload(file) {
-        const { path } = await uploadtoSpaces(file);
-        return path;
-      },
+      upload: Upload.envDynamicUpload,
       setAs: "details.cover",
     },
     buttonLabel: {

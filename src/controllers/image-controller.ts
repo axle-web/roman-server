@@ -8,6 +8,7 @@ import { readFileSync } from "fs";
 import Joi from "joi";
 import { Model, Types } from "mongoose";
 import { FolderDocument, FolderModel } from "./folder-controller";
+import { Upload } from "@utils/upload";
 
 export type ImageDocument = INode<
   true,
@@ -53,10 +54,7 @@ export const postOneImage = Controller.postOne({
       count: 1,
       required: true,
       setAs: "details.cover",
-      async upload(file) {
-        const { path } = await uploadtoSpaces(file);
-        return path;
-      },
+      upload: Upload.envDynamicUpload,
     },
     length: {
       schema: Joi.number().min(1),
@@ -129,10 +127,7 @@ export const updateOneImage = Controller.postOne({
       mimetypes: ["IMAGE"],
       count: 1,
       setAs: "details.cover",
-      async upload(file) {
-        const { path } = await uploadtoSpaces(file);
-        return path;
-      },
+      upload: Upload.envDynamicUpload,
     },
     length: {
       schema: Joi.number().min(1),

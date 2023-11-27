@@ -6,6 +6,7 @@ import { readFileSync } from "fs";
 import Joi from "joi";
 import { Model } from "mongoose";
 import { uploadtoSpaces } from "@services";
+import { Upload } from "@utils/upload";
 
 export type FolderDocument = IBranch<true, { cover?: string }>;
 export const FolderModel = Branch as unknown as Model<FolderDocument, IBranch>;
@@ -59,12 +60,7 @@ export const postOneFolder = Controller.postOne({
       mimetypes: ["IMAGE"],
       count: 1,
       setAs: "details.cover",
-      upload: async (file) => {
-        const { path } = await uploadtoSpaces(file);
-        return path;
-        // read binary data
-        // convert binary data to base64 encoded string
-      },
+      upload: Upload.envDynamicUpload
     },
     branch: {
       schema: JoiSchema._id.label("Folder id").optional(),
@@ -118,12 +114,7 @@ export const updateOneFolder = Controller.postOne({
       mimetypes: ["IMAGE"],
       count: 1,
       setAs: "details.cover",
-      upload: async (file) => {
-        // read binary data
-        const { path } = await uploadtoSpaces(file);
-        return path;
-        // convert binary data to base64 encoded string
-      },
+      upload: Upload.envDynamicUpload
     },
     type: {
       schema: Joi.string(),

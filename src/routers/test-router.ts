@@ -6,6 +6,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import { Model, Types } from "mongoose";
 import { catchAsync } from "@utils";
 import multer from "@utils/multer/multer-config";
+import { Upload } from "@utils/upload";
 
 type CustomNode = INode<false, { cover: string }>;
 
@@ -27,10 +28,7 @@ const postOne = Controller.postOne({
         file: {
             mimetypes: ["IMAGE"],
             // required: true,
-            async upload(file) {
-                const { path } = await uploadtoSpaces(file);
-                return path;
-            },
+            upload: Upload.envDynamicUpload,
             required: true,
             setAs: "details.cover",
         },
