@@ -105,7 +105,11 @@ export const deleteOneFolder = Controller.getOne({
   },
 });
 
-export const updateOneFolder = Controller.postOne({
+export const updateOneFolder = Controller.updateOne({
+  key: "_id",
+  query: {
+    _id: JoiSchema._id
+  },
   body: {
     name: {
       schema: JoiSchema.name.optional(),
@@ -119,22 +123,6 @@ export const updateOneFolder = Controller.postOne({
     type: {
       schema: Joi.string(),
     },
-  },
-  operation: async (req, res, next, Model) => {
-    if (!req["query"].id || req["query"].id == undefined)
-      throw AppError.createError(
-        400,
-        "Folder id missing from request",
-        "ValidationError"
-      );
-    if (req['body']?.cover) {
-      req['body'].details = { cover: req['body'].cover }
-    }
-    const folder = await FolderModel.findByIdAndUpdate(
-      req["query"].id,
-      req["body"], { new: true }
-    );
-    return folder;
   },
 });
 

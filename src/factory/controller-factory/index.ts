@@ -89,7 +89,6 @@ export class ControllerFactory<
       } else {
         queryPayload =
           (await preprocess(req, res, next, queryPayload)) ?? queryPayload;
-        console.log('queryPayload', queryPayload)
         items = await this.Model.find(queryPayload as any, {})
           .populate<PopulateOptions>(req["populate"] as any)
           .sort(req["sort"])
