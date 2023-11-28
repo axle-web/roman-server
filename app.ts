@@ -32,7 +32,7 @@ const limiter = rateLimit({
 // app.use("/api", limiter);
 app.use(
   cors({
-    origin: process.env.APP_URL ? process.env.APP_URL.split(",") : "*",
+    // origin: process.env.APP_URL ? process.env.APP_URL.split(",") : "*",
     credentials: true, // Include credentials (cookies) in the request
   })
 );
@@ -40,9 +40,7 @@ app.use(sessionMiddleware);
 
 // for parsing application/json
 app.use(bodyParser.json({ limit: "15mb" }));
-app.use(bodyParser.json({ limit: "15mb" }));
 // for parsing application/xwww-form-urlencoded
-app.use(bodyParser.urlencoded({ limit: "15mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "15mb", extended: true }));
 
 //* Prometheus setup

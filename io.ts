@@ -12,7 +12,7 @@ const IO = (server: any) => {
     InterServerEvents,
     SocketData
   >(server, {
-    cors: { origin: process.env.APP_URL!.split(","), credentials: true },
+    // cors: { origin: process.env.APP_URL!.split(","), credentials: true },
   });
   io.use(wrap(sessionMiddleware));
   io.on("connection", async (socket) => {
