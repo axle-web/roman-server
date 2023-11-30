@@ -1,6 +1,6 @@
 import { ControllerFactory } from "@factory/controller-factory";
 import JoiSchema from "@utils/joi-schemas";
-import Branch, { IBranch } from "@models/branch-model";
+import Branch, { IBranch, IBranchPublic } from "@models/branch-model";
 import { AppError, catchAsync, log } from "@utils";
 import { readFileSync } from "fs";
 import Joi from "joi";
@@ -8,7 +8,7 @@ import { Model } from "mongoose";
 import { uploadtoSpaces } from "@services";
 import { Upload } from "@utils/upload";
 
-export type FolderDocument = IBranch<true, { cover?: string }>;
+export type FolderDocument = IBranchPublic<{ cover?: string }>;
 export const FolderModel = Branch as unknown as Model<FolderDocument, IBranch>;
 
 const Controller = new ControllerFactory(FolderModel);

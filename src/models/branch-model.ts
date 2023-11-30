@@ -1,10 +1,8 @@
 import { AppError } from "@utils";
 import { Model, Schema, Types, model } from "mongoose";
-export type BranchPublic = IBranch<true>;
-export type IBranch<
-  isPublic extends boolean = false,
+export interface IBranch<
   Details extends {} = {}
-> = {
+> {
   _id: Types.ObjectId;
   name: string;
   branch: Types.ObjectId;
@@ -13,12 +11,14 @@ export type IBranch<
   createdBy: Types.ObjectId;
   details: Details;
   type: string;
-} & (isPublic extends true
-  ? {
-    createdAt: Date;
-    updatedAt: Date;
-  }
-  : {});
+}
+
+export interface IBranchPublic<Details extends {}> extends IBranch<Details> {
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+
 type BranchModelMethods = {};
 export type BranchModel = Model<IBranch, {}, BranchModelMethods>;
 

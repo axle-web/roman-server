@@ -1,7 +1,7 @@
 import { ControllerFactory } from "@factory/controller-factory";
 import JoiSchema from "@utils/joi-schemas";
 import Branch from "@models/branch-model";
-import Node, { INode, INodeModel } from "@models/node-model";
+import Node, { INode, INodeModel, INodePublic } from "@models/node-model";
 import { uploadtoSpaces } from "@services";
 import { AppError, catchAsync, log } from "@utils";
 import { readFileSync } from "fs";
@@ -10,8 +10,7 @@ import { Model, Types } from "mongoose";
 import { FolderDocument, FolderModel } from "./folder-controller";
 import { Upload } from "@utils/upload";
 
-export type ImageDocument = INode<
-  true,
+export type ImageDocument = INodePublic<
   { cover: string; height?: string; width?: string; depth?: string }
 >;
 export const ImageModel = Node as unknown as Model<ImageDocument, INodeModel>;

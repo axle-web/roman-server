@@ -1,10 +1,11 @@
+
 interface ServerToClientEvents { }
 
 interface ClientToServerEvents {
   find_folder: (
     name: string,
     includeSystem?: boolean,
-    callback: (folders: FolderDocument[] | BranchPublic[]) => any
+    callback: (folders: FolderDocument[] | IBranchPublic[]) => any
   ) => void;
   find_file: (
     name: string,

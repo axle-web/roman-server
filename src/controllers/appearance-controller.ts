@@ -1,21 +1,20 @@
 import { ControllerFactory } from "@factory/controller-factory";
-import Branch, { IBranch } from "@models/branch-model";
-import Node, { INode } from "@models/node-model";
+import Branch, { IBranch, IBranchPublic } from "@models/branch-model";
+import Node, { INode, INodePublic } from "@models/node-model";
 import { Model, Types } from "mongoose";
 import { FolderModel } from "./folder-controller";
-import { AppError, catchAsync, log } from "@utils";
-import { readFileSync } from "fs";
+import { catchAsync, log } from "@utils";
 import JoiSchema from "@utils/joi-schemas";
 import Joi from "joi";
 import caches from "src/cache";
 import { uploadtoSpaces } from "@services";
 import { Upload } from "@utils/upload";
-export type GenericNodeType = INode<true, Record<string, any>>;
+export type GenericNodeType = INodePublic<Record<string, any>>;
 export const GenericNodeModel = Node as unknown as Model<
   GenericNodeType,
   INode
 >;
-export type GenericFolderType = IBranch<true, Record<string, any>>;
+export type GenericFolderType = IBranchPublic<Record<string, any>>;
 export const GenericFolderModel = Branch as unknown as Model<
   GenericNodeType,
   IBranch

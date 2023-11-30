@@ -10,25 +10,27 @@ export const userRoles = {
   user: 1,
 } as const;
 
-export type IUserPublic = IUser<false>;
 export type UserRoleNames = keyof typeof userRoles; // "admin" | "moderator" | "editor" | "user"
 export type UserRoleLevels = (typeof userRoles)[UserRoleNames]; // 4 | 3 | 2 | 1
 // interface IUserInstanceCreation
 //   extends Document<unknown, IUser<true>, keyof UserTypeMethods>,
 //     UserTypeMethods {}
-export type IUser<T extends boolean = true> = {
+
+export interface IUser extends IUserPublic {
+  password: string;
+  passwordChangedAt?: Date;
+  notifications: Types.ObjectId[];
+}
+
+export interface IUserPublic {
   _id: Types.ObjectId;
   name: string;
   email: string;
   avatar?: string;
   role: keyof typeof userRoles;
-} & (T extends true
-  ? {
-    password: string;
-    passwordChangedAt?: Date;
-    notifications: Types.ObjectId[];
-  }
-  : {});
+};
+
+
 
 type UserTypeMethods = {
   verifyPassword: (password: string) => boolean;

@@ -3,10 +3,12 @@
   "version": "0.0.5",
   "description": "Boilerplate for an ExpressJS with TypeScript",
   "scripts": {
-    "start": "yarn build && node dist/server.js",
+    "start": "yarn build && node dist/esm/server.js",
     "dev": "nodemon ./server.ts --ext js,json,ts",
     "test": "node -r ts-node/register -r tsconfig-paths/register dist/server.js",
-    "build": "tsc && tsc-alias"
+    "build:types": "tsc --emitDeclarationOnly --declarationDir dist/esm && tsc-alias",
+    "build:dist": "tsc && tsc-alias",
+    "build": "yarn build:dist && yarn build:types"
   },
   "author": "Ahmed Essam",
   "license": "ISC",

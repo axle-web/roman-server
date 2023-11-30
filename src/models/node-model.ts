@@ -1,23 +1,21 @@
 import { AppError } from "@utils";
 import { Model, ObjectId, Schema, Types, model } from "mongoose";
 
-export type NodePublic = INode<true>;
-export type INode<
-  isPublic extends boolean = false,
+export interface INode<
   Details extends object = {}
-> = {
+> {
   _id: Types.ObjectId;
   name: string;
   branch: ObjectId;
   createdBy: Types.ObjectId;
   details: Details;
   type: string;
-} & (isPublic extends true
-  ? {
-    createdAt: Date;
-    updatedAt: Date;
-  }
-  : {});
+}
+
+export interface INodePublic<Details extends {}> extends INode<Details> {
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 type NodeModelMethods = {};
 export type INodeModel = Model<INode, {}, NodeModelMethods>;
@@ -56,7 +54,7 @@ const nodeSchema = new Schema<INode, INodeModel, NodeModelMethods>(
   }
 );
 
-nodeSchema.post("findOneAndDelete", function (doc: INode<false>) {
+nodeSchema.post("findOneAndDelete", function (doc: INode) {
   if (!doc) throw AppError.createDocumentNotFoundError("node");
   // Remove the image from the associated album
   const Branch = model("Branch");

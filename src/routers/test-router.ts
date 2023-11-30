@@ -8,8 +8,7 @@ import { catchAsync } from "@utils";
 import multer from "@utils/multer/multer-config";
 import { Upload } from "@utils/upload";
 
-type CustomNode = INode<false, { cover: string }>;
-
+type CustomNode = INode<{ cover: string }>;
 const CustomModel = NodeModel as unknown as Model<CustomNode, INodeModel>;
 const Controller = new ControllerFactory(CustomModel);
 
