@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import { sessionMiddleware } from "@middlewares";
 import { log } from "@utils";
 import socketFindHandlers from "src/socket-controllers";
+import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from "@ctypes/socket";
 const wrap = (middleware: any) => (socket: any, next: () => any) =>
   middleware(socket.request, {}, next);
 

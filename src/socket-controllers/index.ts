@@ -1,5 +1,6 @@
 import Branch from "@models/branch-model";
 import Node from "@models/node-model";
+import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from "@ctypes/socket";
 import { Socket } from "socket.io";
 const includeSystemToPayload = (
   payload: {},
@@ -31,7 +32,7 @@ const socketFindHandlers = (
       { name: { $regex: name, $options: "i" } },
       includeSystem
     );
-    const folders = await Branch.find(payload).limit(20);
+    const folders = await Branch.find(payload).limit(20) as any;
     callback(folders);
   });
   socket.on("find_any", async (name, includeSystem = false, callback) => {
@@ -40,7 +41,7 @@ const socketFindHandlers = (
       includeSystem
     );
     const findFiles = Node.find(payload).populate({ path: 'branch', select: "_id name" }).limit(20);
-    const findFolders = Branch.find(payload).limit(20);
+    const findFolders = Branch.find(payload).limit(20) as any;
     Promise.all([findFiles, findFolders])
       .then(([files, folders]) => {
         callback({ files, folders });

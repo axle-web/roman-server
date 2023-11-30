@@ -1,7 +1,7 @@
 {
-  "name": "express-server-boilerplate",
-  "version": "0.0.5",
-  "description": "Boilerplate for an ExpressJS with TypeScript",
+  "name": "roman-classic-server",
+  "version": "0.0.6",
+  "description": "Server for roman-classic.com",
   "scripts": {
     "start": "yarn build && node dist/esm/server.js",
     "dev": "nodemon ./server.ts --ext js,json,ts",

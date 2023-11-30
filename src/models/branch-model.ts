@@ -13,7 +13,7 @@ export interface IBranch<
   type: string;
 }
 
-export interface IBranchPublic<Details extends {}> extends IBranch<Details> {
+export interface IBranchPublic<Details extends {} = {}> extends IBranch<Details> {
   createdAt: Date;
   updatedAt: Date;
 }

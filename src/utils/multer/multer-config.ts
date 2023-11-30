@@ -3,7 +3,7 @@ import fs from "fs";
 import multer_ from "multer";
 import { Request } from "express";
 import { AppError } from "@utils/appError";
-import { FileMimes, FileMimesTypes } from "@types";
+import { FileMimes, FileMimesTypes } from "@ctypes";
 type DestinationCallback = (error: Error | null, destination: string) => void;
 type FileNameCallback = (error: Error | null, filename: string) => void;
 interface FileFilterCallback {

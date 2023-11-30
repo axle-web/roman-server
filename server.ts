@@ -42,4 +42,4 @@ process.on("warning", (err) => {
   log.warning(err.stack as string, "server");
 });
 
-module.exports = { app, io };
+export { app, io };

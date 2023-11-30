@@ -13,7 +13,9 @@ import { Upload } from "@utils/upload";
 export type ImageDocument = INodePublic<
   { cover: string; height?: string; width?: string; depth?: string }
 >;
+
 export const ImageModel = Node as unknown as Model<ImageDocument, INodeModel>;
+
 const Controller = new ControllerFactory(ImageModel);
 
 const notSystem = /system/i; // Case-insensitive regex to match "system"
