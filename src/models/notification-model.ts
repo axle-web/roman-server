@@ -1,6 +1,6 @@
 import { Schema, Document, Types, model, Model } from "mongoose";
 
-interface INotification {
+export interface INotification {
     _id: Types.ObjectId;
     user: Types.ObjectId; // User ID who will receive the notification
     message: string; // Notification message

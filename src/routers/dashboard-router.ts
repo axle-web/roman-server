@@ -4,6 +4,6 @@ import { Router } from "express";
 
 const router = Router();
 
-router.get("/", getCounts);
+router.get("/", protect('moderator'), getCounts);
 
 export default router;
