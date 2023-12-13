@@ -65,7 +65,7 @@ const handleError = (err: AppError | Error) => {
 };
 
 export interface IProdAppError {
-    error: AppError["type"];
+    type: AppError["type"];
     message: string;
     status: number;
 }
@@ -73,7 +73,7 @@ export interface IProdAppError {
 const sendErrorResponse = (err: AppError, res: Response) => {
     process.env.NODE_ENV === "production"
         ? res.status(err.status || 500).json({
-            error: err.type,
+            type: err.type,
             message: err.message,
         })
         : res.status(err.status || 500).json({

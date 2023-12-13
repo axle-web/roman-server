@@ -88,7 +88,7 @@ export const postOneImage = Controller.postOne({
   }),
   postprocess: (req, res, next, payload) => {
     FolderModel.findById(payload.branch).then(async (doc) => {
-      doc?.nodes.push(payload._id);
+      doc?.nodes.push(payload._id as any);
       if (doc?.details) {
         if (!doc?.details?.cover) {
           doc.details.cover = payload.details.cover;

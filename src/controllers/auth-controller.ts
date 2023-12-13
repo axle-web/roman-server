@@ -43,7 +43,7 @@ export const login = Controller.postOne({
       throw AppError.createAuthenticationError(
         "This username or password is incorrect"
       );
-    req.session.user = user.shear("password");
+    req.session.user = user.shear("password") as any
     return req.session.user;
   },
 });
@@ -61,8 +61,7 @@ export const register = Controller.postOne({
     },
   },
   postprocess(req, res, next, payload) {
-    req.session.user = payload.shear("password passwordChangedAt");
-    payload.name;
+    req.session.user = payload.shear("password passwordChangedAt") as any;
     return req.session.user;
   },
 });

@@ -12,7 +12,8 @@ export interface INode<
   type: string;
 }
 
-export interface INodePublic<Details extends {}> extends INode<Details> {
+export interface INodePublic<Details extends {}> extends Omit<INode<Details>, "_id"> {
+  _id: string;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -7,6 +7,11 @@ export interface INotification {
     isRead: boolean; // Whether the notification has been read
 }
 
+export interface INotificationPublic extends Omit<INotification, '_id'> {
+    _id: string;
+}
+
+
 type INotificationModelMethods = {};
 export type INotificationModel = Model<
     INotification,
