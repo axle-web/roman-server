@@ -10,9 +10,12 @@ import { Model, Types } from "mongoose";
 import { FolderDocument, FolderModel } from "./folder-controller";
 import { Upload } from "@utils/upload";
 
-export type ImageDocument = INodePublic<
-  { cover: string; height?: string; width?: string; depth?: string }
->;
+export type ImageDocument = INodePublic<{
+  cover: string;
+  height?: string;
+  width?: string;
+  depth?: string;
+}>;
 
 export const ImageModel = Node as unknown as Model<ImageDocument, INodeModel>;
 
@@ -88,7 +91,7 @@ export const postOneImage = Controller.postOne({
   }),
   postprocess: (req, res, next, payload) => {
     FolderModel.findById(payload.branch).then(async (doc) => {
-      doc?.nodes.push(payload._id);
+      doc?.nodes.push(payload._id as any);
       if (doc?.details) {
         if (!doc?.details?.cover) {
           doc.details.cover = payload.details.cover;
@@ -98,7 +101,8 @@ export const postOneImage = Controller.postOne({
       }
       doc?.save().then((document) => {
         log.info(
-          `${payload.name} appened to branch "${document?.name || payload.branch
+          `${payload.name} appened to branch "${
+            document?.name || payload.branch
           }"`
         );
       });

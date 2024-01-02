@@ -16,21 +16,20 @@ export type UserRoleLevels = (typeof userRoles)[UserRoleNames]; // 4 | 3 | 2 | 1
 //   extends Document<unknown, IUser<true>, keyof UserTypeMethods>,
 //     UserTypeMethods {}
 
-export interface IUser extends IUserPublic {
+export interface IUser extends Omit<IUserPublic, "_id"> {
+  _id: Types.ObjectId;
   password: string;
   passwordChangedAt?: Date;
   notifications: Types.ObjectId[];
 }
 
 export interface IUserPublic {
-  _id: Types.ObjectId;
+  _id: string;
   name: string;
   email: string;
   avatar?: string;
   role: keyof typeof userRoles;
-};
-
-
+}
 
 type UserTypeMethods = {
   verifyPassword: (password: string) => boolean;

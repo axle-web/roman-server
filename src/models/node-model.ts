@@ -1,9 +1,7 @@
 import { AppError } from "@utils";
 import { Model, ObjectId, Schema, Types, model } from "mongoose";
 
-export interface INode<
-  Details extends object = {}
-> {
+export interface INode<Details extends object = {}> {
   _id: Types.ObjectId;
   name: string;
   branch: ObjectId;
@@ -12,7 +10,10 @@ export interface INode<
   type: string;
 }
 
-export interface INodePublic<Details extends {}> extends INode<Details> {
+export interface INodePublic<Details extends {}>
+  extends Omit<INode<Details>, "_id" | "branch"> {
+  branch: string;
+  _id: string;
   createdAt: Date;
   updatedAt: Date;
 }

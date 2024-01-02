@@ -2,10 +2,8 @@ import { ControllerFactory } from "@factory/controller-factory";
 import JoiSchema from "@utils/joi-schemas";
 import Branch, { IBranch, IBranchPublic } from "@models/branch-model";
 import { AppError, catchAsync, log } from "@utils";
-import { readFileSync } from "fs";
 import Joi from "joi";
 import { Model } from "mongoose";
-import { uploadtoSpaces } from "@services";
 import { Upload } from "@utils/upload";
 
 export type FolderDocument = IBranchPublic<{ cover?: string }>;
@@ -60,7 +58,7 @@ export const postOneFolder = Controller.postOne({
       mimetypes: ["IMAGE"],
       count: 1,
       setAs: "details.cover",
-      upload: Upload.envDynamicUpload
+      upload: Upload.envDynamicUpload,
     },
     branch: {
       schema: JoiSchema._id.label("Folder id").optional(),
@@ -84,7 +82,8 @@ export const postOneFolder = Controller.postOne({
       },
     }).then((doc) => {
       log.info(
-        `branch ${payload.name} appened to branch "${doc?.name || payload.branch
+        `branch ${payload.name} appened to branch "${
+          doc?.name || payload.branch
         }"`
       );
     });
@@ -108,7 +107,7 @@ export const deleteOneFolder = Controller.getOne({
 export const updateOneFolder = Controller.updateOne({
   key: "_id",
   query: {
-    _id: JoiSchema._id
+    _id: JoiSchema._id,
   },
   body: {
     name: {
@@ -118,7 +117,7 @@ export const updateOneFolder = Controller.updateOne({
       mimetypes: ["IMAGE"],
       count: 1,
       setAs: "details.cover",
-      upload: Upload.envDynamicUpload
+      upload: Upload.envDynamicUpload,
     },
     type: {
       schema: Joi.string(),
