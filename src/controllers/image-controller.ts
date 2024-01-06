@@ -1,13 +1,11 @@
 import { ControllerFactory } from "@factory/controller-factory";
 import JoiSchema from "@utils/joi-schemas";
 import Branch from "@models/branch-model";
-import Node, { INode, INodeModel, INodePublic } from "@models/node-model";
-import { uploadtoSpaces } from "@services";
+import Node, { INodeModel, INodePublic } from "@models/node-model";
 import { AppError, catchAsync, log } from "@utils";
-import { readFileSync } from "fs";
 import Joi from "joi";
-import { Model, Types } from "mongoose";
-import { FolderDocument, FolderModel } from "./folder-controller";
+import { Model } from "mongoose";
+import { FolderModel } from "./folder-controller";
 import { Upload } from "@utils/upload";
 
 export type ImageDocument = INodePublic<{

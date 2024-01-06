@@ -1,8 +1,8 @@
 import Branch, { IBranch } from "@models/branch-model";
 import Node, { INode } from "@models/node-model";
 import { log } from "@utils";
-import caches from ".";
 import User from "@models/user-model";
+import caches from ".";
 export const appearanceCache: Record<string, IBranch | INode> = {};
 
 export const items = [
@@ -52,7 +52,7 @@ export const items = [
 
 export const initAppData = () => {
   return new Promise(async (resolve, reject) => {
-    const admin = await User.findOne({ name: "server" });
+    const root = caches.root;
     try {
       let appData: any = await Branch.findOne({
         name: "app_data",
@@ -65,7 +65,7 @@ export const initAppData = () => {
         appData = await Branch.create({
           name: "app_data",
           type: "system",
-          createdBy: admin!._id,
+          createdBy: root!._id,
         });
         log.info("'app_data' not found.. generating default states...");
       }
@@ -74,8 +74,8 @@ export const initAppData = () => {
         let doc =
           item.model === Branch
             ? await appData?.branches.find(
-              (el: IBranch) => el.name === item.name
-            )
+                (el: IBranch) => el.name === item.name
+              )
             : await appData?.nodes.find((el: INode) => el.name === item.name);
 
         if (!doc) {
@@ -84,7 +84,7 @@ export const initAppData = () => {
               name: item.name,
               type: "system",
               branch: appData._id,
-              createdBy: admin!._id,
+              createdBy: root!._id,
             });
             appData.branches.push(doc._id);
           } else {
@@ -92,7 +92,7 @@ export const initAppData = () => {
               name: item.name,
               type: "system",
               branch: appData._id,
-              createdBy: admin!._id,
+              createdBy: root!._id,
               details: item.details || {},
             });
             appData.nodes.push(doc._id);

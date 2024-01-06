@@ -57,7 +57,6 @@ const branchSchema = new Schema<IBranch, BranchModel, BranchModelMethods>(
   },
   { timestamps: true }
 );
-// branchSchema.plugin(slug)
 branchSchema.post("findOneAndDelete", function (doc: IBranch<false>) {
   if (!doc) throw AppError.createDocumentNotFoundError("branch");
   // Remove the image from the associated album

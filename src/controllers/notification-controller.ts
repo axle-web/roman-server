@@ -5,15 +5,15 @@ import Notification from "@models/notification-model";
 const Controller = new ControllerFactory(Notification);
 
 export const getOneNotification = Controller.getOne({
-    key: "_id",
-    query: {
-        _id: {
-            schema: JoiSchema._id,
-        },
+  key: "_id",
+  query: {
+    _id: {
+      schema: JoiSchema._id,
     },
+  },
 });
 
 export const getAllNode = Controller.getAll({
-    sort: ["createdAt"],
-    pagination: true,
+  sort: ["createdAt"],
+  pagination: true,
 });
