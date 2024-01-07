@@ -22,6 +22,7 @@ import {
   userRouter,
   appearanceRouter,
   blogRouter,
+  messageRouter,
 } from "@routers";
 import rateLimit from "express-rate-limit";
 const app = express();
@@ -63,7 +64,7 @@ app.use("/api/v1/folder", folderRouter);
 app.use("/api/v1/admin/dashboard", dashboardRouter);
 app.use("/api/v1/appearance", appearanceRouter);
 app.use("/api/v1/blog", blogRouter);
-
+app.use("/api/v1/message", messageRouter);
 app.use(globalErrorHandler);
 
 export default app;

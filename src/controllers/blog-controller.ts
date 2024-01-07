@@ -43,6 +43,7 @@ export const postOneBlog = Controller.postOne({
     createdBy: req.session.user!._id,
   }),
 });
+
 export const deleteOneImage = Controller.getOne({
   query: {
     slug: {

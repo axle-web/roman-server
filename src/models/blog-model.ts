@@ -1,5 +1,4 @@
 import { Model, Schema, Types, model } from "mongoose";
-import { IUserPublic } from "./user-model";
 
 export interface IBlog {
   _id: Types.ObjectId;
@@ -19,9 +18,9 @@ export interface IBlogPublic extends Omit<IBlog, "_id" | "createdBy"> {
 }
 
 type BlogModelMethods = {};
-export type IBlogModel = Model<IBlog, {}, BlogModelMethods>;
+export type BlogModel = Model<IBlog, {}, BlogModelMethods>;
 
-const blogSchema = new Schema<IBlog, IBlogModel, BlogModelMethods>(
+const blogSchema = new Schema<IBlog, BlogModel, BlogModelMethods>(
   {
     title: {
       type: String,
@@ -52,5 +51,5 @@ const blogSchema = new Schema<IBlog, IBlogModel, BlogModelMethods>(
   { timestamps: true }
 );
 
-const Blog = model<IBlog, IBlogModel>("Blog", blogSchema);
+const Blog = model<IBlog, BlogModel>("Blog", blogSchema);
 export default Blog;
