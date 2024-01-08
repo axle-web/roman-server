@@ -22,9 +22,9 @@ const Controller = new ControllerFactory(ImageModel);
 const notSystem = /system/i; // Case-insensitive regex to match "system"
 
 export const getOneImage = Controller.getOne({
-  key: "name",
+  key: "slug",
   query: {
-    name: {
+    slug: {
       schema: JoiSchema.name,
     },
   },

@@ -14,9 +14,9 @@ const Controller = new ControllerFactory(FolderModel);
 const notSystem = /system/i; // Case-insensitive regex to match "system"
 
 export const getOneFolder = Controller.getOne({
-  key: "name",
+  key: "slug",
   query: {
-    name: {
+    slug: {
       schema: JoiSchema.name.label("Folder name"),
     },
   },
@@ -105,7 +105,7 @@ export const deleteOneFolder = Controller.getOne({
 });
 
 export const updateOneFolder = Controller.updateOne({
-  key: "_id",
+  key: "slug",
   query: {
     _id: JoiSchema._id,
   },
