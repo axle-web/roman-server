@@ -37,7 +37,7 @@ app.use("/api", limiter);
 app.use("/api", helmet());
 app.use(
   cors({
-    // origin: process.env.APP_URL ? process.env.APP_URL.split(",") : "*",
+    origin: process.env.APP_URL ? process.env.APP_URL.split(",") : "*",
     credentials: true, // Include credentials (cookies) in the request
   })
 );
