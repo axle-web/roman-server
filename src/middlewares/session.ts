@@ -20,7 +20,7 @@ export const sessionMiddleware = session({
   saveUninitialized: false,
   cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000,
-    secure: process.env.NODE_ENV === "production" ? true : false,
+    // secure: process.env.NODE_ENV === "production" ? true : false,
   }, // one month
 
   store: MongoStore.create({
