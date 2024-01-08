@@ -121,10 +121,14 @@ export const deleteOneImage = Controller.getOne({
   },
 });
 
-export const updateOneImage = Controller.postOne({
+export const updateOneImage = Controller.updateOne({
+  key: "_id",
+  query: {
+    _id: JoiSchema._id,
+  },
   body: {
     name: {
-      schema: JoiSchema.name,
+      schema: JoiSchema.name.optional(),
     },
     cover: {
       mimetypes: ["IMAGE"],
@@ -156,19 +160,6 @@ export const updateOneImage = Controller.postOne({
       schema: Joi.number().min(1),
       setAs: "details.on_ceiling",
     },
-  },
-  operation: async (req, res, next, Model) => {
-    if (!req["query"].id || req["query"].id == undefined)
-      throw AppError.createError(
-        400,
-        "Folder id missing from request",
-        "ValidationError"
-      );
-    const image = await ImageModel.findByIdAndUpdate(
-      req["query"].id,
-      req["body"]
-    );
-    return image;
   },
 });
 

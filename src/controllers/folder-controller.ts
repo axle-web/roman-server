@@ -105,7 +105,7 @@ export const deleteOneFolder = Controller.getOne({
 });
 
 export const updateOneFolder = Controller.updateOne({
-  key: "slug",
+  key: "_id",
   query: {
     _id: JoiSchema._id,
   },
