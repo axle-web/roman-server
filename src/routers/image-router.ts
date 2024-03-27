@@ -11,7 +11,7 @@ import { Router } from "express";
 
 const router = Router();
 router.get("/", getOneImage);
-router.get("/all", protect("editor"), getAllImage);
+router.get("/all", getAllImage);
 router.get("/sample", sampleImages);
 
 router.post("/", protect("editor"), postOneImage);
