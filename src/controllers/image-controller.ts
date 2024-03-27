@@ -32,6 +32,9 @@ export const getOneImage = Controller.getOne({
 });
 
 export const getAllImage = Controller.getAll({
+  query: {
+    branch: JoiSchema._id.optional(),
+  },
   pagination: true,
   populate: [{ path: "branch", select: "_id name" }],
   preprocess: (req, res, next, payload) => {

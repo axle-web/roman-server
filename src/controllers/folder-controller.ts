@@ -41,12 +41,19 @@ export const getAllFolder = Controller.getAll({
     type: {
       schema: Joi.string(),
     },
+    branch: {
+      schema: JoiSchema._id.optional(),
+    },
   },
   preprocess: (req, res, next, payload) => {
     if (!payload["type"]) return { ...payload, type: { $not: notSystem } };
   },
   pagination: true,
-  populate: [{ path: "branch", select: "_id name details" }, "nodes"],
+  populate: [
+    { path: "branch", select: "_id name details" },
+    "nodes",
+    { path: "branches", select: "_id name details" },
+  ],
 });
 
 export const postOneFolder = Controller.postOne({
@@ -118,6 +125,7 @@ export const updateOneFolder = Controller.updateOne({
       count: 1,
       setAs: "details.cover",
       upload: Upload.envDynamicUpload,
+      required: false,
     },
     type: {
       schema: Joi.string(),
