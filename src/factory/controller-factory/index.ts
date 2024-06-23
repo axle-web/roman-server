@@ -18,6 +18,7 @@ import { applySetAsToPayload } from "./utils";
 import Parse from "@factory/parse";
 import { randomUUID } from "crypto";
 import Validate from "@factory/validation";
+import Branch from "@models/branch-model";
 
 export class ControllerFactory<
   DocumentType extends object = {},
@@ -101,8 +102,14 @@ export class ControllerFactory<
           );
         items = (await postprocess(req, res, next, items)) ?? items;
         const totalCount = await this.Model.countDocuments(queryPayload as any);
-        if (pagination)
-          return res.status(200).send({ data: items, total: totalCount });
+        let payload: any = { data: items, total: totalCount };
+        if (queryPayload["branch"]) {
+          const parentBranch = (await Branch.findById(
+            queryPayload["branch"]
+          )) as any;
+          payload = { ...payload, parentCover: parentBranch?.details?.cover };
+        }
+        return res.status(200).send(payload);
       }
       res.status(200).send(items);
     });
