@@ -1,18 +1,16 @@
 import { AppError } from "@utils";
 import { Model, ObjectId, Schema, Types, model } from "mongoose";
 
-export interface INode<
-  Details extends object = {}
-> {
+export interface INode<Details extends object = {}> {
   _id: Types.ObjectId;
   name: string;
   branch: ObjectId;
   createdBy: Types.ObjectId;
   details: Details;
-  type: string;
 }
 
-export interface INodePublic<Details extends {}> extends Omit<INode<Details>, "_id"> {
+export interface INodePublic<Details extends {}>
+  extends Omit<INode<Details>, "_id"> {
   _id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -43,11 +41,6 @@ const nodeSchema = new Schema<INode, INodeModel, NodeModelMethods>(
     details: {
       type: Schema.Types.Mixed,
       default: {},
-    },
-    type: {
-      type: String,
-      minlength: 1,
-      maxlength: 128,
     },
   },
   {

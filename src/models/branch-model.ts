@@ -1,8 +1,6 @@
 import { AppError } from "@utils";
 import { Model, Schema, Types, model } from "mongoose";
-export interface IBranch<
-  Details extends {} = {}
-> {
+export interface IBranch<Details extends {} = {}> {
   _id: Types.ObjectId;
   name: string;
   branch: Types.ObjectId;
@@ -10,15 +8,15 @@ export interface IBranch<
   nodes: Types.ObjectId[];
   createdBy: Types.ObjectId;
   details: Details;
-  type: string;
+  system: boolean;
 }
 
-export interface IBranchPublic<Details extends {} = {}> extends Omit<IBranch<Details>, "_id"> {
+export interface IBranchPublic<Details extends {} = {}>
+  extends Omit<IBranch<Details>, "_id"> {
   _id: string;
   createdAt: Date;
   updatedAt: Date;
 }
-
 
 type BranchModelMethods = {};
 export type BranchModel = Model<IBranch, {}, BranchModelMethods>;
@@ -40,10 +38,9 @@ const branchSchema = new Schema<IBranch, BranchModel, BranchModelMethods>(
       ref: "User",
     },
     details: { type: Object },
-    type: {
-      type: String,
-      minlength: 1,
-      maxlength: 128,
+    system: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

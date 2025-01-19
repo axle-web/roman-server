@@ -2,10 +2,8 @@ import { ControllerFactory } from "@factory/controller-factory";
 import JoiSchema from "@utils/joi-schemas";
 import Branch, { IBranch, IBranchPublic } from "@models/branch-model";
 import { AppError, catchAsync, log } from "@utils";
-import { readFileSync } from "fs";
 import Joi from "joi";
 import { Model } from "mongoose";
-import { uploadtoSpaces } from "@services";
 import { Upload } from "@utils/upload";
 
 export type FolderDocument = IBranchPublic<{ cover?: string }>;
@@ -39,13 +37,9 @@ export const getOneFolder = Controller.getOne({
 });
 
 export const getAllFolder = Controller.getAll({
-  query: {
-    type: {
-      schema: Joi.string(),
-    },
-  },
+  query: {},
   preprocess: (req, res, next, payload) => {
-    if (!payload["type"]) return { ...payload, type: { $not: notSystem } };
+    if (!payload["system"]) return { ...payload, system: false };
   },
   pagination: true,
   populate: [{ path: "branch", select: "_id name details" }, "nodes"],
@@ -60,7 +54,7 @@ export const postOneFolder = Controller.postOne({
       mimetypes: ["IMAGE"],
       count: 1,
       setAs: "details.cover",
-      upload: Upload.envDynamicUpload
+      upload: Upload.envDynamicUpload,
     },
     branch: {
       schema: JoiSchema._id.label("Folder id").optional(),
@@ -69,9 +63,6 @@ export const postOneFolder = Controller.postOne({
         const branch = await Branch.findById(val);
         if (!branch) return AppError.createDocumentNotFoundError("folder");
       },
-    },
-    type: {
-      schema: Joi.string().valid("category", "collection", "album"),
     },
   },
   preprocess: (req, res, next, payload) => {
@@ -84,7 +75,8 @@ export const postOneFolder = Controller.postOne({
       },
     }).then((doc) => {
       log.info(
-        `branch ${payload.name} appened to branch "${doc?.name || payload.branch
+        `branch ${payload.name} appened to branch "${
+          doc?.name || payload.branch
         }"`
       );
     });
@@ -108,7 +100,7 @@ export const deleteOneFolder = Controller.getOne({
 export const updateOneFolder = Controller.updateOne({
   key: "_id",
   query: {
-    _id: JoiSchema._id
+    _id: JoiSchema._id,
   },
   body: {
     name: {
@@ -118,11 +110,11 @@ export const updateOneFolder = Controller.updateOne({
       mimetypes: ["IMAGE"],
       count: 1,
       setAs: "details.cover",
-      upload: Upload.envDynamicUpload
+      upload: Upload.envDynamicUpload,
     },
-    type: {
-      schema: Joi.string(),
-    },
+    // type: {
+    //   schema: Joi.string(),
+    // },
   },
 });
 
@@ -141,9 +133,7 @@ export const sampleFolders = catchAsync(async (req, res, next) => {
   let data = await FolderModel.aggregate([
     {
       $match: {
-        type: {
-          $not: notSystem,
-        },
+        system: false,
       },
     },
     {

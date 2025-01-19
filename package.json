@@ -41,7 +41,6 @@
     "@types/cors": "^2.8.14",
     "@types/express": "^4.17.17",
     "@types/express-session": "^1.17.7",
-    "@types/mongodb": "^4.0.7",
     "@types/multer": "^1.4.7",
     "@types/node": "^20.5.9",
     "cross-env": "^7.0.3",
@@ -51,5 +50,12 @@
     "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.2.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "bcrypt",
+      "protobufjs"
+    ]
   }
 }

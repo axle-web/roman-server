@@ -56,7 +56,7 @@ export const initAppData = () => {
     try {
       let appData: any = await Branch.findOne({
         name: "app_data",
-        type: "system",
+        system: true,
       }).populate<{ nodes: INode[]; branches: IBranch[] }>([
         "nodes",
         "branches",
@@ -64,7 +64,7 @@ export const initAppData = () => {
       if (!appData) {
         appData = await Branch.create({
           name: "app_data",
-          type: "system",
+          system: true,
           createdBy: admin!._id,
         });
         log.info("'app_data' not found.. generating default states...");
@@ -74,15 +74,15 @@ export const initAppData = () => {
         let doc =
           item.model === Branch
             ? await appData?.branches.find(
-              (el: IBranch) => el.name === item.name
-            )
+                (el: IBranch) => el.name === item.name
+              )
             : await appData?.nodes.find((el: INode) => el.name === item.name);
 
         if (!doc) {
           if (item.model === Branch) {
             doc = await MODEL.create({
               name: item.name,
-              type: "system",
+              system: true,
               branch: appData._id,
               createdBy: admin!._id,
             });
@@ -90,7 +90,7 @@ export const initAppData = () => {
           } else {
             doc = await MODEL.create({
               name: item.name,
-              type: "system",
+              system: true,
               branch: appData._id,
               createdBy: admin!._id,
               details: item.details || {},

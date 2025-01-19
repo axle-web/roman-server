@@ -7,7 +7,6 @@ import { catchAsync, log } from "@utils";
 import JoiSchema from "@utils/joi-schemas";
 import Joi from "joi";
 import caches from "src/cache";
-import { uploadtoSpaces } from "@services";
 import { Upload } from "@utils/upload";
 export type GenericNodeType = INodePublic<Record<string, any>>;
 export const GenericNodeModel = Node as unknown as Model<
@@ -73,11 +72,12 @@ export const postOneSlide = NodeController.postOne({
     },
   },
   preprocess: (req, res, next, payload) => ({
-    name: `swiper-slide-${req.query?.["title"] || ""}-${Math.floor(Math.random() * 10000) + 1
-      }`,
+    name: `swiper-slide-${req.query?.["title"] || ""}-${
+      Math.floor(Math.random() * 10000) + 1
+    }`,
     branch: new Types.ObjectId(appearanceCache["swiper"]._id),
     createdBy: req.session.user!._id,
-    type: "swiper-slide-system",
+    // type: "swiper-slide-system",
     ...payload,
   }),
   postprocess: (req, res, next, payload) => {
@@ -115,10 +115,7 @@ export const updateBanner = NodeController.updateOne({
     cover: {
       mimetypes: ["IMAGE"],
       count: 1,
-      async upload(file) {
-        const { path } = await uploadtoSpaces(file);
-        return path;
-      },
+      upload: Upload.envDynamicUpload,
       setAs: "details.cover",
     },
   },
