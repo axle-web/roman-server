@@ -9,7 +9,7 @@ import {
 import { protect } from "@middlewares";
 import { Router } from "express";
 
-const router = Router();
+const router: Router = Router();
 router.get("/", getOneImage);
 router.get("/all", protect("editor"), getAllImage);
 router.get("/sample", sampleImages);

@@ -52,7 +52,7 @@ export const getAppData = catchAsync(async (req, res, next) => {
   res.status(200).send(data);
 });
 
-export const postOneSlide = NodeController.postOne({
+export const postOneSlide = NodeController.updateOne({
   body: {
     title: { schema: Joi.string(), setAs: "details.title" },
     subTitle: { schema: Joi.string(), setAs: "details.subTitle" },
@@ -84,7 +84,7 @@ export const postOneSlide = NodeController.postOne({
     FolderModel.findByIdAndUpdate(payload.branch, {
       $push: { nodes: payload._id },
     }).then(async (doc) => {
-      log.info(`${payload.name} appened to "${doc?.name || payload.branch}"`);
+      log.info(`${payload.name} appended to "${doc?.name || payload.branch}"`);
     });
   },
 });

@@ -14,7 +14,7 @@ import {
   UpdateMethodProps,
 } from "./types";
 import { log } from "@utils/logger";
-import { applySetAsToPayload, } from "./utils";
+import { applySetAsToPayload } from "./utils";
 import Parse from "@factory/parse";
 import { randomUUID } from "crypto";
 import Validate from "@factory/validation";
@@ -41,7 +41,7 @@ export class ControllerFactory<
     key,
     populate,
   }: GetOneMethodProps<typeof this.Model, typeof this.documentInstance>) {
-    const uuid = randomUUID()
+    const uuid = randomUUID();
     const validation = Validate.query(uuid, query, populate, uuid);
     const queryModifiers = Parse.queryModifiers();
 
@@ -77,7 +77,7 @@ export class ControllerFactory<
     sort,
     pagination,
   }: GetAllMethodProps<typeof this.Model, typeof this.documentInstance>) {
-    const uuid = randomUUID()
+    const uuid = randomUUID();
     const validation = Validate.query(uuid, query, populate, sort, pagination);
     const queryModifiers = Parse.queryModifiers();
 
@@ -94,14 +94,20 @@ export class ControllerFactory<
           .sort(req["sort"])
           .limit(req["pagination"]!.limit)
           .skip((req["pagination"]!.page - 1) * req["pagination"]!.limit);
-
+        console.log(items);
         if (!items)
           throw AppError.createDocumentNotFoundError(
             `${this.Model.modelName.toUpperCase()}`
           );
         items = (await postprocess(req, res, next, items)) ?? items;
       }
-      res.status(200).send(items);
+      const payload = pagination
+        ? {
+            data: items,
+            total: await this.Model.countDocuments(queryPayload as any),
+          }
+        : items;
+      res.status(200).json(payload);
     });
     return [validation, queryModifiers, exec];
   }
@@ -113,7 +119,7 @@ export class ControllerFactory<
     postprocess = async (req, res, next, payload) => payload,
     preprocess = async (req, res, next, payload) => payload,
   }: PostMethodProps<typeof this.Model, typeof this.documentInstance>) {
-    const uuid = randomUUID()
+    const uuid = randomUUID();
 
     const validation = Validate.queryAndBody({ uuid, query, body });
     const exec = catchAsync(async (req, res, next) => {
@@ -133,9 +139,7 @@ export class ControllerFactory<
         responsePayload =
           (await postprocess(req, res, next, responsePayload)) ??
           responsePayload;
-        log.info(
-          `New ${this.Model.modelName} created: ${responsePayload._id}`,
-        );
+        log.info(`New ${this.Model.modelName} created: ${responsePayload._id}`);
       }
       res.status(200).send(responsePayload);
     });
@@ -149,7 +153,7 @@ export class ControllerFactory<
     postprocess = async (req, res, next, payload) => payload,
     preprocess = async (req, res, next, payload) => payload,
   }: UpdateMethodProps<typeof this.Model, typeof this.documentInstance>) {
-    const uuid = randomUUID()
+    const uuid = randomUUID();
     const validation = Validate.queryAndBody({ uuid, query, body });
     const exec = catchAsync(async (req, res, next) => {
       let responsePayload: any = "OK";
@@ -173,9 +177,7 @@ export class ControllerFactory<
         responsePayload =
           (await postprocess(req, res, next, responsePayload)) ??
           responsePayload;
-        log.info(
-          `New ${this.Model.modelName} created: ${responsePayload._id}`,
-        );
+        log.info(`New ${this.Model.modelName} created: ${responsePayload._id}`);
       }
       res.status(200).send(responsePayload);
     });

@@ -2,23 +2,20 @@ import { ControllerFactory } from "@factory/controller-factory";
 import JoiSchema from "@utils/joi-schemas";
 import Branch, { IBranch, IBranchPublic } from "@models/branch-model";
 import { AppError, catchAsync, log } from "@utils";
-import Joi from "joi";
 import { Model } from "mongoose";
 import { Upload } from "@utils/upload";
+import Joi from "joi";
 
 export type FolderDocument = IBranchPublic<{ cover?: string }>;
 export const FolderModel = Branch as unknown as Model<FolderDocument, IBranch>;
 
 const Controller = new ControllerFactory(FolderModel);
 
-const notSystem = /system/i; // Case-insensitive regex to match "system"
-
 export const getOneFolder = Controller.getOne({
-  key: "name",
+  key: "slug",
   query: {
-    name: {
-      schema: JoiSchema.name.label("Folder name"),
-    },
+    slug: JoiSchema.name.label("Folder name"),
+    ignore_v: Joi.bool().default(false),
   },
   populate: [
     "createdBy",
@@ -28,20 +25,49 @@ export const getOneFolder = Controller.getOne({
         "name details",
         {
           path: "branch",
-          select: { id: 1, name: 1, details: 1 },
+          select: { _id: 1, name: 1, details: 1 },
         },
       ],
     },
     "branches",
   ],
+  postprocess: (req, res, next, payload) => {
+    if (!req.query?.ignore_v)
+      payload
+        .updateOne({ $inc: { views: 1 } })
+        .then(() => log.debug(`branch "${payload?.name}" views updated`));
+  },
 });
 
 export const getAllFolder = Controller.getAll({
-  query: {},
+  query: {
+    branch: JoiSchema._id.label("Folder id").optional(),
+    ignore_v: Joi.bool().default(false),
+  },
   preprocess: (req, res, next, payload) => {
     if (!payload["system"]) return { ...payload, system: false };
   },
+  sort: ["createdAt", "views"],
   pagination: true,
+  populate: [{ path: "branch", select: "_id name details" }, "nodes"],
+  postprocess: (req, res, next, payload) => {
+    if (req?.query?.slug && !req.query?.ignore_v)
+      payload
+        .updateOne({ $inc: { views: 1 } })
+        .then(() => log.debug(`branch "${payload?.name}" views updated`));
+  },
+});
+
+// get all folders without a "branch"
+export const getRootFolders = Controller.getAll({
+  query: {},
+  pagination: true,
+  sort: ["createdAt", "views"],
+  operation: async (req, res, next, Model) => {
+    console.log(req.session);
+
+    return await Model.find({ branch: null });
+  },
   populate: [{ path: "branch", select: "_id name details" }, "nodes"],
 });
 
@@ -68,26 +94,11 @@ export const postOneFolder = Controller.postOne({
   preprocess: (req, res, next, payload) => {
     return { ...payload, createdBy: req.session.user!._id };
   },
-  postprocess: (req, res, next, payload) => {
-    FolderModel.findByIdAndUpdate(payload.branch, {
-      $push: {
-        branches: payload._id,
-      },
-    }).then((doc) => {
-      log.info(
-        `branch ${payload.name} appened to branch "${
-          doc?.name || payload.branch
-        }"`
-      );
-    });
-  },
 });
 
 export const deleteOneFolder = Controller.getOne({
   query: {
-    name: {
-      schema: JoiSchema.name,
-    },
+    name: JoiSchema.name,
   },
   operation: async (req, res, next, Model) => {
     const folder = await FolderModel.findOneAndDelete({
@@ -100,7 +111,7 @@ export const deleteOneFolder = Controller.getOne({
 export const updateOneFolder = Controller.updateOne({
   key: "_id",
   query: {
-    _id: JoiSchema._id,
+    _id: JoiSchema._id.label("Folder id"),
   },
   body: {
     name: {

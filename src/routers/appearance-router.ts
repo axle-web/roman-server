@@ -11,7 +11,7 @@ import {
 import { protect } from "@middlewares";
 import { Router } from "express";
 
-const router = Router();
+const router: Router = Router();
 router.get("/", getAppData);
 
 router.post("/swiperslide", protect("editor"), postOneSlide);

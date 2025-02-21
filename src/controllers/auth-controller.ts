@@ -1,7 +1,7 @@
 import User from "@models/user-model";
 import { ControllerFactory } from "@factory/controller-factory";
 import JoiSchema from "@utils/joi-schemas";
-import { AppError } from "@utils";
+import { AppError, catchAsync } from "@utils";
 
 const Controller = new ControllerFactory(User);
 
@@ -20,7 +20,7 @@ export const logout = Controller.getOne({
   },
 });
 
-export const login = Controller.postOne({
+export const login = Controller.updateOne({
   body: {
     email: {
       schema: JoiSchema.email,
@@ -43,12 +43,12 @@ export const login = Controller.postOne({
       throw AppError.createAuthenticationError(
         "This username or password is incorrect"
       );
-    req.session.user = user.shear("password") as any
+    req.session.user = user.shear("password") as any;
     return req.session.user;
   },
 });
 
-export const register = Controller.postOne({
+export const register = Controller.updateOne({
   body: {
     name: {
       schema: JoiSchema.username.label("name"),

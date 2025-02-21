@@ -1,12 +1,12 @@
 import {
-    getAllNode,
-    getOneNode,
-    postOneNode,
+  getAllNode,
+  getOneNode,
+  postOneNode,
 } from "@controllers/node-controller";
 import { protect } from "@middlewares";
 import { Router } from "express";
 
-const router = Router();
+const router: Router = Router();
 router.get("/", getOneNode);
 router.post("/", protect("editor"), postOneNode);
 router.get("/all", getAllNode);

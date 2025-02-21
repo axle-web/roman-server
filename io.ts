@@ -2,7 +2,12 @@ import { Server } from "socket.io";
 import { sessionMiddleware } from "@middlewares";
 import { log } from "@utils";
 import socketFindHandlers from "src/socket-controllers";
-import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from "@ctypes/socket";
+import {
+  ClientToServerEvents,
+  InterServerEvents,
+  ServerToClientEvents,
+  SocketData,
+} from "@ctypes/socket";
 const wrap = (middleware: any) => (socket: any, next: () => any) =>
   middleware(socket.request, {}, next);
 
@@ -13,7 +18,7 @@ const IO = (server: any) => {
     InterServerEvents,
     SocketData
   >(server, {
-    // cors: { origin: process.env.APP_URL!.split(","), credentials: true },
+    cors: { origin: process.env.APP_URL!.split(","), credentials: true },
   });
   io.use(wrap(sessionMiddleware));
   io.on("connection", async (socket) => {

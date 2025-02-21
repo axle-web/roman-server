@@ -6,9 +6,9 @@ dotenv.config({
       ? path.join(process.cwd(), ".env.local")
       : path.join(process.cwd(), ".env.production"),
 });
-import helmet from 'helmet'
+import helmet from "helmet";
 import cors from "cors";
-import express from "express";
+import express, { type Express } from "express";
 import bodyParser from "body-parser";
 import { globalErrorHandler, sessionMiddleware } from "@middlewares";
 import {
@@ -23,19 +23,19 @@ import {
   appearanceRouter,
 } from "@routers";
 import rateLimit from "express-rate-limit";
-const app = express();
+const app: express.Express = express();
 const limiter = rateLimit({
   max: 250, // Limit each IP to 100 requests per `window` (here, per 1 minutes),
   standardHeaders: "draft-7", // draft-6: RateLimit-* headers; draft-7: combined RateLimit header
   legacyHeaders: false, // X-RateLimit-* headers
 });
 
-app.disable('x-powered-by')
+app.disable("x-powered-by");
 app.use("/api", limiter);
-app.use('/api', helmet())
+app.use("/api", helmet());
 app.use(
   cors({
-    // origin: process.env.APP_URL ? process.env.APP_URL.split(",") : "*",
+    origin: process.env.APP_URL ? process.env.APP_URL.split(",") : "*",
     credentials: true, // Include credentials (cookies) in the request
   })
 );
@@ -61,7 +61,6 @@ app.use("/api/v1/image", imageRouter);
 app.use("/api/v1/folder", folderRouter);
 app.use("/api/v1/admin/dashboard", dashboardRouter);
 app.use("/api/v1/appearance", appearanceRouter);
-
 
 app.use(globalErrorHandler);
 

@@ -30,6 +30,7 @@ namespace Multer {
         next();
       });
     });
+    
   export const uploadMany = ({
     name,
     mimetypes,

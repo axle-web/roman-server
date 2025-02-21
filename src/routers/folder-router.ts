@@ -2,6 +2,7 @@ import {
   deleteOneFolder,
   getAllFolder,
   getOneFolder,
+  getRootFolders,
   postOneFolder,
   sampleFolders,
   updateOneFolder,
@@ -9,11 +10,12 @@ import {
 import { protect } from "@middlewares";
 import { Router } from "express";
 
-const router = Router();
+const router: Router = Router();
 
 router.get("/", getOneFolder);
 router.get("/all", getAllFolder);
 router.get("/sample", sampleFolders);
+router.get("/root", getRootFolders);
 
 router.post("/", protect("editor"), postOneFolder);
 router.put("/", protect("editor"), updateOneFolder);

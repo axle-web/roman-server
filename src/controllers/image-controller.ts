@@ -10,33 +10,38 @@ import { Upload } from "@utils/upload";
 
 export type ImageDocument = INodePublic<{
   cover: string;
-  height?: string;
-  width?: string;
-  depth?: string;
+  dimensions?: {
+    height?: string;
+    width?: string;
+    depth?: string;
+    on_wall?: string;
+    on_ceiling?: string;
+  };
 }>;
 
 export const ImageModel = Node as unknown as Model<ImageDocument, INodeModel>;
 
 const Controller = new ControllerFactory(ImageModel);
 
-const notSystem = /system/i; // Case-insensitive regex to match "system"
-
 export const getOneImage = Controller.getOne({
-  key: "name",
+  key: "slug",
   query: {
-    name: {
-      schema: JoiSchema.name,
-    },
+    slug: JoiSchema.name.label("Image name"),
   },
-  populate: ["branch"],
+  populate: [{ path: "branch", select: "_id name details path" }],
 });
 
 export const getAllImage = Controller.getAll({
-  pagination: true,
-  populate: [{ path: "branch", select: "_id name" }],
-  preprocess: (req, res, next, payload) => {
-    if (!payload["system"]) return { ...payload, system: false };
+  query: {
+    branch: JoiSchema._id.label("Folder id").optional(),
+    ignore_v: Joi.bool().default(false),
   },
+  pagination: true,
+  sort: ["createdAt", "views"],
+  populate: [{ path: "branch", select: "_id name" }],
+  // preprocess: (req, res, next, payload) => {
+  //   if (!payload["system"]) return { ...payload, system: false };
+  // },
 });
 
 export const postOneImage = Controller.postOne({
@@ -60,52 +65,33 @@ export const postOneImage = Controller.postOne({
     },
     length: {
       schema: Joi.number().min(1),
-      setAs: "details.length",
+      setAs: "details.dimensions.length",
     },
     height: {
       schema: Joi.number().min(1),
-      setAs: "details.height",
+      setAs: "details.dimensions.height",
     },
     depth: {
       schema: Joi.number().min(1),
-      setAs: "details.depth",
+      setAs: "details.dimensions.depth",
     },
     width: {
       schema: Joi.number().min(1),
-      setAs: "details.width",
+      setAs: "details.dimensions.width",
     },
     on_wall: {
       schema: Joi.number().min(1),
-      setAs: "details.on_wall",
+      setAs: "details.dimensions.on_wall",
     },
     on_ceiling: {
       schema: Joi.number().min(1),
-      setAs: "details.on_ceiling",
+      setAs: "details.dimensions.on_ceiling",
     },
   },
   preprocess: (req, res, next, payload) => ({
     ...payload,
     createdBy: req.session.user!._id,
   }),
-  postprocess: (req, res, next, payload) => {
-    FolderModel.findById(payload.branch).then(async (doc) => {
-      doc?.nodes.push(payload._id as any);
-      if (doc?.details) {
-        if (!doc?.details?.cover) {
-          doc.details.cover = payload.details.cover;
-        }
-      } else {
-        doc!.details = { cover: payload.details.cover };
-      }
-      doc?.save().then((document) => {
-        log.info(
-          `${payload.name} appened to branch "${
-            document?.name || payload.branch
-          }"`
-        );
-      });
-    });
-  },
 });
 
 export const deleteOneImage = Controller.getOne({
@@ -121,11 +107,12 @@ export const deleteOneImage = Controller.getOne({
   },
 });
 
-export const updateOneImage = Controller.postOne({
+export const updateOneImage = Controller.updateOne({
+  key: "_id",
+  query: {
+    _id: JoiSchema._id.label("Image id"),
+  },
   body: {
-    name: {
-      schema: JoiSchema.name,
-    },
     cover: {
       mimetypes: ["IMAGE"],
       count: 1,
@@ -157,19 +144,6 @@ export const updateOneImage = Controller.postOne({
       setAs: "details.on_ceiling",
     },
   },
-  operation: async (req, res, next, Model) => {
-    if (!req["query"].id || req["query"].id == undefined)
-      throw AppError.createError(
-        400,
-        "Folder id missing from request",
-        "ValidationError"
-      );
-    const image = await ImageModel.findByIdAndUpdate(
-      req["query"].id,
-      req["body"]
-    );
-    return image;
-  },
 });
 
 export const sampleImages = catchAsync(async (req, res, next) => {
@@ -187,9 +161,7 @@ export const sampleImages = catchAsync(async (req, res, next) => {
   let data = await ImageModel.aggregate([
     {
       $match: {
-        type: {
-          $not: notSystem,
-        },
+        system: false,
       },
     },
     {

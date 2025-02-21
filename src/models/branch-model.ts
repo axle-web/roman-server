@@ -1,5 +1,5 @@
-import { AppError } from "@utils";
-import { Model, Schema, Types, model } from "mongoose";
+import { AppError, log } from "@utils";
+import { Model, Schema, Types, isValidObjectId, model } from "mongoose";
 export interface IBranch<Details extends {} = {}> {
   _id: Types.ObjectId;
   name: string;
@@ -9,6 +9,9 @@ export interface IBranch<Details extends {} = {}> {
   createdBy: Types.ObjectId;
   details: Details;
   system: boolean;
+  views: number;
+  path: string;
+  slug: string;
 }
 
 export interface IBranchPublic<Details extends {} = {}>
@@ -23,6 +26,7 @@ export type BranchModel = Model<IBranch, {}, BranchModelMethods>;
 
 const branchSchema = new Schema<IBranch, BranchModel, BranchModelMethods>(
   {
+    slug: { type: String, unique: true, slug: "name" },
     name: {
       type: String,
       unique: true,
@@ -36,15 +40,45 @@ const branchSchema = new Schema<IBranch, BranchModel, BranchModelMethods>(
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      select: false,
     },
     details: { type: Object },
     system: {
       type: Boolean,
       default: false,
+      select: false,
     },
+    views: { type: Number, default: 0 },
+    path: { type: String },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    virtuals: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
+
+branchSchema.virtual("branchCount").get(function () {
+  return this.branches ? this.branches.length : 0;
+});
+
+branchSchema.virtual("nodeCount").get(function () {
+  return this.nodes ? this.nodes.length : 0;
+});
+
+branchSchema.pre("save", function (next) {
+  if (!this.isNew || !this.branch) return next();
+  model("Branch")
+    .findByIdAndUpdate(this.branch, {
+      $push: { branches: this._id },
+    })
+    .then((doc) => {
+      log.debug(`branch ${this.name} appended to branch "${doc?.name}"`);
+      this.path = `${doc.path || ""}/${doc.slug}`;
+    });
+  next();
+});
 
 branchSchema.post("findOneAndDelete", function (doc: IBranch<false>) {
   if (!doc) throw AppError.createDocumentNotFoundError("branch");
