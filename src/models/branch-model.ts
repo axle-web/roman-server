@@ -67,16 +67,13 @@ branchSchema.virtual("nodeCount").get(function () {
   return this.nodes ? this.nodes.length : 0;
 });
 
-branchSchema.pre("save", function (next) {
+branchSchema.pre("save", async function (next) {
   if (!this.isNew || !this.branch) return next();
-  model("Branch")
-    .findByIdAndUpdate(this.branch, {
-      $push: { branches: this._id },
-    })
-    .then((doc) => {
-      log.debug(`branch ${this.name} appended to branch "${doc?.name}"`);
-      this.path = `${doc.path || ""}/${doc.slug}`;
-    });
+  const doc = await model("Branch").findByIdAndUpdate(this.branch, {
+    $push: { branches: this._id },
+  });
+  log.debug(`branch ${this.name} appended to branch "${doc?.name}"`);
+  this.path = `${doc.path || ""}/${doc.name}`;
   next();
 });
 

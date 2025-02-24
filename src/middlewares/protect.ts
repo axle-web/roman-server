@@ -9,7 +9,7 @@ const protect = (role: UserRoleNames = "user") =>
     if (!session?.user?._id) {
       throw AppError.AuthenticationError;
     }
-    const user = await User.findById(session?.user?._id);
+    const user = await User.findById(session?.user?._id).select("+role");
     if (!user) {
       delete session.user;
       throw AppError.AuthenticationError;

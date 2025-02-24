@@ -85,27 +85,28 @@ const socketFindHandlers = (
         name: { $regex: name, $options: "i" },
         system: includeSystem,
       };
-      const findFiles = Node.find(payload)
-        .populate({ path: "branch", select: "_id name" })
-        .limit(20);
-      const findFolders = Branch.find(payload).limit(20) as any;
-      Promise.all([findFiles, findFolders])
-        .then(([files, folders]) => {
-          console.log(files, folders);
-          callback({ data: { images: files, folders } });
-        })
-        .catch((error) => {
-          console.log(error);
-          // Handle errors here
-          throw AppError.createError(
-            500,
-            error.message,
-            "SocketFindHandlersError"
-          );
-        });
-    } catch (e: any) {
-      console.log(e);
-      callback({ error: { message: e.message, status: 500, type: "FAIL" } });
+      const [files, folders] = await Promise.all([
+        Node.find(payload)
+          .populate({ path: "branch", select: "_id name details slug" })
+          .limit(20),
+        Branch.find(payload)
+          .limit(20)
+          .select("_id name details slug views path"),
+      ]);
+      callback({
+        data: {
+          images: files,
+          folders: folders as unknown as FolderDocument[],
+        },
+      });
+    } catch (error: any) {
+      callback({
+        error: {
+          message: error.message,
+          status: 500,
+          type: "FAIL",
+        },
+      });
     }
   });
 };

@@ -43,9 +43,7 @@ export const getAllFolder = Controller.getAll({
   query: {
     branch: JoiSchema._id.label("Folder id").optional(),
     ignore_v: Joi.bool().default(false),
-  },
-  preprocess: (req, res, next, payload) => {
-    if (!payload["system"]) return { ...payload, system: false };
+    system: Joi.bool().default(false),
   },
   sort: ["createdAt", "views"],
   pagination: true,
@@ -63,11 +61,7 @@ export const getRootFolders = Controller.getAll({
   query: {},
   pagination: true,
   sort: ["createdAt", "views"],
-  operation: async (req, res, next, Model) => {
-    console.log(req.session);
-
-    return await Model.find({ branch: null });
-  },
+  preprocess: (req, res, next, payload) => ({ ...payload, branch: null }),
   populate: [{ path: "branch", select: "_id name details" }, "nodes"],
 });
 

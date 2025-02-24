@@ -94,7 +94,6 @@ export class ControllerFactory<
           .sort(req["sort"])
           .limit(req["pagination"]!.limit)
           .skip((req["pagination"]!.page - 1) * req["pagination"]!.limit);
-        console.log(items);
         if (!items)
           throw AppError.createDocumentNotFoundError(
             `${this.Model.modelName.toUpperCase()}`
