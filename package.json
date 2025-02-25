@@ -3,12 +3,12 @@
   "version": "0.0.6",
   "description": "Server for roman-classic.com",
   "scripts": {
-    "start": "pnpm build && node dist/esm/server.js",
-    "dev": "nodemon ./server.ts --ext js,json,ts",
-    "test": "node -r ts-node/register -r tsconfig-paths/register dist/server.js",
+    "start": "pnpm build && NODE_ENV=production node dist/esm/server.js",
+    "dev": "NODE_ENV=development nodemon ./server.ts --ext js,json,ts",
+    "test": "NODE_ENV=test node -r ts-node/register -r tsconfig-paths/register dist/server.js",
     "build:types": "tsc --emitDeclarationOnly --declarationDir dist/esm && tsc-alias",
     "build:dist": "tsc && tsc-alias",
-    "build": "pnpm build:dist && pnpm build:types"
+    "build": "NODE_ENV=production pnpm build:dist && NODE_ENV=production pnpm build:types"
   },
   "author": "Ahmed Essam",
   "license": "ISC",

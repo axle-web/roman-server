@@ -16,7 +16,7 @@ const getOne = Controller.getOne({
   query: {},
 });
 
-const postOne = Controller.updateOne({
+const postOne = Controller.postOne({
   body: {
     name: {
       schema: JoiSchema.name,

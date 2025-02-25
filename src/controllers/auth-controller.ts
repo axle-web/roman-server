@@ -20,7 +20,7 @@ export const logout = Controller.getOne({
   },
 });
 
-export const login = Controller.updateOne({
+export const login = Controller.postOne({
   body: {
     email: {
       schema: JoiSchema.email,
@@ -48,7 +48,7 @@ export const login = Controller.updateOne({
   },
 });
 
-export const register = Controller.updateOne({
+export const register = Controller.postOne({
   body: {
     name: {
       schema: JoiSchema.username.label("name"),

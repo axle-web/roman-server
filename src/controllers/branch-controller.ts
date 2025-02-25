@@ -17,7 +17,7 @@ export const getOneBranch = Controller.getOne({
 
 export const getAllBranches = Controller.getAll({});
 
-export const postOneBranch = Controller.updateOne({
+export const postOneBranch = Controller.postOne({
   body: {
     name: {
       schema: JoiSchema.name,

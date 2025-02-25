@@ -10,13 +10,13 @@ export type SortField = string | string[];
 export type PaginationField =
   | boolean
   | {
-    /**Max page number to request */
-    page?: number;
-    /**Limit the number of documents requested. This is also used to determine the number of documents per page.
-     * Defaults to 20
-     */
-    limit?: number;
-  };
+      /**Max page number to request */
+      page?: number;
+      /**Limit the number of documents requested. This is also used to determine the number of documents per page.
+       * Defaults to 20
+       */
+      limit?: number;
+    };
 /**
  * Represents a field for population in Mongoose queries.
  */
@@ -132,18 +132,20 @@ type MethodPropertyFileOptions = {
 /**
  * Represents options for handling property values in an HTTP method.
  */
-type MethodPropertyValueOptions = Joi.Schema | {
-  /**
-   * The schema for validating the property value.
-   */
-  schema: Joi.Schema;
-  /**
-   * Function to validate the property value.
-   * @param val - The property value.
-   * @returns An error or void (no error).
-   */
-  validate?: (val: any) => Error | void | Promise<void | Error>;
-}
+type MethodPropertyValueOptions =
+  | Joi.Schema
+  | {
+      /**
+       * The schema for validating the property value.
+       */
+      schema: Joi.Schema;
+      /**
+       * Function to validate the property value.
+       * @param val - The property value.
+       * @returns An error or void (no error).
+       */
+      validate?: (val: any) => Error | void | Promise<void | Error>;
+    };
 
 /**
  * Represents options for handling property values in an HTTP method.
@@ -235,7 +237,6 @@ type PostMethodProps<MongooseModel extends any, DocumentType extends any> = {
    */
   body?: MethodProperties<"body">;
 } & GenericMethodOptions<MongooseModel, DocumentType>;
-
 
 type UpdateMethodProps<MongooseModel extends any, DocumentType extends any> = {
   query: MethodProperties;

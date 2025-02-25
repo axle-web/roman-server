@@ -21,7 +21,7 @@ export const getAllNode = Controller.getAll({
   pagination: true,
 });
 
-export const postOneNode = Controller.updateOne({
+export const postOneNode = Controller.postOne({
   body: {
     name: {
       schema: JoiSchema.name,

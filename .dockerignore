@@ -8,3 +8,4 @@ docker-compose.yml
 .devcontainer
 .vscode
 .configs
+.env.local

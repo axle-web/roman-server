@@ -7,10 +7,10 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
 # Copy package files
-COPY package.json pnpm-lock.yaml* ./
+COPY package.json pnpm-lock.yaml* .env.production ./
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 # Copy source code
 COPY . .
@@ -29,9 +29,10 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 # Copy built files from builder
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package.json .
+COPY --from=builder /app/.env.production .env.production
 
 # Install production dependencies only
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --prod
 
 # Expose port
 EXPOSE 3000

@@ -52,42 +52,43 @@ export const getAppData = catchAsync(async (req, res, next) => {
   res.status(200).send(data);
 });
 
-export const postOneSlide = NodeController.updateOne({
-  body: {
-    title: { schema: Joi.string(), setAs: "details.title" },
-    subTitle: { schema: Joi.string(), setAs: "details.subTitle" },
-    cover: {
-      mimetypes: ["IMAGE"],
-      count: 1,
-      upload: Upload.envDynamicUpload,
-      setAs: "details.cover",
-    },
-    buttonLabel: {
-      schema: Joi.string(),
-      setAs: "details.buttonLabel",
-    },
-    buttonHref: {
-      schema: Joi.string(),
-      setAs: "details.buttonHref",
-    },
-  },
-  preprocess: (req, res, next, payload) => ({
-    name: `swiper-slide-${req.query?.["title"] || ""}-${
-      Math.floor(Math.random() * 10000) + 1
-    }`,
-    branch: new Types.ObjectId(appearanceCache["swiper"]._id),
-    createdBy: req.session.user!._id,
-    // type: "swiper-slide-system",
-    ...payload,
-  }),
-  postprocess: (req, res, next, payload) => {
-    FolderModel.findByIdAndUpdate(payload.branch, {
-      $push: { nodes: payload._id },
-    }).then(async (doc) => {
-      log.info(`${payload.name} appended to "${doc?.name || payload.branch}"`);
-    });
-  },
-});
+// export const postOneSlide = NodeController.updateOne({
+//   key:"_id",
+//   body: {
+//     title: { schema: Joi.string(), setAs: "details.title" },
+//     subTitle: { schema: Joi.string(), setAs: "details.subTitle" },
+//     cover: {
+//       mimetypes: ["IMAGE"],
+//       count: 1,
+//       upload: Upload.envDynamicUpload,
+//       setAs: "details.cover",
+//     },
+//     buttonLabel: {
+//       schema: Joi.string(),
+//       setAs: "details.buttonLabel",
+//     },
+//     buttonHref: {
+//       schema: Joi.string(),
+//       setAs: "details.buttonHref",
+//     },
+//   },
+//   preprocess: (req, res, next, payload) => ({
+//     name: `swiper-slide-${req.query?.["title"] || ""}-${
+//       Math.floor(Math.random() * 10000) + 1
+//     }`,
+//     branch: new Types.ObjectId(appearanceCache["swiper"]._id),
+//     createdBy: req.session.user!._id,
+//     // type: "swiper-slide-system",
+//     ...payload,
+//   }),
+//   postprocess: (req, res, next, payload) => {
+//     FolderModel.findByIdAndUpdate(payload.branch, {
+//       $push: { nodes: payload._id },
+//     }).then(async (doc) => {
+//       log.info(`${payload.name} appended to "${doc?.name || payload.branch}"`);
+//     });
+//   },
+// });
 
 export const updateFolderBoxes = FolderController.updateOne({
   key: "name",

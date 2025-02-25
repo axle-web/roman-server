@@ -12,7 +12,7 @@ export const getOneUser = Controller.getOne({
   },
 });
 
-export const createOneUser = Controller.updateOne({
+export const createOneUser = Controller.postOne({
   body: {
     name: {
       schema: JoiSchema.username,

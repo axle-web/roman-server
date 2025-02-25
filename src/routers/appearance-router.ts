@@ -1,6 +1,5 @@
 import {
   getAppData,
-  postOneSlide,
   updateBanner as updateInfoBanner,
   updateFooter,
   updateContactUs,
@@ -14,7 +13,7 @@ import { Router } from "express";
 const router: Router = Router();
 router.get("/", getAppData);
 
-router.post("/swiperslide", protect("editor"), postOneSlide);
+// router.post("/swiperslide", protect("editor"), postOneSlide);
 
 router.put("/file_carousel", protect("editor"), updateFileCarousel);
 router.put("/folder_boxes", protect("editor"), updateFolderBoxes);
