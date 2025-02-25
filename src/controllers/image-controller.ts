@@ -5,7 +5,6 @@ import Node, { INodeModel, INodePublic } from "@models/node-model";
 import { AppError, catchAsync, log } from "@utils";
 import Joi from "joi";
 import { Model } from "mongoose";
-import { FolderModel } from "./folder-controller";
 import { Upload } from "@utils/upload";
 
 export type ImageDocument = INodePublic<{
