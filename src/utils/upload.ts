@@ -11,5 +11,7 @@ export namespace Upload {
     })}`;
   };
   export const envDynamicUpload =
-    process.env.NODE_ENV === "production" ? toSpaces : toBase64;
+    process.env.NODE_ENV === "production" || process.env.NODE_ENV === "staging"
+      ? toSpaces
+      : toBase64;
 }

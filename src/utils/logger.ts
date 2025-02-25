@@ -1,10 +1,19 @@
 import path from "path";
 import { config } from "dotenv";
+const env = process.env.NODE_ENV as
+  | "development"
+  | "production"
+  | "staging"
+  | undefined;
+let configPath = "";
+if (env === "production")
+  configPath = path.join(process.cwd(), ".env.production");
+else if (env === "staging")
+  configPath = path.join(process.cwd(), ".env.staging");
+else configPath = path.join(process.cwd(), ".env.local");
+
 config({
-  path:
-    process.env.NODE_ENV === "production"
-      ? path.join(process.cwd(), ".env.production")
-      : path.join(process.cwd(), ".env.local"),
+  path: configPath,
 });
 import winston from "winston";
 import WinstonLoki from "winston-loki";

@@ -74,7 +74,7 @@ export const postOneFolder = Controller.postOne({
       mimetypes: ["IMAGE"],
       count: 1,
       setAs: "details.cover",
-      upload: Upload.envDynamicUpload,
+      upload: async (file) => await Upload.envDynamicUpload(file),
     },
     branch: {
       schema: JoiSchema._id.label("Folder id").optional(),

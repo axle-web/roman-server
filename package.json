@@ -4,6 +4,7 @@
   "description": "Server for roman-classic.com",
   "scripts": {
     "start": "pnpm build && NODE_ENV=production node dist/esm/server.js",
+    "staging": "pnpm build && NODE_ENV=staging node dist/esm/server.js",
     "dev": "NODE_ENV=development nodemon ./server.ts --ext js,json,ts",
     "test": "NODE_ENV=test node -r ts-node/register -r tsconfig-paths/register dist/server.js",
     "build:types": "tsc --emitDeclarationOnly --declarationDir dist/esm && tsc-alias",

@@ -38,7 +38,9 @@ const uploadtoSpaces = (
    * processAffix --> SPACES_PATH_DEFAULT_PROCESS_AFFIX
    * filename
    */
-  let keyPath = `${process.env.NODE_ENV || "development"}/${
+  let keyPath = `${
+    process.env.SPACES_ROOT_FOLDER ?? process.env.NODE_ENV ?? "development"
+  }/${
     pathAffix || process.env.SPACES_PATH_DEFAULT_PROCESS_AFFIX
       ? `${pathAffix || process.env.SPACES_PATH_DEFAULT_PROCESS_AFFIX}--`
       : ""
@@ -63,6 +65,7 @@ const uploadtoSpaces = (
           }); // Resolve the Promise with the result
         })
         .catch((error) => {
+          console.log(error);
           // Handle any errors and reject the Promise if necessary
           cb(error);
         });
