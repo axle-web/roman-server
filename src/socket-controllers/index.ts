@@ -9,7 +9,6 @@ import {
 import { Socket } from "socket.io";
 import { FolderDocument, ImageDocument } from "@ctypes";
 import { IProdAppError } from "@middlewares";
-import { AppError } from "@utils";
 
 interface Payload<T extends any> {
   data?: T;
@@ -28,7 +27,11 @@ export interface IFindHandlers {
     ) => any
   ) => void;
   find_any: (
-    { name, includeSystem }: { name: string; includeSystem?: boolean },
+    {
+      name,
+      includeSystem,
+      branch,
+    }: { name?: string; includeSystem?: boolean; branch?: string },
     callback: (
       payload: Payload<{
         images: (ImageDocument | INode<Record<string, any>>)[];
@@ -54,7 +57,9 @@ const socketFindHandlers = (
           name: { $regex: name, $options: "i" },
           system: includeSystem,
         };
-        const files = await Node.find(payload).limit(20);
+        const files = await Node.find(payload)
+          .populate({ path: "branch", populate: "_id name slug details" })
+          .limit(20);
         callback({ data: files });
       } catch (e: any) {
         console.log(e);
@@ -70,9 +75,9 @@ const socketFindHandlers = (
           name: { $regex: name, $options: "i" },
           system: includeSystem,
         };
-        const folders = (await Branch.find(payload).limit(
-          20
-        )) as unknown as FolderDocument[];
+        const folders = (await Branch.find(payload)
+          .populate({ path: "branch", populate: "_id name slug details" })
+          .limit(20)) as unknown as FolderDocument[];
         callback({ data: folders });
       } catch (e: any) {
         callback({ error: { message: e.message, status: 500, type: "FAIL" } });
@@ -85,17 +90,19 @@ const socketFindHandlers = (
         name: { $regex: name, $options: "i" },
         system: includeSystem,
       };
-      const [files, folders] = await Promise.all([
+      const queries = [
         Node.find(payload)
           .populate({ path: "branch", select: "_id name details slug" })
           .limit(20),
         Branch.find(payload)
           .limit(20)
           .select("_id name details slug views path"),
-      ]);
+      ];
+
+      const [files, folders] = await Promise.all(queries);
       callback({
         data: {
-          images: files,
+          images: files as unknown as ImageDocument[],
           folders: folders as unknown as FolderDocument[],
         },
       });
