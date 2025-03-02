@@ -27,7 +27,7 @@ export const getOneImage = Controller.getOne({
   query: {
     slug: JoiSchema.name.label("Image name"),
   },
-  populate: [{ path: "branch", select: "_id name details path" }],
+  populate: [{ path: "branch", select: "_id name details path" }, "tags"],
 });
 
 export const getAllImage = Controller.getAll({
@@ -37,10 +37,7 @@ export const getAllImage = Controller.getAll({
   },
   pagination: true,
   sort: ["createdAt", "views"],
-  populate: [{ path: "branch", select: "_id name" }],
-  // preprocess: (req, res, next, payload) => {
-  //   if (!payload["system"]) return { ...payload, system: false };
-  // },
+  populate: [{ path: "branch", select: "_id name" }, "tags"],
 });
 
 export const postOneImage = Controller.postOne({
@@ -86,6 +83,7 @@ export const postOneImage = Controller.postOne({
       schema: Joi.number().min(1),
       setAs: "details.dimensions.on_ceiling",
     },
+    tags: Joi.array().items(JoiSchema._id).optional(),
   },
   preprocess: (req, res, next, payload) => ({
     ...payload,
@@ -142,6 +140,7 @@ export const updateOneImage = Controller.updateOne({
       schema: Joi.number().min(1),
       setAs: "details.on_ceiling",
     },
+    tags: Joi.array().items(JoiSchema._id).optional(),
   },
 });
 

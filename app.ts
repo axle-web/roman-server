@@ -18,11 +18,10 @@ import {
   folderRouter,
   imageRouter,
   nodeRouter,
-  testRouter,
   userRouter,
-  appearanceRouter,
 } from "@routers";
 import rateLimit from "express-rate-limit";
+import tagRouter from "@routers/tag-router";
 const app: express.Express = express();
 const limiter = rateLimit({
   max: 250, // Limit each IP to 100 requests per `window` (here, per 1 minutes),
@@ -56,11 +55,10 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/node", nodeRouter);
 app.use("/api/v1/branch", branchRouter);
-// app.use("/api/v1/test", testRouter);
 app.use("/api/v1/image", imageRouter);
 app.use("/api/v1/folder", folderRouter);
 app.use("/api/v1/admin/dashboard", dashboardRouter);
-app.use("/api/v1/appearance", appearanceRouter);
+app.use("/api/v1/tag", tagRouter);
 
 app.use(globalErrorHandler);
 

@@ -1,13 +1,13 @@
 import { Server } from "socket.io";
 import { sessionMiddleware } from "@middlewares";
 import { log } from "@utils";
-import socketFindHandlers from "src/socket-controllers";
-import {
+import socketFindHandlers, {
   ClientToServerEvents,
   InterServerEvents,
   ServerToClientEvents,
   SocketData,
-} from "@ctypes/socket";
+} from "src/socket-controllers";
+import tagSocketHandlers from "src/socket-controllers/tag-socket-controller";
 const wrap = (middleware: any) => (socket: any, next: () => any) =>
   middleware(socket.request, {}, next);
 
@@ -38,6 +38,7 @@ const IO = (server: any) => {
     });
 
     socketFindHandlers(socket);
+    tagSocketHandlers(socket);
 
     socket.on("disconnect", async (reason) => {
       try {

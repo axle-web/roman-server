@@ -10,13 +10,16 @@ export interface INode<Details extends object = Record<string, unknown>> {
   details: Details;
   views: number;
   system: boolean;
+  // Node tags are independant from the branch (they are not inhereited)
+  tags: Types.ObjectId[];
 }
 
 export interface INodePublic<Details extends {}>
-  extends Omit<INode<Details>, "_id" | "system"> {
+  extends Omit<INode<Details>, "_id" | "system" | "tags"> {
   _id: string;
   createdAt: Date;
   updatedAt: Date;
+  tags: string[];
 }
 
 type NodeModelMethods = {};
@@ -52,6 +55,7 @@ const nodeSchema = new Schema<INode, INodeModel, NodeModelMethods>(
       default: false,
       select: false,
     },
+    tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
   },
   {
     timestamps: true,

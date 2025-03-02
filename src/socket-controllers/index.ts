@@ -1,19 +1,28 @@
 import Branch, { IBranchPublic } from "@models/branch-model";
 import Node, { INode } from "@models/node-model";
-import {
-  ClientToServerEvents,
-  InterServerEvents,
-  ServerToClientEvents,
-  SocketData,
-} from "@ctypes/socket";
 import { Socket } from "socket.io";
 import { FolderDocument, ImageDocument } from "@ctypes";
 import { IProdAppError } from "@middlewares";
+import { ITagSocketHandlers } from "./tag-socket-controller";
 
 interface Payload<T extends any> {
   data?: T;
   error?: IProdAppError;
 }
+export type ServerToClientEvents = {};
+
+export type ClientToServerEvents = IFindHandlers & ITagSocketHandlers;
+
+export type InterServerEvents = {};
+
+export type SocketData = {};
+
+export type ISocket = Socket<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  InterServerEvents,
+  SocketData
+>;
 
 export interface IFindHandlers {
   find_folders: (
@@ -41,14 +50,7 @@ export interface IFindHandlers {
   ) => void;
 }
 
-const socketFindHandlers = (
-  socket: Socket<
-    ClientToServerEvents,
-    ServerToClientEvents,
-    InterServerEvents,
-    SocketData
-  >
-) => {
+const socketFindHandlers = (socket: ISocket) => {
   socket.on(
     "find_images",
     async ({ name, includeSystem = false }, callback) => {

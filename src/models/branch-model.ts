@@ -12,13 +12,16 @@ export interface IBranch<Details extends {} = {}> {
   views: number;
   path: string;
   slug: string;
+  // Branch tags are inhereited from one folder to the next.
+  tags: Types.ObjectId[];
 }
 
 export interface IBranchPublic<Details extends {} = {}>
-  extends Omit<IBranch<Details>, "_id"> {
+  extends Omit<IBranch<Details>, "_id" | "tags" | "system"> {
   _id: string;
   createdAt: Date;
   updatedAt: Date;
+  tags: string[];
 }
 
 type BranchModelMethods = {};
@@ -50,6 +53,7 @@ const branchSchema = new Schema<IBranch, BranchModel, BranchModelMethods>(
     },
     views: { type: Number, default: 0 },
     path: { type: String },
+    tags: [{ type: Schema.Types.ObjectId, ref: "Tag" }],
   },
   {
     timestamps: true,
@@ -70,8 +74,9 @@ branchSchema.virtual("nodeCount").get(function () {
 branchSchema.pre("save", async function (next) {
   if (!this.isNew || !this.branch) return next();
   const doc = await model("Branch").findByIdAndUpdate(this.branch, {
-    $push: { branches: this._id },
+    $addToSet: { branches: this._id },
   });
+  // this.tags = doc?.tags || [];
   log.debug(`branch ${this.name} appended to branch "${doc?.name}"`);
   this.path = `${doc.path || ""}/${doc.name}`;
   next();

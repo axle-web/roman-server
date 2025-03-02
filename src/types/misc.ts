@@ -3,3 +3,7 @@ export enum FileMimes {
 }
 
 export type FileMimesTypes = keyof typeof FileMimes;
+
+export interface FixedLengthArray<L extends number, T> extends ArrayLike<T> {
+  length: L;
+}

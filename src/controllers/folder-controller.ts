@@ -22,14 +22,18 @@ export const getOneFolder = Controller.getOne({
     {
       path: "nodes",
       populate: [
-        "name details",
+        "name tags",
         {
           path: "branch",
           select: { _id: 1, name: 1, details: 1 },
         },
       ],
     },
-    "branches",
+    {
+      path: "branches",
+      populate: ["tags"],
+    },
+    "tags",
   ],
   postprocess: (req, res, next, payload) => {
     if (!req.query?.ignore_v)
@@ -47,7 +51,7 @@ export const getAllFolder = Controller.getAll({
   },
   sort: ["createdAt", "views"],
   pagination: true,
-  populate: [{ path: "branch", select: "_id name details" }, "nodes"],
+  populate: [{ path: "branch", select: "_id name details" }, "nodes", "tags"],
   postprocess: (req, res, next, payload) => {
     if (req?.query?.slug && !req.query?.ignore_v)
       payload
@@ -84,6 +88,7 @@ export const postOneFolder = Controller.postOne({
         if (!branch) return AppError.createDocumentNotFoundError("folder");
       },
     },
+    tags: Joi.array().items(JoiSchema._id).optional(),
   },
   preprocess: (req, res, next, payload) => {
     return { ...payload, createdBy: req.session.user!._id };
@@ -117,9 +122,7 @@ export const updateOneFolder = Controller.updateOne({
       setAs: "details.cover",
       upload: Upload.envDynamicUpload,
     },
-    // type: {
-    //   schema: Joi.string(),
-    // },
+    tags: Joi.array().items(JoiSchema._id).optional(),
   },
 });
 
