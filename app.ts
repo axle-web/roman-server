@@ -31,7 +31,7 @@ const limiter = rateLimit({
 });
 
 app.disable("x-powered-by");
-app.set("trust proxy", true);
+app.set("trust proxy", 1);
 app.use("/api", limiter);
 app.use("/api", helmet());
 app.use(
