@@ -30,6 +30,24 @@ export const getOneImage = Controller.getOne({
   populate: [{ path: "branch", select: "_id name details path" }, "tags"],
 });
 
+export const getAllImageUnique = Controller.getAll({
+  query: {
+    system: Joi.bool().default(false),
+  },
+  pagination: true,
+  sort: ["createdAt", "views"],
+  populate: [{ path: "branch", select: "_id name" }, "tags"],
+  postprocess: (req, res, next, payload) =>
+    payload &&
+    payload.length &&
+    payload.map((image) => ({
+      _id: image._id,
+      slug: image.slug,
+      branch: image.branch,
+      details: image.details,
+    })),
+});
+
 export const getAllImage = Controller.getAll({
   query: {
     branch: JoiSchema._id.label("Folder id").optional(),

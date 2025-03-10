@@ -11,6 +11,7 @@ namespace Multer {
     required,
     parse,
     upload,
+    async,
   }: uploadProps) =>
     catchAsync(async (req, res, next) => {
       multer(mimetypes).single(name)(req, res, async (err) => {
@@ -30,7 +31,7 @@ namespace Multer {
         next();
       });
     });
-    
+
   export const uploadMany = ({
     name,
     mimetypes,

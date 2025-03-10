@@ -27,9 +27,11 @@ const limiter = rateLimit({
   max: 250, // Limit each IP to 100 requests per `window` (here, per 1 minutes),
   standardHeaders: "draft-7", // draft-6: RateLimit-* headers; draft-7: combined RateLimit header
   legacyHeaders: false, // X-RateLimit-* headers
+  message: "Too many requests, please try again later.",
 });
 
 app.disable("x-powered-by");
+app.set("trust proxy", true);
 app.use("/api", limiter);
 app.use("/api", helmet());
 app.use(

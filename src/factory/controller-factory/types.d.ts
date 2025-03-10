@@ -127,6 +127,11 @@ type MethodPropertyFileOptions = {
   upload?: (
     file: Express.Multer.File
   ) => Promise<object | number | string> | object | number | string;
+
+  /**
+   * Wait for the file to be uploaded before parsing.
+   */
+  async?: boolean;
 };
 
 /**
@@ -220,7 +225,7 @@ type GetAllMethodProps<MongooseModel extends any, DocumentType extends any> = {
   populate?: PopulateField;
   sort?: SortField;
   pagination?: PaginationField;
-} & GenericMethodOptions<MongooseModel, DocumentType>;
+} & GenericMethodOptions<MongooseModel, DocumentType[]>;
 
 /**
  * Represents options for a "post" HTTP method.

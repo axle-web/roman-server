@@ -16,7 +16,7 @@ import Multer from "@utils/multer";
 import { Request } from "express";
 import Joi from "joi";
 
-const validationCache: Record<string, any> = {}
+const validationCache: Record<string, any> = {};
 namespace Validate {
   const validateFiles = (props: {
     [key: string]: MethodPropertyFileOptions;
@@ -27,7 +27,7 @@ namespace Validate {
       !fileProps[0][1].count ||
       fileProps[0][1].count === 1
     ) {
-      const [name, { mimetypes, required, parse, upload, count }] =
+      const [name, { mimetypes, required, parse, upload, count, async }] =
         fileProps[0];
       if (count && count > 1) {
         return Multer.uploadMany({
@@ -45,6 +45,7 @@ namespace Validate {
         required,
         parse,
         upload,
+        async,
       });
     } else {
       return catchAsync(async (req, res, next) => {
@@ -88,7 +89,7 @@ namespace Validate {
       if ((!props || Object.keys(props).length === 0) && !populate)
         return next();
       if (validationCache[uuid]) {
-        parsedProps = validationCache[uuid]
+        parsedProps = validationCache[uuid];
       } else {
         parsedProps = Parse.queryMethodProps(
           props || {},
@@ -96,9 +97,9 @@ namespace Validate {
           sort,
           pagination
         );
-        validationCache[uuid] = parsedProps
+        validationCache[uuid] = parsedProps;
       }
-      const { schemas, validations, populateMap } = parsedProps
+      const { schemas, validations, populateMap } = parsedProps;
       joiValidate(schemas, req.query);
       await optionalValidate(validations, req.query);
       if (populateMap) req["populate"] = populateMap as any;
@@ -110,10 +111,10 @@ namespace Validate {
     if (!props || Object.keys(props).length === 0)
       return [catchAsync((req, res, next) => next())];
     if (validationCache[uuid]) {
-      parsedProps = validationCache[uuid]
+      parsedProps = validationCache[uuid];
     } else {
-      parsedProps = Parse.bodyMethodProps(props)
-      validationCache[uuid] = parsedProps
+      parsedProps = Parse.bodyMethodProps(props);
+      validationCache[uuid] = parsedProps;
     }
     const { files, schemas, validations } = parsedProps;
     const joiAndOptionalVal = catchAsync(async (req, res, next) => {
@@ -129,7 +130,7 @@ namespace Validate {
   };
 
   export const queryAndBody = (props: {
-    uuid: string,
+    uuid: string;
     query?: MethodProperties<"query">;
     body?: MethodProperties<"body">;
     populate?: PopulateField;
