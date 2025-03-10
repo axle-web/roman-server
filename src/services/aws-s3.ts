@@ -65,7 +65,7 @@ const uploadtoSpaces = (
           }); // Resolve the Promise with the result
         })
         .catch((error) => {
-          console.log(error);
+          log.error(error, "uploadtoSpaces");
           // Handle any errors and reject the Promise if necessary
           cb(error);
         });

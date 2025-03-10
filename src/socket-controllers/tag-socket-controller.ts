@@ -12,7 +12,6 @@ export interface ITagSocketHandlers {
 const tagSocketHandlers = (socket: ISocket) => {
   socket.on("find_tag", async ({ name }, callback) => {
     try {
-      console.log(name);
       const payload = {
         name: { $regex: name, $options: "i" },
       };

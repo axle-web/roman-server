@@ -106,14 +106,14 @@ export const log = Object.keys(customLevels.levels).reduce((acc, level) => {
   return acc;
 }, {} as Record<LogLevel, (message: string, task?: string, labels?: { [key: string]: any }) => any>);
 
-if (process.env.NODE_ENV !== "production") {
-  logger.add(
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.prettyPrint(),
-        winston.format.simple()
-      ),
-    })
-  );
-}
+// if (process.env.NODE_ENV !== "production") {
+logger.add(
+  new winston.transports.Console({
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.prettyPrint(),
+      winston.format.simple()
+    ),
+  })
+);
+// }

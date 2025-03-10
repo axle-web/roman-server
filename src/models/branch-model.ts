@@ -91,11 +91,11 @@ branchSchema.post("findOneAndDelete", function (doc: IBranch<false>) {
   if (doc.branch) Branch.findById(doc.branch, { $pull: { branches: doc._id } });
   // delete all branches
   Branch.deleteMany({ _id: { $in: doc.branches } }).then(() => {
-    console.log("deleted all groups in", doc.name);
+    log.debug(`deleted all groups in ${doc.name}`);
   });
 
   Node.deleteMany({ _id: { $in: doc.nodes } }).then(() => {
-    console.log("deleted all groups in", doc.name);
+    log.debug(`deleted all nodes in ${doc.name}`);
   });
 });
 

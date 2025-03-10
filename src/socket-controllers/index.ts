@@ -4,6 +4,7 @@ import { Socket } from "socket.io";
 import { FolderDocument, ImageDocument } from "@ctypes";
 import { IProdAppError } from "@middlewares";
 import { ITagSocketHandlers } from "./tag-socket-controller";
+import { log } from "@utils/logger";
 
 interface Payload<T extends any> {
   data?: T;
@@ -64,7 +65,7 @@ const socketFindHandlers = (socket: ISocket) => {
           .limit(20);
         callback({ data: files });
       } catch (e: any) {
-        console.log(e);
+        log.error(e, "find_images");
         callback({ error: { message: e.message, status: 500, type: "FAIL" } });
       }
     }
