@@ -1,26 +1,32 @@
 import { FixedLengthArray } from "@ctypes";
 import { model, Schema, Types } from "mongoose";
 
-interface ITheme {
+export interface ITheme {
+  _id: Types.ObjectId;
   colorScheme: "light" | "dark" | "auto";
   fontFamily: string;
-  colors: Types.ObjectId[];
+  colors: Schema.Types.ObjectId[];
   primaryShade: { light: number; dark: number };
+  background: Schema.Types.ObjectId;
+  selectedPalette: Schema.Types.ObjectId;
 }
 
-export interface IThemePublic extends Omit<ITheme, "colors"> {
+export interface IThemePublic extends Omit<ITheme, "colors" | "background"> {
   colors: { name: string; values: FixedLengthArray<10, string> }[];
+  background: { name: string; values: FixedLengthArray<10, string> };
 }
 
 const themeSchema = new Schema<ITheme>(
   {
     colorScheme: { type: String, default: "auto" },
     fontFamily: { type: String, default: "system" },
-    colors: { type: [Types.ObjectId], ref: "ThemeColor" },
+    colors: { type: [Schema.Types.ObjectId], ref: "ThemeColor" },
     primaryShade: {
       type: { light: Number, dark: Number },
       default: { light: 6, dark: 8 },
     },
+    background: { type: Schema.Types.ObjectId, ref: "ThemeColor" },
+    selectedPalette: { type: Schema.Types.ObjectId, ref: "ThemePalette" },
   },
   {
     timestamps: true,

@@ -52,12 +52,6 @@ export const getAllFolder = Controller.getAll({
   sort: ["createdAt", "views"],
   pagination: true,
   populate: [{ path: "branch", select: "_id name details" }, "nodes", "tags"],
-  // postprocess: (req, res, next, payload) => {
-  //   if (req?.query?.slug && !req.query?.ignore_v)
-  //     payload
-  //       .updateOne({ $inc: { views: 1 } })
-  //       .then(() => log.debug(`branch "${payload?.name}" views updated`));
-  // },
 });
 
 export const getAllFoldersUnique = Controller.getAll({

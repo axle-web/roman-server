@@ -1,6 +1,5 @@
 import { logout, login, register } from "@controllers/auth-controller";
 import { protect } from "@middlewares";
-import { catchAsync } from "@utils";
 import { Router } from "express";
 
 const router: Router = Router();

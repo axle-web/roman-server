@@ -1,7 +1,7 @@
 import User from "@models/user-model";
 import { log } from "@utils";
 import { randomBytes } from "crypto";
-import { appearanceCache } from "./app-appereance-cache";
+import initAppearanceCache, { appearanceCache } from "./appearance-cache";
 // init cache
 
 let admin;

@@ -5,5 +5,5 @@ export { default as branchRouter } from "./branch-router";
 
 export { default as imageRouter } from "./image-router";
 export { default as folderRouter } from "./folder-router";
-
+export { default as appearanceRouter } from "./appearance-router";
 export { default as dashboardRouter } from "./dashboard-router";

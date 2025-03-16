@@ -1,15 +1,15 @@
 import { FixedLengthArray } from "@ctypes";
 import { model, Schema } from "mongoose";
 
-interface IThemeColor {
+export interface IThemeColor {
   name: string;
-  values: FixedLengthArray<10, string>;
+  values: Record<string, string[]>;
 }
 
 const colorSchema = new Schema<IThemeColor>(
   {
     name: { type: String, unique: true, required: true },
-    values: { type: [String], required: true },
+    values: { type: Map, of: [String], required: true },
   },
   {
     timestamps: true,
