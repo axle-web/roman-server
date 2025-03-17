@@ -1,6 +1,6 @@
 {
   "name": "roman-classic-server",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Server for roman-classic.com",
   "scripts": {
     "start": "pnpm build && NODE_ENV=production node dist/esm/server.js",

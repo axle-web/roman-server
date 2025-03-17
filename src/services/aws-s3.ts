@@ -27,12 +27,20 @@ const uploadtoSpaces = (
   pathAffix?: string
 ) => {
   const filename =
-    typeof file === "string" ? file.match(/[^/\\]*$/) : file.filename;
+    typeof file === "string" ? file.match(/[^/\\]*$/)![0] : file.filename;
   log.debug(`Uploading ${filename} to "${bucket} bucket"`);
   if (!file) throw AppError.createUploadError();
   const fileContent = fs.readFileSync(
     typeof file === "string" ? file : file.path
   );
+
+  // Add timestamp to filename
+  const timestamp = Math.floor(Date.now() / 1000);
+  const filenameParts = filename.split(".");
+  const extension = filenameParts.pop();
+  const nameWithoutExt = filenameParts.join(".");
+  const filenameWithTimestamp = `${nameWithoutExt}-${timestamp}.${extension}`;
+
   /** path
    * enviroment --> NODE_ENV defaults to "development"
    * processAffix --> SPACES_PATH_DEFAULT_PROCESS_AFFIX
@@ -44,7 +52,7 @@ const uploadtoSpaces = (
     pathAffix || process.env.SPACES_PATH_DEFAULT_PROCESS_AFFIX
       ? `${pathAffix || process.env.SPACES_PATH_DEFAULT_PROCESS_AFFIX}--`
       : ""
-  }${filename}`;
+  }${filenameWithTimestamp}`;
 
   const params: PutObjectCommandInput = {
     Bucket: bucket, // Update with your Space's bucket name

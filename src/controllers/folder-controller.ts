@@ -22,7 +22,8 @@ export const getOneFolder = Controller.getOne({
     {
       path: "nodes",
       populate: [
-        "name tags",
+        "name",
+        "tags",
         {
           path: "branch",
           select: { _id: 1, name: 1, details: 1 },
