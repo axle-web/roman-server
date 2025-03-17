@@ -69,6 +69,7 @@ export const getAllFoldersUnique = Controller.getAll({
       _id: folder._id,
       slug: folder.slug,
       details: folder.details,
+      nodes: folder.nodes,
     })),
 });
 
