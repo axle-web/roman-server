@@ -137,27 +137,27 @@ export const updateOneImage = Controller.updateOne({
     },
     length: {
       schema: Joi.number().min(1).optional(),
-      setAs: "details.length",
+      setAs: "details.dimensions.length",
     },
     height: {
       schema: Joi.number().min(1).optional(),
-      setAs: "details.height",
+      setAs: "details.dimensions.height",
     },
     depth: {
       schema: Joi.number().min(1).optional(),
-      setAs: "details.depth",
+      setAs: "details.dimensions.depth",
     },
     width: {
       schema: Joi.number().min(1).optional(),
-      setAs: "details.width",
+      setAs: "details.dimensions.width",
     },
     on_wall: {
       schema: Joi.number().min(1).optional(),
-      setAs: "details.on_wall",
+      setAs: "details.dimensions.on_wall",
     },
     on_ceiling: {
       schema: Joi.number().min(1).optional(),
-      setAs: "details.on_ceiling",
+      setAs: "details.dimensions.on_ceiling",
     },
     tags: Joi.array().items(JoiSchema._id).optional(),
   },
@@ -187,4 +187,34 @@ export const sampleImages = catchAsync(async (req, res, next) => {
   ]);
   data = await ImageModel.populate(data, "branch");
   res.status(200).send(data);
+});
+
+export const addView = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  if (!id) {
+    throw AppError.createError(400, "Image ID is required", "AppError");
+  }
+
+  const image = await ImageModel.findById(id);
+
+  if (!image) {
+    throw AppError.createDocumentNotFoundError("IMAGE");
+  }
+
+  // Initialize views if it doesn't exist
+  if (!image.views) {
+    image.views = 0;
+  }
+
+  // Increment the view count
+  image.views += 1;
+
+  // Save the updated document
+  await image.save();
+
+  res.status(200).json({
+    success: true,
+    views: image.views,
+  });
 });

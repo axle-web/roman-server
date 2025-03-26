@@ -9,14 +9,16 @@ export function applySetAsToPayload(schema: any, payload: any): any {
         const keys = schemaItem.setAs.split(".");
         let currentResult = result;
 
-        for (const k of keys.slice(0, -1)) {
-          if (!currentResult[k]) {
-            currentResult[k] = {};
+        if (key in result && result[key] != null) {
+          for (const k of keys.slice(0, -1)) {
+            if (!currentResult[k]) {
+              currentResult[k] = {};
+            }
+            currentResult = currentResult[k];
           }
-          currentResult = currentResult[k];
+          currentResult[keys[keys.length - 1]] = result[key];
+          delete result[key];
         }
-        currentResult[keys[keys.length - 1]] = result[key];
-        delete result[key];
       }
     }
   }

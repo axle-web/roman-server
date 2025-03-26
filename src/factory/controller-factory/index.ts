@@ -166,9 +166,27 @@ export class ControllerFactory<
         bodyPayload =
           (await preprocess(req, res, next, bodyPayload)) ?? bodyPayload;
         bodyPayload = applySetAsToPayload(body, bodyPayload);
+        console.log(bodyPayload);
+
+        // Convert nested objects to dot notation for proper merging
+        const updatePayload: any = {};
+        for (const key in bodyPayload) {
+          if (
+            typeof bodyPayload[key] === "object" &&
+            bodyPayload[key] !== null
+          ) {
+            for (const nestedKey in bodyPayload[key]) {
+              updatePayload[`${key}.${nestedKey}`] =
+                bodyPayload[key][nestedKey];
+            }
+          } else {
+            updatePayload[key] = bodyPayload[key];
+          }
+        }
+
         responsePayload = await this.Model.findOneAndUpdate(
           queryPayload,
-          bodyPayload,
+          { $set: updatePayload },
           { new: true }
         );
         // throw error if document doesn't exist
