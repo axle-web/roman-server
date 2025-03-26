@@ -128,6 +128,7 @@ export const updateOneImage = Controller.updateOne({
     _id: JoiSchema._id.label("Image id"),
   },
   body: {
+    name: JoiSchema.name.optional(),
     cover: {
       mimetypes: ["IMAGE"],
       count: 1,
@@ -135,27 +136,27 @@ export const updateOneImage = Controller.updateOne({
       upload: Upload.envDynamicUpload,
     },
     length: {
-      schema: Joi.number().min(1),
+      schema: Joi.number().min(1).optional(),
       setAs: "details.length",
     },
     height: {
-      schema: Joi.number().min(1),
+      schema: Joi.number().min(1).optional(),
       setAs: "details.height",
     },
     depth: {
-      schema: Joi.number().min(1),
+      schema: Joi.number().min(1).optional(),
       setAs: "details.depth",
     },
     width: {
-      schema: Joi.number().min(1),
+      schema: Joi.number().min(1).optional(),
       setAs: "details.width",
     },
     on_wall: {
-      schema: Joi.number().min(1),
+      schema: Joi.number().min(1).optional(),
       setAs: "details.on_wall",
     },
     on_ceiling: {
-      schema: Joi.number().min(1),
+      schema: Joi.number().min(1).optional(),
       setAs: "details.on_ceiling",
     },
     tags: Joi.array().items(JoiSchema._id).optional(),
