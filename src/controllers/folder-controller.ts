@@ -26,7 +26,7 @@ export const getOneFolder = Controller.getOne({
         "tags",
         {
           path: "branch",
-          select: { _id: 1, name: 1, details: 1 },
+          select: { _id: 1, name: 1, details: 1, slug: 1,tags:1 },
         },
       ],
     },
@@ -50,7 +50,7 @@ export const getAllFolder = Controller.getAll({
     // ignore_v: Joi.bool().default(false),
     system: Joi.bool().default(false),
   },
-  sort: ["createdAt", "views"],
+  sort: ["createdAt", "views","name"],
   pagination: true,
   populate: [{ path: "branch", select: "_id name details" }, "nodes", "tags"],
 });
@@ -60,7 +60,7 @@ export const getAllFoldersUnique = Controller.getAll({
     system: Joi.bool().default(false),
   },
   pagination: true,
-  sort: ["createdAt", "views"],
+  sort: ["createdAt", "views","name"],
   populate: [{ path: "branch", select: "_id name details" }, "nodes", "tags"],
   postprocess: (req, res, next, payload) =>
     payload &&
@@ -77,7 +77,7 @@ export const getAllFoldersUnique = Controller.getAll({
 export const getRootFolders = Controller.getAll({
   query: {},
   pagination: true,
-  sort: ["createdAt", "views"],
+  sort: ["createdAt", "views","name"],
   preprocess: (req, res, next, payload) => ({ ...payload, branch: null }),
   populate: [{ path: "branch", select: "_id name details" }, "nodes", "tags"],
 });
