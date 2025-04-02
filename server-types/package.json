@@ -1,0 +1,12 @@
+{
+  "name": "@axleweb/roman-server-types",
+  "version": "1.0.0",
+  "description": "Shared types for the server",
+  "main": "index.d.ts",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ahmed Essam",
+  "license": "MIT"
+}
