@@ -1,18 +1,19 @@
 import { ControllerFactory } from "@factory/controller-factory";
 import JoiSchema from "@utils/joi-schemas";
 import Branch from "@models/branch-model";
-import Node, { INode, INodeModel, INodePublic } from "@models/node-model";
-import { uploadtoSpaces } from "@services";
+import Node, { INodeModel, INodePublic } from "@models/node-model";
 import { AppError, catchAsync, log } from "@utils";
-import { readFileSync } from "fs";
 import Joi from "joi";
-import { Model, Types } from "mongoose";
-import { FolderDocument, FolderModel } from "./folder-controller";
+import { Model } from "mongoose";
+import { FolderModel } from "./folder-controller";
 import { Upload } from "@utils/upload";
 
-export type ImageDocument = INodePublic<
-  { cover: string; height?: string; width?: string; depth?: string }
->;
+export type ImageDocument = INodePublic<{
+  cover: string;
+  height?: string;
+  width?: string;
+  depth?: string;
+}>;
 
 export const ImageModel = Node as unknown as Model<ImageDocument, INodeModel>;
 
@@ -21,9 +22,9 @@ const Controller = new ControllerFactory(ImageModel);
 const notSystem = /system/i; // Case-insensitive regex to match "system"
 
 export const getOneImage = Controller.getOne({
-  key: "name",
+  key: "slug",
   query: {
-    name: {
+    slug: {
       schema: JoiSchema.name,
     },
   },
@@ -31,6 +32,9 @@ export const getOneImage = Controller.getOne({
 });
 
 export const getAllImage = Controller.getAll({
+  query: {
+    branch: JoiSchema._id.optional(),
+  },
   pagination: true,
   populate: [{ path: "branch", select: "_id name" }],
   preprocess: (req, res, next, payload) => {
@@ -98,7 +102,8 @@ export const postOneImage = Controller.postOne({
       }
       doc?.save().then((document) => {
         log.info(
-          `${payload.name} appened to branch "${document?.name || payload.branch
+          `${payload.name} appened to branch "${
+            document?.name || payload.branch
           }"`
         );
       });
@@ -119,10 +124,14 @@ export const deleteOneImage = Controller.getOne({
   },
 });
 
-export const updateOneImage = Controller.postOne({
+export const updateOneImage = Controller.updateOne({
+  key: "_id",
+  query: {
+    _id: JoiSchema._id,
+  },
   body: {
     name: {
-      schema: JoiSchema.name,
+      schema: JoiSchema.name.optional(),
     },
     cover: {
       mimetypes: ["IMAGE"],
@@ -154,19 +163,6 @@ export const updateOneImage = Controller.postOne({
       schema: Joi.number().min(1),
       setAs: "details.on_ceiling",
     },
-  },
-  operation: async (req, res, next, Model) => {
-    if (!req["query"].id || req["query"].id == undefined)
-      throw AppError.createError(
-        400,
-        "Folder id missing from request",
-        "ValidationError"
-      );
-    const image = await ImageModel.findByIdAndUpdate(
-      req["query"].id,
-      req["body"]
-    );
-    return image;
   },
 });
 

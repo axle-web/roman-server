@@ -29,9 +29,7 @@ export interface IUserPublic {
   email: string;
   avatar?: string;
   role: keyof typeof userRoles;
-};
-
-
+}
 
 type UserTypeMethods = {
   verifyPassword: (password: string) => boolean;

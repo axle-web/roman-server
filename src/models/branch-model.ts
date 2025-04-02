@@ -1,8 +1,7 @@
 import { AppError } from "@utils";
 import { Model, Schema, Types, model } from "mongoose";
-export interface IBranch<
-  Details extends {} = {}
-> {
+
+export interface IBranch<Details extends {} = {}> {
   _id: Types.ObjectId;
   name: string;
   branch: Types.ObjectId;
@@ -11,14 +10,18 @@ export interface IBranch<
   createdBy: Types.ObjectId;
   details: Details;
   type: string;
+  slug: string;
 }
 
-export interface IBranchPublic<Details extends {} = {}> extends Omit<IBranch<Details>, "_id"> {
+export interface IBranchPublic<Details extends {} = {}>
+  extends Omit<IBranch<Details>, "_id" | "branch" | "branches" | "nodes"> {
   _id: string;
   createdAt: Date;
   updatedAt: Date;
+  branch: string;
+  branches: string[];
+  nodes: string[];
 }
-
 
 type BranchModelMethods = {};
 export type BranchModel = Model<IBranch, {}, BranchModelMethods>;
@@ -45,10 +48,15 @@ const branchSchema = new Schema<IBranch, BranchModel, BranchModelMethods>(
       minlength: 1,
       maxlength: 128,
     },
+    slug: {
+      type: String,
+      slug: "name",
+      unique: true,
+      slugPaddingSize: 4,
+    },
   },
   { timestamps: true }
 );
-
 branchSchema.post("findOneAndDelete", function (doc: IBranch<false>) {
   if (!doc) throw AppError.createDocumentNotFoundError("branch");
   // Remove the image from the associated album

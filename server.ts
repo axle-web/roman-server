@@ -12,7 +12,7 @@ import http from "http";
 import app from "./app";
 import IO from "./io";
 import { initAppData } from "src/cache/app-appereance-cache";
-import { initAdminAccount } from "src/cache";
+import { initRootAccount } from "src/cache";
 const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = IO(server);
@@ -21,14 +21,13 @@ const io = IO(server);
 
 connect(async () => {
   // await initPreferences();
-  await initAdminAccount()
-  await Promise.all([initAppData()])
+  await initRootAccount();
+  await Promise.all([initAppData()]);
   server.listen(PORT, () => {
     // startmMetricsServer();
     log.debug(`Server is up on port ${PORT}`, "server");
-  })
+  });
 });
-
 
 process.on("unhandledRejection", (err: Error) => {
   log.error(err.stack as string, "server");

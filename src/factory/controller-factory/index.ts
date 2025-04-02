@@ -14,10 +14,11 @@ import {
   UpdateMethodProps,
 } from "./types";
 import { log } from "@utils/logger";
-import { applySetAsToPayload, } from "./utils";
+import { applySetAsToPayload } from "./utils";
 import Parse from "@factory/parse";
 import { randomUUID } from "crypto";
 import Validate from "@factory/validation";
+import Branch from "@models/branch-model";
 
 export class ControllerFactory<
   DocumentType extends object = {},
@@ -41,7 +42,7 @@ export class ControllerFactory<
     key,
     populate,
   }: GetOneMethodProps<typeof this.Model, typeof this.documentInstance>) {
-    const uuid = randomUUID()
+    const uuid = randomUUID();
     const validation = Validate.query(uuid, query, populate, uuid);
     const queryModifiers = Parse.queryModifiers();
 
@@ -77,7 +78,7 @@ export class ControllerFactory<
     sort,
     pagination,
   }: GetAllMethodProps<typeof this.Model, typeof this.documentInstance>) {
-    const uuid = randomUUID()
+    const uuid = randomUUID();
     const validation = Validate.query(uuid, query, populate, sort, pagination);
     const queryModifiers = Parse.queryModifiers();
 
@@ -100,6 +101,15 @@ export class ControllerFactory<
             `${this.Model.modelName.toUpperCase()}`
           );
         items = (await postprocess(req, res, next, items)) ?? items;
+        const totalCount = await this.Model.countDocuments(queryPayload as any);
+        let payload: any = { data: items, total: totalCount };
+        if (queryPayload["branch"]) {
+          const parentBranch = (await Branch.findById(
+            queryPayload["branch"]
+          )) as any;
+          payload = { ...payload, parentCover: parentBranch?.details?.cover };
+        }
+        return res.status(200).send(payload);
       }
       res.status(200).send(items);
     });
@@ -113,7 +123,7 @@ export class ControllerFactory<
     postprocess = async (req, res, next, payload) => payload,
     preprocess = async (req, res, next, payload) => payload,
   }: PostMethodProps<typeof this.Model, typeof this.documentInstance>) {
-    const uuid = randomUUID()
+    const uuid = randomUUID();
 
     const validation = Validate.queryAndBody({ uuid, query, body });
     const exec = catchAsync(async (req, res, next) => {
@@ -133,9 +143,7 @@ export class ControllerFactory<
         responsePayload =
           (await postprocess(req, res, next, responsePayload)) ??
           responsePayload;
-        log.info(
-          `New ${this.Model.modelName} created: ${responsePayload._id}`,
-        );
+        log.info(`New ${this.Model.modelName} created: ${responsePayload._id}`);
       }
       res.status(200).send(responsePayload);
     });
@@ -149,7 +157,7 @@ export class ControllerFactory<
     postprocess = async (req, res, next, payload) => payload,
     preprocess = async (req, res, next, payload) => payload,
   }: UpdateMethodProps<typeof this.Model, typeof this.documentInstance>) {
-    const uuid = randomUUID()
+    const uuid = randomUUID();
     const validation = Validate.queryAndBody({ uuid, query, body });
     const exec = catchAsync(async (req, res, next) => {
       let responsePayload: any = "OK";
@@ -173,9 +181,7 @@ export class ControllerFactory<
         responsePayload =
           (await postprocess(req, res, next, responsePayload)) ??
           responsePayload;
-        log.info(
-          `New ${this.Model.modelName} created: ${responsePayload._id}`,
-        );
+        log.info(`New ${this.Model.modelName} created: ${responsePayload._id}`);
       }
       res.status(200).send(responsePayload);
     });

@@ -43,7 +43,7 @@ export const login = Controller.postOne({
       throw AppError.createAuthenticationError(
         "This username or password is incorrect"
       );
-    req.session.user = user.shear("password") as any
+    req.session.user = user.shear("password") as any;
     return req.session.user;
   },
 });
