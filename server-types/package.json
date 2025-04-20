@@ -1,6 +1,6 @@
 {
   "name": "@axleweb/roman-server-types",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shared types for the server",
   "main": "index.d.ts",
   "types": "index.d.ts",

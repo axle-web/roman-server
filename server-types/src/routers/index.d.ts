@@ -7,3 +7,5 @@ export { default as imageRouter } from "./image-router";
 export { default as folderRouter } from "./folder-router";
 export { default as dashboardRouter } from "./dashboard-router";
 export { default as appearanceRouter } from "./appearance-router";
+export { default as blogRouter } from "./blog-router";
+export { default as messageRouter } from "./message-router";

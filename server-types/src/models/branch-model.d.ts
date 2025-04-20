@@ -8,11 +8,15 @@ export interface IBranch<Details extends {} = {}> {
     createdBy: Types.ObjectId;
     details: Details;
     type: string;
+    slug: string;
 }
-export interface IBranchPublic<Details extends {} = {}> extends Omit<IBranch<Details>, "_id"> {
+export interface IBranchPublic<Details extends {} = {}> extends Omit<IBranch<Details>, "_id" | "branch" | "branches" | "nodes"> {
     _id: string;
     createdAt: Date;
     updatedAt: Date;
+    branch: string;
+    branches: string[];
+    nodes: string[];
 }
 type BranchModelMethods = {};
 export type BranchModel = Model<IBranch, {}, BranchModelMethods>;

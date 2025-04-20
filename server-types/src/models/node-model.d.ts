@@ -6,8 +6,10 @@ export interface INode<Details extends object = {}> {
     createdBy: Types.ObjectId;
     details: Details;
     type: string;
+    slug: string;
 }
-export interface INodePublic<Details extends {}> extends Omit<INode<Details>, "_id"> {
+export interface INodePublic<Details extends {}> extends Omit<INode<Details>, "_id" | "branch"> {
+    branch: string;
     _id: string;
     createdAt: Date;
     updatedAt: Date;

@@ -5,5 +5,6 @@ declare namespace JoiSchema {
     const email: Joi.StringSchema<string>;
     const _id: Joi.StringSchema<string>;
     const name: Joi.StringSchema<string>;
+    const title: Joi.StringSchema<string>;
 }
 export default JoiSchema;

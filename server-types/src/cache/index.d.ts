@@ -1,6 +1,7 @@
-export declare const initAdminAccount: () => Promise<void>;
+import { IUser } from "../models/user-model";
+export declare const initRootAccount: () => Promise<void>;
 declare const caches: {
-    admin: undefined;
+    root: IUser;
     appearance: Record<string, import("../models/branch-model").IBranch<{}> | import("../models/node-model").INode<{}>>;
 };
 export default caches;

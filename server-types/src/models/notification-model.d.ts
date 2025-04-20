@@ -5,6 +5,9 @@ export interface INotification {
     message: string;
     isRead: boolean;
 }
+export interface INotificationPublic extends Omit<INotification, "_id"> {
+    _id: string;
+}
 export interface INotificationPublic extends Omit<INotification, '_id'> {
     _id: string;
 }

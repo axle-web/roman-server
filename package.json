@@ -53,5 +53,13 @@
     "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.2.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "bcrypt",
+      "protobufjs",
+      "sharp"
+    ]
   }
 }
