@@ -1,12 +1,12 @@
 import {
-    getAllBranches,
-    getOneBranch,
-    postOneBranch,
+  getAllBranches,
+  getOneBranch,
+  postOneBranch,
 } from "@controllers/branch-controller";
 import { protect } from "@middlewares";
 import { Router } from "express";
 
-const router = Router();
+const router: Router = Router();
 
 router.get("/", getOneBranch);
 router.post("/", protect("editor"), postOneBranch);

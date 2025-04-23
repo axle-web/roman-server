@@ -12,33 +12,33 @@ type CustomNode = INode<{ cover: string }>;
 const CustomModel = NodeModel as unknown as Model<CustomNode, INodeModel>;
 const Controller = new ControllerFactory(CustomModel);
 
-const router = Router();
+const router: Router = Router();
 
 const getOne = Controller.getOne({
-    key: "_id",
-    query: {},
+  key: "_id",
+  query: {},
 });
 
 const postOne = Controller.postOne({
-    body: {
-        name: {
-            schema: JoiSchema.name,
-        },
-        file: {
-            mimetypes: ["IMAGE"],
-            // required: true,
-            upload: Upload.envDynamicUpload,
-            required: true,
-            setAs: "details.cover",
-        },
-        branch: {
-            schema: JoiSchema._id,
-        },
+  body: {
+    name: {
+      schema: JoiSchema.name,
     },
-    preprocess: (req, res, next, item) => ({
-        ...item,
-        createdBy: new Types.ObjectId(req.session.user!._id),
-    }),
+    file: {
+      mimetypes: ["IMAGE"],
+      // required: true,
+      upload: Upload.envDynamicUpload,
+      required: true,
+      setAs: "details.cover",
+    },
+    branch: {
+      schema: JoiSchema._id,
+    },
+  },
+  preprocess: (req, res, next, item) => ({
+    ...item,
+    createdBy: new Types.ObjectId(req.session.user!._id),
+  }),
 });
 
 // const addToDigitalOcean = [multer(['IMAGE']).any(), ((req: Request, res: Response, next: NextFunction) => {

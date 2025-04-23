@@ -7,7 +7,7 @@ import {
 import { protect } from "@middlewares";
 import { Router } from "express";
 
-const router = Router();
+const router: Router = Router();
 router.get("/", getOneBlog);
 router.get("/all", getAllBlogs);
 router.get("/sample", sampleBlogs);

@@ -1,6 +1,7 @@
 import session, { Session as Session_, SessionData } from "express-session";
 import MongoStore from "connect-mongo";
 import { IUserPublic } from "@models/user-model";
+import { RequestHandler } from "express";
 declare module "express-session" {
   interface SessionData {
     user?: IUserPublic;
@@ -13,7 +14,7 @@ declare module "http" {
   }
 }
 
-export const sessionMiddleware = session({
+export const sessionMiddleware: RequestHandler = session({
   secret: process.env.SESSION_SECRET!,
   // proxy: process.env.NODE_ENV === "production" ? true : false,
   resave: false,

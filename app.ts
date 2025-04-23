@@ -25,7 +25,7 @@ import {
   messageRouter,
 } from "@routers";
 import rateLimit from "express-rate-limit";
-const app = express();
+const app: express.Application = express();
 const limiter = rateLimit({
   max: 250, // Limit each IP to 100 requests per `window` (here, per 1 minutes),
   standardHeaders: "draft-7", // draft-6: RateLimit-* headers; draft-7: combined RateLimit header

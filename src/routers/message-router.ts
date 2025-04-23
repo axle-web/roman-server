@@ -6,7 +6,7 @@ import {
 import { protect } from "@middlewares";
 import { Router } from "express";
 
-const router = Router();
+const router: Router = Router();
 
 router.get("/", protect("editor"), getOneMessage);
 router.get("/all", protect("editor"), getAllMessages);
