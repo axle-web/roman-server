@@ -1,0 +1,27 @@
+services:
+  production:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    profiles: ["production"]
+    networks:
+      - elkhedewya-net
+
+  staging:
+    build:
+      context: .
+      dockerfile: Dockerfile.staging
+    ports:
+      - "3001:3001"
+    profiles: ["staging"]
+    environment:
+      - NODE_ENV=staging
+    restart: unless-stopped
+    networks:
+      - elkhedewya-net
+
+networks:
+  elkhedewya-net:

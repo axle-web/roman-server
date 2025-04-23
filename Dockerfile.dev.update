@@ -1,5 +1,0 @@
-# Use the existing image as the base
-FROM server:dev
-WORKDIR /usr/app
-COPY . .
-RUN yarn && yarn build
