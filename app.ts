@@ -53,10 +53,10 @@ app.use(bodyParser.urlencoded({ limit: "15mb", extended: true }));
 // app.use(responseTime);w
 // app.use(totalRequestCount);
 
-app.use((req, res, next) => {
-  log.debug(`${req.method} ${req.url}`);
-  next();
-});
+// app.use((req, res, next) => {
+//   log.debug(`${req.method} ${req.url}`);
+//   next();
+// });
 
 //* Routes setup
 app.use("/api/v1/user", userRouter);

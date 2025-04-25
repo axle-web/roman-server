@@ -11,6 +11,11 @@ export interface INotificationPublic extends Omit<INotification, "_id"> {
   _id: string;
 }
 
+export interface INotificationPublic extends Omit<INotification, '_id'> {
+    _id: string;
+}
+
+
 type INotificationModelMethods = {};
 export type INotificationModel = Model<
   INotification,
