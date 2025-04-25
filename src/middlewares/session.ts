@@ -14,7 +14,7 @@ declare module "http" {
   }
 }
 
-export const sessionMiddleware: RequestHandler = session({
+export const sessionMiddleware: any = session({
   secret: process.env.SESSION_SECRET!,
   // proxy: process.env.NODE_ENV === "production" ? true : false,
   resave: false,

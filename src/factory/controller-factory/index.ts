@@ -95,23 +95,19 @@ export class ControllerFactory<
           .sort(req["sort"])
           .limit(req["pagination"]!.limit)
           .skip((req["pagination"]!.page - 1) * req["pagination"]!.limit);
-
         if (!items)
           throw AppError.createDocumentNotFoundError(
             `${this.Model.modelName.toUpperCase()}`
           );
         items = (await postprocess(req, res, next, items)) ?? items;
-        const totalCount = await this.Model.countDocuments(queryPayload as any);
-        let payload: any = { data: items, total: totalCount };
-        if (queryPayload["branch"]) {
-          const parentBranch = (await Branch.findById(
-            queryPayload["branch"]
-          )) as any;
-          payload = { ...payload, parentCover: parentBranch?.details?.cover };
-        }
-        return res.status(200).send(payload);
       }
-      res.status(200).send(items);
+      const payload = pagination
+        ? {
+            data: items,
+            total: await this.Model.countDocuments(queryPayload as any),
+          }
+        : items;
+      res.status(200).json(payload);
     });
     return [validation, queryModifiers, exec];
   }

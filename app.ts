@@ -18,13 +18,13 @@ import {
   folderRouter,
   imageRouter,
   nodeRouter,
-  testRouter,
   userRouter,
   appearanceRouter,
   blogRouter,
   messageRouter,
 } from "@routers";
 import rateLimit from "express-rate-limit";
+import { log } from "@utils";
 const app: express.Application = express();
 const limiter = rateLimit({
   max: 250, // Limit each IP to 100 requests per `window` (here, per 1 minutes),
@@ -52,6 +52,11 @@ app.use(bodyParser.urlencoded({ limit: "15mb", extended: true }));
 // const { responseTime, totalRequestCount } = require("./middleware/metrics");
 // app.use(responseTime);w
 // app.use(totalRequestCount);
+
+app.use((req, res, next) => {
+  log.debug(`${req.method} ${req.url}`);
+  next();
+});
 
 //* Routes setup
 app.use("/api/v1/user", userRouter);

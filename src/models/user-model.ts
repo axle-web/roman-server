@@ -1,6 +1,5 @@
 import { AppError } from "@utils";
-import bcrypt from "bcrypt";
-import { hashSync } from "bcrypt";
+import { compareSync, hashSync } from "bcrypt";
 import { Document, Types } from "mongoose";
 import { Model, Schema, model } from "mongoose";
 export const userRoles = {
@@ -85,7 +84,7 @@ const userSchema = new Schema<IUser, IUserModel, UserTypeMethods>(
   { timestamps: true }
 );
 userSchema.method("verifyPassword", function (password: string) {
-  return bcrypt.compareSync(password, this.password);
+  return compareSync(password, this.password);
 });
 
 userSchema.method("shear", function (args: string): IUser {
