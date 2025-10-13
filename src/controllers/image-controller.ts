@@ -13,6 +13,13 @@ export type ImageDocument = INodePublic<{
   height?: string;
   width?: string;
   depth?: string;
+  length?: string;
+  on_wall?: string;
+  on_ceiling?: string;
+  internal_width?: string;
+  internal_length?: string;
+  internal_diameter?: string;
+  diameter?: string;
 }>;
 
 export const ImageModel = Node as unknown as Model<ImageDocument, INodeModel>;
@@ -84,6 +91,22 @@ export const postOneImage = Controller.postOne({
     on_ceiling: {
       schema: Joi.number().min(1),
       setAs: "details.on_ceiling",
+    },
+    internal_width: {
+      schema: Joi.number().min(1),
+      setAs: "details.internal_width",
+    },
+    internal_length: {
+      schema: Joi.number().min(1),
+      setAs: "details.internal_length",
+    },
+    internal_diameter: {
+      schema: Joi.number().min(1),
+      setAs: "details.internal_diameter",
+    },
+    diameter: {
+      schema: Joi.number().min(1),
+      setAs: "details.diameter",
     },
   },
   preprocess: (req, res, next, payload) => ({
@@ -162,6 +185,22 @@ export const updateOneImage = Controller.updateOne({
     on_ceiling: {
       schema: Joi.number().min(1),
       setAs: "details.on_ceiling",
+    },
+    internal_width: {
+      schema: Joi.number().min(1),
+      setAs: "details.internal_width",
+    },
+    internal_length: {
+      schema: Joi.number().min(1),
+      setAs: "details.internal_length",
+    },
+    internal_diameter: {
+      schema: Joi.number().min(1),
+      setAs: "details.internal_diameter",
+    },
+    diameter: {
+      schema: Joi.number().min(1),
+      setAs: "details.diameter",
     },
   },
 });
