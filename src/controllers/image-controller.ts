@@ -110,7 +110,7 @@ export const postOneImage = Controller.postOne({
       setAs: "details.diameter",
     },
     angle: {
-      schema: Joi.number().min(0).max(360).integer(),
+      schema: Joi.string().allow(''),
       setAs: "details.angle",
     },
   },
@@ -208,7 +208,7 @@ export const updateOneImage = Controller.updateOne({
       setAs: "details.diameter",
     },
     angle: {
-      schema: Joi.number().min(0).max(360).integer(),
+      schema: Joi.string().allow(''),
       setAs: "details.angle",
     },
   },
