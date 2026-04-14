@@ -20,7 +20,6 @@ export type ImageDocument = INodePublic<{
   internal_length?: string;
   internal_diameter?: string;
   diameter?: string;
-  angle?: string;
 }>;
 
 export const ImageModel = Node as unknown as Model<ImageDocument, INodeModel>;
@@ -108,10 +107,6 @@ export const postOneImage = Controller.postOne({
     diameter: {
       schema: Joi.number().min(1),
       setAs: "details.diameter",
-    },
-    angle: {
-      schema: Joi.string().allow(''),
-      setAs: "details.angle",
     },
   },
   preprocess: (req, res, next, payload) => ({
@@ -206,10 +201,6 @@ export const updateOneImage = Controller.updateOne({
     diameter: {
       schema: Joi.number().min(1),
       setAs: "details.diameter",
-    },
-    angle: {
-      schema: Joi.string().allow(''),
-      setAs: "details.angle",
     },
   },
 });
